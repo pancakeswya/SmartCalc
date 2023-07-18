@@ -1,5 +1,6 @@
 #include "secondwindow.h"
 
+#include <QStandardItemModel>
 #include <cmath>
 
 #include "../ExtLibs/qcustomplot.h"
@@ -30,7 +31,7 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   QDate date = data.start_date;
   int tax_year = date.year();
   auto repay = data.replen;
-  model = new QStandardItemModel(data.payment.size() + repay.size(), 2, this);
+  auto table_model = new QStandardItemModel(data.payment.size() + repay.size(), 2, this);
   setWindowIcon(QIcon(":/resources/img/money-logo.png"));
   ui->tableView_2->hide();
   ui->tableView->horizontalScrollBar()->setDisabled(true);
@@ -64,50 +65,50 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   auto it_rep = repay.begin();
   auto it_dep = data.payment.begin();
   for (int row = 0, dep_line = 0, i = 0;
-       date != data.finish_date && row < model->rowCount(); row++) {
-    for (int col = 0; col < model->columnCount(); col++) {
-      index = model->index(row, col);
+       date != data.finish_date && row < table_model->rowCount(); row++) {
+    for (int col = 0; col < table_model->columnCount(); col++) {
+      index = table_model->index(row, col);
       if (col == 0) {
         date = data.pay_dates[i++];
         if (it_rep != repay.end() && date >= it_rep->first) {
           double replen = 0;
-          model->setHeaderData(row, Qt::Vertical, "");
-          model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-          model->setData(index, it_rep->first.toString("dd-MM-yyyy"));
+          table_model->setHeaderData(row, Qt::Vertical, "");
+          table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+          table_model->setData(index, it_rep->first.toString("dd-MM-yyyy"));
           for (int cnt = 0; it_rep != repay.end() && date >= it_rep->first;
                cnt++, it_rep++) {
             replen += it_rep->second;
             if (cnt) {
-              model->removeRow(model->rowCount() - 1);
+              table_model->removeRow(table_model->rowCount() - 1);
             }
           }
-          index = model->index(row, 1);
-          model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-          model->setData(index, QString::number(replen, 'f', 2));
-          index = model->index(++row, col);
+          index = table_model->index(row, 1);
+          table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+          table_model->setData(index, QString::number(replen, 'f', 2));
+          index = table_model->index(++row, col);
         }
-        model->setHeaderData(row, Qt::Vertical, dep_line + 1);
-        model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        table_model->setHeaderData(row, Qt::Vertical, dep_line + 1);
+        table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
         if (date < data.finish_date) {
-          model->setData(index, date.toString("dd-MM-yyyy"));
+          table_model->setData(index, date.toString("dd-MM-yyyy"));
         } else {
-          model->setData(index, data.finish_date.toString("dd-MM-yyyy"));
+          table_model->setData(index, data.finish_date.toString("dd-MM-yyyy"));
         }
 
       } else {
-        model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-        model->setData(index, QString::number(*it_dep++, 'f', 2));
+        table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        table_model->setData(index, QString::number(*it_dep++, 'f', 2));
         dep_line++;
       }
     }
   }
-  model->setHeaderData(0, Qt::Horizontal, "Дата");
-  model->setHeaderData(1, Qt::Horizontal, "Вклад\nпополнен");
-  ui->tableView->setModel(model);
+  table_model->setHeaderData(0, Qt::Horizontal, "Дата");
+  table_model->setHeaderData(1, Qt::Horizontal, "Вклад\nпополнен");
+  ui->tableView->setModel(table_model);
   ui->tableView->setFixedWidth(ui->tableView->verticalHeader()->width() +
                                ui->tableView->horizontalHeader()->length() +
                                +ui->tableView->frameWidth() * 2);
-  if (model->rowCount() < SecondWinSizes::tableRowMax) {
+  if (table_model->rowCount() < SecondWinSizes::tableRowMax) {
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
                                   ui->tableView->verticalHeader()->length() +
                                   ui->tableView->frameWidth() * 2);
@@ -118,29 +119,29 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   }
   if (data.tax.size()) {
     QModelIndex index_tax;
-    QStandardItemModel *model_tax =
+    QStandardItemModel *table_model_tax =
         new QStandardItemModel(data.tax.size(), 2, this);
     ui->tableView_2->show();
     ui->tableView_2->horizontalScrollBar()->setDisabled(true);
     ui->tableView_2->verticalScrollBar()->setDisabled(true);
     ui->tableView_2->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->tableView_2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    model_tax->setHeaderData(0, Qt::Horizontal, "Год");
-    model_tax->setHeaderData(1, Qt::Horizontal, "Налог");
+    table_model_tax->setHeaderData(0, Qt::Horizontal, "Год");
+    table_model_tax->setHeaderData(1, Qt::Horizontal, "Налог");
     for (unsigned int i = 0; i < data.tax.size(); i++) {
-      for (int j = 0; j < model_tax->columnCount(); j++) {
-        index_tax = model_tax->index(i, j);
+      for (int j = 0; j < table_model_tax->columnCount(); j++) {
+        index_tax = table_model_tax->index(i, j);
         if (j == 0) {
-          model_tax->setData(index_tax, Qt::AlignCenter, Qt::TextAlignmentRole);
-          model_tax->setData(index_tax, QString::number(tax_year));
+          table_model_tax->setData(index_tax, Qt::AlignCenter, Qt::TextAlignmentRole);
+          table_model_tax->setData(index_tax, QString::number(tax_year));
         } else {
-          model_tax->setData(index_tax, Qt::AlignCenter, Qt::TextAlignmentRole);
-          model_tax->setData(index_tax, QString::number(data.tax[i], 'f', 2));
+          table_model_tax->setData(index_tax, Qt::AlignCenter, Qt::TextAlignmentRole);
+          table_model_tax->setData(index_tax, QString::number(data.tax[i], 'f', 2));
           tax_year++;
         }
       }
     }
-    ui->tableView_2->setModel(model_tax);
+    ui->tableView_2->setModel(table_model_tax);
     ui->tableView_2->setFixedWidth(
         ui->tableView_2->verticalHeader()->width() +
         ui->tableView_2->horizontalHeader()->length() +
@@ -169,9 +170,9 @@ void SecondWindow::SlotCredit(const CreditData &data) {
                         "Май",      "Июнь",    "Июль",   "Август",
                         "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
   QDate cur_date = cur_date.currentDate();
-  model = new QStandardItemModel(data.payment.size(), 2, this);
+  auto table_model = new QStandardItemModel(data.payment.size(), 2, this);
   QModelIndex index;
-  ui->tableView->setModel(model);
+  ui->tableView->setModel(table_model);
   setWindowTitle("Расчет кредита");
   ui->out_dep->setText("Ежемесячный платеж\n");
   {
@@ -189,22 +190,22 @@ void SecondWindow::SlotCredit(const CreditData &data) {
   ui->out_dep->setText(ui->out_dep->text() + "Долг + проценты");
   ui->out_dep_num->setText(ui->out_dep_num->text() +
                            QString::number(data.total, 'f', 2));
-  for (int row = 0; row < model->rowCount(); row++) {
-    for (int col = 0; col < model->columnCount(); col++) {
-      index = model->index(row, col);
+  for (int row = 0; row < table_model->rowCount(); row++) {
+    for (int col = 0; col < table_model->columnCount(); col++) {
+      index = table_model->index(row, col);
       if (col == 0) {
-        model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-        model->setData(index, months[cur_date.month() - 1] + " " +
+        table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        table_model->setData(index, months[cur_date.month() - 1] + " " +
                                   cur_date.toString("yyyy"));
         cur_date = cur_date.addMonths(1);
       } else {
-        model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-        model->setData(index, QString::number(data.payment[row], 'f', 2));
+        table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
+        table_model->setData(index, QString::number(data.payment[row], 'f', 2));
       }
     }
   }
-  model->setHeaderData(0, Qt::Horizontal, "Дата");
-  model->setHeaderData(1, Qt::Horizontal, "Платеж");
+  table_model->setHeaderData(0, Qt::Horizontal, "Дата");
+  table_model->setHeaderData(1, Qt::Horizontal, "Платеж");
   ui->tableView->setFixedWidth(ui->tableView->verticalHeader()->width() +
                                ui->tableView->horizontalHeader()->length() +
                                +ui->tableView->frameWidth() * 2);

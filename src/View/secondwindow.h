@@ -3,7 +3,6 @@
 
 #include <QApplication>
 #include <QDialog>
-#include <QStandardItemModel>
 
 #include "../Controller/data_types.h"
 
@@ -20,7 +19,6 @@ class SecondWindow : public QDialog {
 
  private:
   Ui::SecondWindow *ui;
-  QStandardItemModel *model;
 
  public slots:
   void SlotDeposit(const DepositData &);
