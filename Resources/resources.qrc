@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/resources">
+        <file>img/calc-logo.png</file>
+        <file>img/graph-logo.png</file>
+        <file>img/money-logo.png</file>
+    </qresource>
+</RCC>
