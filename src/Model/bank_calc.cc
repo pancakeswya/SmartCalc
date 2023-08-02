@@ -6,9 +6,9 @@
 namespace s21 {
 
 void Credit::CalcCredit() {
-  short int mp_cnt = (date_is_year) ? period * DatesNum::monthInYear : period;
+  short int mp_cnt = (date_is_year) ? period * DatesNum::kMonthInYear : period;
   if (type) {
-    double r = int_rate / (DatesNum::monthInYear * 100);
+    double r = int_rate / (DatesNum::kMonthInYear * 100);
     double ann_k =
         (r * std::pow(1 + r, mp_cnt)) / ((std::pow(1 + r, mp_cnt)) - 1);
     double ann_pay = std::round(sum * ann_k * 100.0) / 100.0;
@@ -18,7 +18,7 @@ void Credit::CalcCredit() {
     double rest = sum, payment;
     double mp_real = sum / (mp_cnt);
     for (; mp_cnt != 0; mp_cnt--) {
-      payment = mp_real + (rest * int_rate / (DatesNum::monthInYear * 100));
+      payment = mp_real + (rest * int_rate / (DatesNum::kMonthInYear * 100));
       m_data.payment.push_back(payment);
       m_data.total += payment;
       rest -= mp_real;
@@ -29,15 +29,15 @@ void Credit::CalcCredit() {
 
 namespace {
 
-inline void SetValidPayDate(QDate &date, int day) noexcept {
+inline void SetValidPayDate(QDate& date, int day) noexcept {
   if (date.day() != day && date.daysInMonth() > date.day()) {
     date.setDate(date.year(), date.month(), day);
   }
 }
 
-inline QDate NextPayDate(const QDate &cur_date, short int freq, int payday,
+inline QDate NextPayDate(const QDate& cur_date, short int freq, int payday,
                          int incr) noexcept {
-  if (freq < CondPayFreq::evMon) {
+  if (freq < CondPayFreq::kEvMon) {
     return cur_date.addDays(incr);
   } else {
     QDate pay_date;
@@ -48,11 +48,11 @@ inline QDate NextPayDate(const QDate &cur_date, short int freq, int payday,
 }
 
 inline int GetRealPayFreq(int pay_freq) noexcept {
-  if (pay_freq == CondPayFreq::evDay) {
+  if (pay_freq == CondPayFreq::kEvDay) {
     return 1;
-  } else if (pay_freq >= CondPayFreq::evHalfYear) {
+  } else if (pay_freq >= CondPayFreq::kEvHalfYear) {
     return pay_freq + 2;
-  } else if (pay_freq == CondPayFreq::evYear) {
+  } else if (pay_freq == CondPayFreq::kEvYear) {
     return 12;
   }
   return pay_freq;
@@ -99,15 +99,15 @@ void Deposit::MakeDeposit() {
   }
   if (cap) {
     m_data.eff_rate =
-        (m_data.perc_sum * DatesNum::avgDaysInYear * 100.0) / (sum * am_days);
+        (m_data.perc_sum * DatesNum::kAvgDaysInYear * 100.0) / (sum * am_days);
     m_data.total += cap_sum;
   }
   m_data.total += sum + add_sum;
 }
 
-void Deposit::AddReplenishment(const QDate &start_date,
-                               const QDate &finish_date,
-                               const UserTransaction &u_transaction) {
+void Deposit::AddReplenishment(const QDate& start_date,
+                               const QDate& finish_date,
+                               const UserTransaction& u_transaction) {
   QDate transact_date = u_transaction.date;
   while (transact_date <= finish_date) {
     if (transact_date > start_date) {
@@ -123,9 +123,9 @@ void Deposit::AddReplenishment(const QDate &start_date,
 
 void Deposit::CalcDeposit() {
   m_data.start_date = start_date;
-  if (term_type == DateType::typeDay) {
+  if (term_type == DateType::kTypeDay) {
     m_data.finish_date = start_date.addDays(term);
-  } else if (term_type == DateType::typeMonth) {
+  } else if (term_type == DateType::kTypeMonth) {
     m_data.finish_date = start_date.addMonths(term);
   } else {
     m_data.finish_date = start_date.addYears(term);

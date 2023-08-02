@@ -15,22 +15,23 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(Controller *ctrl);
-  explicit MainWindow(QWidget *parent = nullptr);
+  explicit MainWindow(Controller* ctrl);
+  explicit MainWindow(QWidget* parent = nullptr);
   ~MainWindow();
 
  private:
-  Controller *m_ctrl{};
-  Ui::MainWindow *ui;
-  SecondWindow *sec_win;
+  Controller* m_ctrl{};
+  Ui::MainWindow* ui;
+  SecondWindow* sec_win;
+  QString x_str;
   bool m_x_mode;
   short int m_click_counter_rep;
   short int m_click_counter_wth;
-  static constexpr int maxInputSize = 255;
-  void AddNewLine(QGridLayout *, short int &);
-  static void DeleteLine(QGridLayout *, short int &);
-  static void ParseUserTransactions(QGridLayout *, short int,
-                                    std::vector<UserTransaction> &opt);
+  static constexpr int kMaxInputSize = 255;
+  void AddNewLine(QGridLayout*, short int&);
+  static void DeleteLine(QGridLayout*, short int&);
+  static void ParseUserTransactions(QGridLayout*, short int,
+                                    std::vector<UserTransaction>&);
   void SetSignals();
   void SetWidgets();
   void StartPointClear();
@@ -58,9 +59,9 @@ class MainWindow : public QMainWindow {
   void OnAutoscaleStateChanged();
   void OnPushButtonXclicked();
  signals:
-  void SignalDeposit(const DepositData &);
-  void SignalCredit(const CreditData &);
-  void SignalPlot(const GraphData &);
+  void SignalDeposit(const DepositData&);
+  void SignalCredit(const CreditData&);
+  void SignalPlot(const GraphData&);
 };
 
 #endif  // MAINWINDOW_H

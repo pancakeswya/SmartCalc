@@ -11,9 +11,9 @@ namespace {
 
 class MathOperation {
  public:
-  enum class Type : bool { unary = false, binary = true };
+  enum class Type : bool { kUnary = false, kBinary = true };
 
-  enum class Priority : short int { brace, simple, complex, function, sign };
+  enum class Priority : short int { kBrace, kSimple, kComplex, kFunction, kSign };
 
   MathOperation() = default;
   ~MathOperation() = default;
@@ -49,47 +49,47 @@ class MathOperation {
 
 const std::unordered_map<std::string, MathOperation> op_map = {
     {"--",
-     MathOperation(MathOperation::Type::unary, MathOperation::Priority::sign,
+     MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kSign,
                    [](double num) -> double { return -num; })},
     {"++",
-     MathOperation(MathOperation::Type::unary, MathOperation::Priority::sign,
+     MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kSign,
                    [](double num) -> double { return num; })},
-    {"sqrt", MathOperation(MathOperation::Type::unary,
-                           MathOperation::Priority::function, std::sqrt)},
-    {"sin", MathOperation(MathOperation::Type::unary,
-                          MathOperation::Priority::function, std::sin)},
-    {"cos", MathOperation(MathOperation::Type::unary,
-                          MathOperation::Priority::function, std::cos)},
-    {"tan", MathOperation(MathOperation::Type::unary,
-                          MathOperation::Priority::function, std::tan)},
-    {"asin", MathOperation(MathOperation::Type::unary,
-                           MathOperation::Priority::function, std::asin)},
-    {"acos", MathOperation(MathOperation::Type::unary,
-                           MathOperation::Priority::function, std::acos)},
-    {"atan", MathOperation(MathOperation::Type::unary,
-                           MathOperation::Priority::function, std::atan)},
-    {"ln", MathOperation(MathOperation::Type::unary,
-                         MathOperation::Priority::function, std::log)},
-    {"log", MathOperation(MathOperation::Type::unary,
-                          MathOperation::Priority::function, std::log10)},
-    {"pow", MathOperation(MathOperation::Type::binary,
-                          MathOperation::Priority::function, std::pow)},
+    {"sqrt", MathOperation(MathOperation::Type::kUnary,
+                           MathOperation::Priority::kFunction, std::sqrt)},
+    {"sin", MathOperation(MathOperation::Type::kUnary,
+                          MathOperation::Priority::kFunction, std::sin)},
+    {"cos", MathOperation(MathOperation::Type::kUnary,
+                          MathOperation::Priority::kFunction, std::cos)},
+    {"tan", MathOperation(MathOperation::Type::kUnary,
+                          MathOperation::Priority::kFunction, std::tan)},
+    {"asin", MathOperation(MathOperation::Type::kUnary,
+                           MathOperation::Priority::kFunction, std::asin)},
+    {"acos", MathOperation(MathOperation::Type::kUnary,
+                           MathOperation::Priority::kFunction, std::acos)},
+    {"atan", MathOperation(MathOperation::Type::kUnary,
+                           MathOperation::Priority::kFunction, std::atan)},
+    {"ln", MathOperation(MathOperation::Type::kUnary,
+                         MathOperation::Priority::kFunction, std::log)},
+    {"log", MathOperation(MathOperation::Type::kUnary,
+                          MathOperation::Priority::kFunction, std::log10)},
+    {"^", MathOperation(MathOperation::Type::kBinary,
+                          MathOperation::Priority::kFunction, std::pow)},
     {"*", MathOperation(
-              MathOperation::Type::binary, MathOperation::Priority::complex,
+              MathOperation::Type::kBinary, MathOperation::Priority::kComplex,
               [](double num1, double num2) -> double { return num1 * num2; })},
     {"/", MathOperation(
-              MathOperation::Type::binary, MathOperation::Priority::complex,
+              MathOperation::Type::kBinary, MathOperation::Priority::kComplex,
               [](double num1, double num2) -> double { return num1 / num2; })},
-    {"fmod", MathOperation(MathOperation::Type::binary,
-                           MathOperation::Priority::complex, std::fmod)},
+    {"fmod", MathOperation(MathOperation::Type::kBinary,
+                           MathOperation::Priority::kComplex, std::fmod)},
     {"+", MathOperation(
-              MathOperation::Type::binary, MathOperation::Priority::simple,
+              MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
               [](double num1, double num2) -> double { return num1 + num2; })},
     {"-", MathOperation(
-              MathOperation::Type::binary, MathOperation::Priority::simple,
+              MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
               [](double num1, double num2) -> double { return num1 - num2; })},
-    {"(", MathOperation(MathOperation::Type::unary,
-                        MathOperation::Priority::brace, [](double num) {
+    {"(", MathOperation(MathOperation::Type::kUnary,
+                        MathOperation::Priority::kBrace, [](double num) {
                           static_cast<void>(num);
                           return std::numeric_limits<double>::quiet_NaN();
                         })}};
@@ -109,7 +109,7 @@ void CalcShuntYard(std::stack<MathOperation>& operations,
   double res;
   MathOperation& op = StackPull(operations);
   double& num1 = StackPull(numbers);
-  if (op.GetType() == MathOperation::Type::unary) {
+  if (op.GetType() == MathOperation::Type::kUnary) {
     res = op.PerformOperation(num1);
   } else {
     double& num2 = StackPull(numbers);
@@ -121,7 +121,7 @@ void CalcShuntYard(std::stack<MathOperation>& operations,
 inline void MakeShuntYardBrace(std::stack<MathOperation>& operations,
                                std::stack<double>& numbers) {
   while (!operations.empty() &&
-         operations.top().GetPriority() != MathOperation::Priority::brace) {
+         operations.top().GetPriority() != MathOperation::Priority::kBrace) {
     CalcShuntYard(operations, numbers);
   }
   if (operations.empty()) {

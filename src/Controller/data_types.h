@@ -6,19 +6,19 @@
 #include <string>
 #include <vector>
 
-enum DateType { typeDay, typeMonth, typeYear };
+enum DateType { kTypeDay, kTypeMonth, kTypeYear };
 
-enum DateLimits { yearMax = 50, monthMax = 600, dayMax = 18250 };
+enum DateLimits { kYearMax = 50, kMonthMax = 600, kDayMax = 18250 };
 
-enum DatesNum { monthInYear = 12, abgDaysInMonth = 30, avgDaysInYear = 365 };
+enum DatesNum { kMonthInYear = 12, kAvgDaysInMonth = 30, kAvgDaysInYear = 365 };
 
 enum CondPayFreq : short int {
-  evDay,
-  evWeek,
-  evMon,
-  evQuart,
-  evHalfYear,
-  evYear
+  kEvDay,
+  kEvWeek,
+  kEvMon,
+  kEvQuart,
+  kEvHalfYear,
+  kEvYear
 };
 
 struct CreditConditions {

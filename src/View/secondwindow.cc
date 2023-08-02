@@ -7,14 +7,13 @@
 #include "ui_secondwindow.h"
 
 enum SecondWinSizes {
-  width = 400,
-  height = 450,
-  heightPlot = 600,
-  tableRowMax = 14100,
-  maxTableSize = 521732
+  kWidth = 400,
+  kHeight = 450,
+  kTableRowMax = 14100,
+  kMaxTableSize = 521732
 };
 
-SecondWindow::SecondWindow(QWidget *parent)
+SecondWindow::SecondWindow(QWidget* parent)
     : QDialog(parent), ui(new Ui::SecondWindow) {
   ui->setupUi(this);
 #ifdef _WIN32
@@ -26,7 +25,7 @@ SecondWindow::SecondWindow(QWidget *parent)
 
 SecondWindow::~SecondWindow() { delete ui; }
 
-void SecondWindow::SlotDeposit(const DepositData &data) {
+void SecondWindow::SlotDeposit(const DepositData& data) {
   QModelIndex index;
   QDate date = data.start_date;
   int tax_year = date.year();
@@ -40,7 +39,7 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   ui->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setWindowTitle("Расчет вклада");
   if (ui->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::width, SecondWinSizes::height);
+    this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui->widget->setVisible(false);
   }
   ui->out_dep->setText("Начисленные проценты\n");
@@ -108,18 +107,18 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   ui->tableView->setFixedWidth(ui->tableView->verticalHeader()->width() +
                                ui->tableView->horizontalHeader()->length() +
                                +ui->tableView->frameWidth() * 2);
-  if (table_model->rowCount() < SecondWinSizes::tableRowMax) {
+  if (table_model->rowCount() < SecondWinSizes::kTableRowMax) {
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
                                   ui->tableView->verticalHeader()->length() +
                                   ui->tableView->frameWidth() * 2);
   } else {
-    ui->tableView->setFixedHeight(SecondWinSizes::maxTableSize);
+    ui->tableView->setFixedHeight(SecondWinSizes::kMaxTableSize);
     ui->tableView->verticalScrollBar()->setDisabled(false);
     ui->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   }
   if (data.tax.size()) {
     QModelIndex index_tax;
-    QStandardItemModel *table_model_tax =
+    QStandardItemModel* table_model_tax =
         new QStandardItemModel(data.tax.size(), 2, this);
     ui->tableView_2->show();
     ui->tableView_2->horizontalScrollBar()->setDisabled(true);
@@ -153,9 +152,9 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   }
 }
 
-void SecondWindow::SlotCredit(const CreditData &data) {
+void SecondWindow::SlotCredit(const CreditData& data) {
   if (ui->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::width, SecondWinSizes::height);
+    this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui->widget->setVisible(false);
   }
   if (ui->tableView_2->isVisible()) {
@@ -214,9 +213,9 @@ void SecondWindow::SlotCredit(const CreditData &data) {
                                 ui->tableView->frameWidth() * 2);
 }
 
-void SecondWindow::SlotPlot(const GraphData &data) {
+void SecondWindow::SlotPlot(const GraphData& data) {
   if (!ui->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::width * 2, SecondWinSizes::height);
+    this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
   }
   setWindowTitle("График");
   setWindowIcon(QIcon(":/resources/img/graph-logo.png"));
@@ -225,13 +224,13 @@ void SecondWindow::SlotPlot(const GraphData &data) {
     ui->widget->graph(i)->data()->clear();
   }
   int graph_i = 0;
-  for (auto &xy : data.xy) {
+  for (auto& xy : data.xy) {
     ui->widget->addGraph();
     ui->widget->graph(graph_i++)->setData(xy.first, xy.second);
   }
+
   ui->widget->yAxis->setRange(data.y_min, data.y_max);
   ui->widget->replot();
-
   ui->widget->setInteraction(QCP::iRangeZoom, true);
   ui->widget->setInteraction(QCP::iRangeDrag, true);
   ui->widget->setVisible(true);

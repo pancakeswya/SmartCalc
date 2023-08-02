@@ -4,11 +4,11 @@
 
 #include "ui_mainwindow.h"
 
-enum WindowSizes { width = 359, height = 453, heightGraph = 619 };
+enum WindowSizes { kWidth = 359, kHeight = 453, kHeightGraph = 619 };
 
-MainWindow::MainWindow(Controller *ctrl) : MainWindow() { m_ctrl = ctrl; }
+MainWindow::MainWindow(Controller* ctrl) : MainWindow() { m_ctrl = ctrl; }
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
       sec_win(new SecondWindow(this)),
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
   setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
-  setFixedSize(WindowSizes::width, WindowSizes::height);
+  setFixedSize(WindowSizes::kWidth, WindowSizes::kHeight);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -136,6 +136,8 @@ void MainWindow::SetWidgets() {
                                std::numeric_limits<double>::max());
   ui->doubleSpinBoYi->setRange(-std::numeric_limits<double>::max(),
                                std::numeric_limits<double>::max());
+  ui->label_tax->setText("13");
+  ui->label_key_rate->setText("8.5");
   ui->wth_rem->hide();
   ui->wth_rem_2->hide();
   ui->wth_r_sign->hide();
@@ -147,7 +149,7 @@ void MainWindow::SetWidgets() {
   ui->wth_rem_2->setText("0");
 }
 
-void MainWindow::AddNewLine(QGridLayout *layout, short int &click) {
+void MainWindow::AddNewLine(QGridLayout* layout, short int& click) {
   QLineEdit *field = new QLineEdit(this);
   QDateEdit *date = new QDateEdit(this);
   QComboBox *box = new QComboBox(this);
@@ -164,18 +166,18 @@ void MainWindow::AddNewLine(QGridLayout *layout, short int &click) {
   layout->addWidget(box, click, 2);
 }
 
-void MainWindow::DeleteLine(QGridLayout *layout, short int &click) {
+void MainWindow::DeleteLine(QGridLayout* layout, short int& click) {
   if (click >= 0) {
-    QDateEdit *date =
-        qobject_cast<QDateEdit *>(layout->itemAtPosition(click, 0)->widget());
+    QDateEdit* date =
+        qobject_cast<QDateEdit*>(layout->itemAtPosition(click, 0)->widget());
     date->hide();
     delete date;
-    QLineEdit *field =
-        qobject_cast<QLineEdit *>(layout->itemAtPosition(click, 1)->widget());
+    QLineEdit* field =
+        qobject_cast<QLineEdit*>(layout->itemAtPosition(click, 1)->widget());
     field->hide();
     delete field;
-    QComboBox *box =
-        qobject_cast<QComboBox *>(layout->itemAtPosition(click--, 2)->widget());
+    QComboBox* box =
+        qobject_cast<QComboBox*>(layout->itemAtPosition(click--, 2)->widget());
     box->hide();
     delete box;
   }
@@ -184,12 +186,12 @@ void MainWindow::DeleteLine(QGridLayout *layout, short int &click) {
 void MainWindow::ParseUserTransactions(QGridLayout *layout, short int click,
                                        std::vector<UserTransaction> &opt) {
   for (int i = click; i >= 0; i--) {
-    QDateEdit *date =
-        qobject_cast<QDateEdit *>(layout->itemAtPosition(i, 0)->widget());
-    QLineEdit *field =
-        qobject_cast<QLineEdit *>(layout->itemAtPosition(i, 1)->widget());
-    QComboBox *box =
-        qobject_cast<QComboBox *>(layout->itemAtPosition(i, 2)->widget());
+    QDateEdit* date =
+        qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget());
+    QLineEdit* field =
+        qobject_cast<QLineEdit*>(layout->itemAtPosition(i, 1)->widget());
+    QComboBox* box =
+        qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
     opt.push_back({date->date(), field->text().toDouble(),
                    static_cast<short int>(box->currentData().toInt())});
   }
@@ -222,13 +224,13 @@ void MainWindow::OnPushButtonXclicked() {
 }
 
 void MainWindow::DigitsNumbers() {
-  QPushButton *button_num = static_cast<QPushButton *>(sender());
+  QPushButton* button_num = static_cast<QPushButton*>(sender());
   StartPointClear();
   ui->res_out->setText(ui->res_out->text() + button_num->text());
 }
 
 void MainWindow::SimpleOperations() {
-  QPushButton *button_op = static_cast<QPushButton *>(sender());
+  QPushButton* button_op = static_cast<QPushButton*>(sender());
   if (!ui->res_out->text().isEmpty()) {
     QChar ch = ui->res_out->text().back();
     if (ch != '+' && ch != '-' && ch != '*' && ch != '/' && ch != '^') {
@@ -242,7 +244,7 @@ void MainWindow::SimpleOperations() {
 }
 
 void MainWindow::ComplexOperations() {
-  QPushButton *button_c_op = static_cast<QPushButton *>(sender());
+  QPushButton* button_c_op = static_cast<QPushButton*>(sender());
   StartPointClear();
   if (button_c_op->text() == "√") {
     ui->res_out->setText(ui->res_out->text() + "sqrt(");
@@ -267,7 +269,6 @@ void MainWindow::OnPushButtonCbraceClicked() {
 }
 
 void MainWindow::OnPushButtonEqClicked() {
-  static QString x_str;
   QString label = ui->res_out->text();
   if (m_x_mode) {
     if (x_str.isEmpty()) {
@@ -292,7 +293,7 @@ void MainWindow::OnPushButtonEqClicked() {
     }
   }
   if (!m_x_mode) {
-    if (label.length() > maxInputSize) {
+    if (label.length() > kMaxInputSize) {
       QMessageBox::warning(this, "Warning", "Превышено количество символов");
     } else {
       try {
@@ -347,8 +348,8 @@ void MainWindow::OnPushButtonCreditClicked() {
   short period = ui->Srok_cr->text().toShort();
   bool is_year = !(ui->type_sr_cr->currentIndex()),
        is_annuit = ui->annuit->isChecked();
-  if ((is_year && period > DateLimits::yearMax) ||
-      (!is_year && period > DateLimits::monthMax)) {
+  if ((is_year && period > DateLimits::kYearMax) ||
+      (!is_year && period > DateLimits::kMonthMax)) {
     QMessageBox::warning(this, "Warning",
                          "Превышено максимальное значение срока кредита");
   } else if (!is_annuit && !ui->diff->isChecked()) {
@@ -364,9 +365,9 @@ void MainWindow::OnPushButtonCreditClicked() {
 void MainWindow::OnPushButtonDepositClicked() {
   short int term = ui->srok_dep->text().toShort();
   short int term_type = ui->srok_typed->currentIndex();
-  if ((term > DateLimits::yearMax && term_type == DateType::typeYear) ||
-      (term > DateLimits::monthMax && term_type == DateType::typeMonth) ||
-      (term > DateLimits::dayMax && term_type == DateType::typeDay)) {
+  if ((term > DateLimits::kYearMax && term_type == DateType::kTypeYear) ||
+      (term > DateLimits::kMonthMax && term_type == DateType::kTypeMonth) ||
+      (term > DateLimits::kDayMax && term_type == DateType::kTypeDay)) {
     QMessageBox::warning(
         this, "Warning",
         "Превышено максимальное значение срока размещения вклада");
@@ -386,18 +387,18 @@ void MainWindow::OnPushButtonDepositClicked() {
 }
 
 void MainWindow::OnPushButtonGraphClicked() {
-  if (MainWindow::window()->geometry().height() == WindowSizes::height) {
-    this->setFixedSize(WindowSizes::width, WindowSizes::heightGraph);
+  if (MainWindow::window()->geometry().height() == WindowSizes::kHeight) {
+    this->setFixedSize(WindowSizes::kWidth, WindowSizes::kHeightGraph);
   } else {
-    this->setFixedSize(WindowSizes::width, WindowSizes::height);
+    this->setFixedSize(WindowSizes::kWidth, WindowSizes::kHeight);
   }
 }
 
 void MainWindow::OnTabWidgetCurrentChanged(int index) {
   if (index &&
-      MainWindow::window()->geometry().height() == WindowSizes::heightGraph) {
+      MainWindow::window()->geometry().height() == WindowSizes::kHeightGraph) {
     this->setFixedSize(MainWindow::window()->geometry().width(),
-                       WindowSizes::height);
+                       WindowSizes::kHeight);
   }
 }
 
