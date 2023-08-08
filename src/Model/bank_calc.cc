@@ -12,19 +12,19 @@ void Credit::CalcCredit() {
     double ann_k =
         (r * std::pow(1 + r, mp_cnt)) / ((std::pow(1 + r, mp_cnt)) - 1);
     double ann_pay = std::round(sum * ann_k * 100.0) / 100.0;
-    m_data.payment.resize(mp_cnt, ann_pay);
-    m_data.total = ann_pay * mp_cnt;
+    data_.payment.resize(mp_cnt, ann_pay);
+    data_.total = ann_pay * mp_cnt;
   } else {
     double rest = sum, payment;
     double mp_real = sum / (mp_cnt);
     for (; mp_cnt != 0; mp_cnt--) {
       payment = mp_real + (rest * int_rate / (DatesNum::kMonthInYear * 100));
-      m_data.payment.push_back(payment);
-      m_data.total += payment;
+      data_.payment.push_back(payment);
+      data_.total += payment;
       rest -= mp_real;
     }
   }
-  m_data.overpay = m_data.total - sum;
+  data_.overpay = data_.total - sum;
 }
 
 namespace {
@@ -62,47 +62,47 @@ inline int GetRealPayFreq(int pay_freq) noexcept {
 
 void Deposit::MakeDeposit() {
   int r_pay_freq = GetRealPayFreq(pay_freq);
-  auto rep_it = m_data.replen.begin();
-  int am_days = start_date.daysTo(m_data.finish_date), i = 0;
+  auto rep_it = data_.replen.begin();
+  int am_days = start_date.daysTo(data_.finish_date), i = 0;
   QDate date = start_date.addDays(1);
-  m_data.pay_dates.push_back(
+  data_.pay_dates.push_back(
       NextPayDate(start_date, pay_freq, start_date.day(), r_pay_freq));
   double tax_perc = 0.0, add_sum = 0.0, cap_sum = 0.0, pay = 0.0;
-  while (date <= m_data.finish_date) {
+  while (date <= data_.finish_date) {
     pay += (sum + add_sum + cap_sum) * intr_rate / date.daysInYear();
-    if (date == m_data.pay_dates[i] || date == m_data.finish_date) {
-      m_data.pay_dates.push_back(
+    if (date == data_.pay_dates[i] || date == data_.finish_date) {
+      data_.pay_dates.push_back(
           NextPayDate(date, pay_freq, start_date.day(), r_pay_freq));
-      m_data.payment.push_back(std::round(pay) / 100.0);
-      m_data.perc_sum += m_data.payment.back();
+      data_.payment.push_back(std::round(pay) / 100.0);
+      data_.perc_sum += data_.payment.back();
       pay = 0.0;
       if (cap) {
-        cap_sum = m_data.perc_sum;
+        cap_sum = data_.perc_sum;
       }
       ++i;
     }
-    for (; rep_it != m_data.replen.end() && date == rep_it->first; rep_it++) {
+    for (;rep_it != data_.replen.end() && date == rep_it->first; rep_it++) {
       if (sum + add_sum + cap_sum + rep_it->second >= non_taking_rem) {
         add_sum += rep_it->second;
       }
     }
     if ((date.day() == 31 && date.month() == 12) ||
-        (date == m_data.finish_date && !m_data.tax.empty())) {
-      double tax_inc = m_data.perc_sum - tax_perc - key_rate * 10000.0;
+        (date == data_.finish_date && !data_.tax.empty())) {
+      double tax_inc = data_.perc_sum - tax_perc - key_rate * 10000.0;
       if (tax_inc > 0.0) {
-        m_data.tax.push_back(tax_inc * (tax_rate / 100.0));
-        m_data.tax_sum += m_data.tax.back();
+        data_.tax.push_back(tax_inc * (tax_rate / 100.0));
+        data_.tax_sum += data_.tax.back();
       }
-      tax_perc = m_data.perc_sum;
+      tax_perc = data_.perc_sum;
     }
     date = date.addDays(1);
   }
   if (cap) {
-    m_data.eff_rate =
-        (m_data.perc_sum * DatesNum::kAvgDaysInYear * 100.0) / (sum * am_days);
-    m_data.total += cap_sum;
+    data_.eff_rate =
+        (data_.perc_sum * DatesNum::kAvgDaysInYear * 100.0) / (sum * am_days);
+    data_.total += cap_sum;
   }
-  m_data.total += sum + add_sum;
+  data_.total += sum + add_sum;
 }
 
 void Deposit::AddReplenishment(const QDate& start_date,
@@ -111,7 +111,7 @@ void Deposit::AddReplenishment(const QDate& start_date,
   QDate transact_date = u_transaction.date;
   while (transact_date <= finish_date) {
     if (transact_date > start_date) {
-      m_data.replen.push_back({transact_date, u_transaction.sum});
+      data_.replen.push_back({transact_date, u_transaction.sum});
       if (!u_transaction.freq) {
         break;
       }
@@ -122,22 +122,22 @@ void Deposit::AddReplenishment(const QDate& start_date,
 }
 
 void Deposit::CalcDeposit() {
-  m_data.start_date = start_date;
+  data_.start_date = start_date;
   if (term_type == DateType::kTypeDay) {
-    m_data.finish_date = start_date.addDays(term);
+    data_.finish_date = start_date.addDays(term);
   } else if (term_type == DateType::kTypeMonth) {
-    m_data.finish_date = start_date.addMonths(term);
+    data_.finish_date = start_date.addMonths(term);
   } else {
-    m_data.finish_date = start_date.addYears(term);
+    data_.finish_date = start_date.addYears(term);
   }
-  for (auto &single_fund : fund) {
-    AddReplenishment(start_date, m_data.finish_date, single_fund);
+  for (auto& single_fund : fund) {
+    AddReplenishment(start_date, data_.finish_date, single_fund);
   }
-  for (auto &single_wth : wth) {
+  for (auto& single_wth : wth) {
     single_wth.sum = -single_wth.sum;
-    AddReplenishment(start_date, m_data.finish_date, single_wth);
+    AddReplenishment(start_date, data_.finish_date, single_wth);
   }
-  std::sort(m_data.replen.begin(), m_data.replen.end(),
+  std::sort(data_.replen.begin(), data_.replen.end(),
             [](const std::pair<QDate, double> &rhs,
                const std::pair<QDate, double> &lhs) -> bool {
               return rhs.first < lhs.first;

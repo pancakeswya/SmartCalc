@@ -20,31 +20,31 @@ class MathOperation {
 
   explicit MathOperation(Type type, Priority priority,
                          double (*operation)(double, double)) noexcept
-      : m_operation{.binary = operation}, m_priority(priority), m_type(type) {}
+      : operation_{.binary = operation}, priority_(priority), type_(type) {}
 
   explicit MathOperation(Type type, Priority priority,
                          double (*operation)(double)) noexcept
-      : m_operation{.unary = operation}, m_priority(priority), m_type(type) {}
+      : operation_{.unary = operation}, priority_(priority), type_(type) {}
 
-  [[nodiscard]] Priority GetPriority() const noexcept { return m_priority; }
-  [[nodiscard]] Type GetType() const noexcept { return m_type; }
+  [[nodiscard]] Priority GetPriority() const noexcept { return priority_; }
+  [[nodiscard]] Type GetType() const noexcept { return type_; }
 
   [[nodiscard]] double PerformOperation(double num) const noexcept {
-    return m_operation.unary(num);
+    return operation_.unary(num);
   }
 
   [[nodiscard]] double PerformOperation(double num1,
                                         double num2) const noexcept {
-    return m_operation.binary(num1, num2);
+    return operation_.binary(num1, num2);
   }
 
  private:
   union {
     double (*binary)(double, double);
     double (*unary)(double);
-  } m_operation{};
-  Priority m_priority{};
-  Type m_type{};
+  } operation_{};
+  Priority priority_{};
+  Type type_{};
 };
 
 const std::unordered_map<std::string, MathOperation> op_map = {

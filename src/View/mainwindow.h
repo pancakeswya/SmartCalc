@@ -20,13 +20,13 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private:
-  Controller* m_ctrl{};
+  Controller* controller_{};
   Ui::MainWindow* ui;
-  SecondWindow* sec_win;
-  QString x_str;
-  bool m_x_mode;
-  short int m_click_counter_rep;
-  short int m_click_counter_wth;
+  SecondWindow* sec_win_;
+  QString x_str_;
+  bool x_mode_;
+  short int click_count_rep_;
+  short int click_count_wth_;
   static constexpr int kMaxInputSize = 255;
   void AddNewLine(QGridLayout*, short int&);
   static void DeleteLine(QGridLayout*, short int&);

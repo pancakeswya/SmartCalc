@@ -5,30 +5,30 @@
 
 class Controller {
  public:
-  Controller(Model* model) : m_model(model) {}
+  Controller(Model* model) : model_(model) {}
 
   const DepositData& CalculateDeposit(DepositConditions& conds) {
-    m_model->CalcDeposit(conds);
-    return m_model->GetDepositData();
+    model_->CalcDeposit(conds);
+    return model_->GetDepositData();
   }
 
   const CreditData& CalculateCredit(CreditConditions& conds) {
-    m_model->CalcCredit(conds);
-    return m_model->GetCreditData();
+    model_->CalcCredit(conds);
+    return model_->GetCreditData();
   }
 
   const GraphData& CalculateGraph(GraphConditions& conds) {
-    m_model->CalcGraph(conds);
-    return m_model->GetGraphData();
+    model_->CalcGraph(conds);
+    return model_->GetGraphData();
   }
 
   double CalculateExpression(const std::string expr) {
-    m_model->CalcExpression(expr);
-    return m_model->GetExpressionAns();
+    model_->CalcExpression(expr);
+    return model_->GetExpressionAns();
   }
 
  private:
-  Model* m_model;
+  Model* model_;
 };
 
 #endif  // CONTROLLER_H_

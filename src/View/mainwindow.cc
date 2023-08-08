@@ -6,15 +6,15 @@
 
 enum WindowSizes { kWidth = 359, kHeight = 453, kHeightGraph = 619 };
 
-MainWindow::MainWindow(Controller* ctrl) : MainWindow() { m_ctrl = ctrl; }
+MainWindow::MainWindow(Controller* ctrl) : MainWindow() { controller_ = ctrl; }
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
-      sec_win(new SecondWindow(this)),
-      m_x_mode(),
-      m_click_counter_rep(-1),
-      m_click_counter_wth(-1) {
+      sec_win_(new SecondWindow(this)),
+      x_mode_(),
+      click_count_rep_(-1),
+      click_count_wth_(-1) {
   ui->setupUi(this);
   SetSignals();
   SetWidgets();
@@ -30,10 +30,10 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::SetSignals() {
-  connect(this, &MainWindow::SignalDeposit, sec_win,
+  connect(this, &MainWindow::SignalDeposit, sec_win_,
           &SecondWindow::SlotDeposit);
-  connect(this, &MainWindow::SignalCredit, sec_win, &SecondWindow::SlotCredit);
-  connect(this, &MainWindow::SignalPlot, sec_win, &SecondWindow::SlotPlot);
+  connect(this, &MainWindow::SignalCredit, sec_win_, &SecondWindow::SlotCredit);
+  connect(this, &MainWindow::SignalPlot, sec_win_, &SecondWindow::SlotPlot);
   connect(ui->pushButton_dot, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDotClicked()));
   connect(ui->pushButton_AC, SIGNAL(clicked()), this,
@@ -220,7 +220,7 @@ void MainWindow::OnPushButtonDotClicked() {
 void MainWindow::OnPushButtonXclicked() {
   StartPointClear();
   ui->res_out->setText(ui->res_out->text() + "x");
-  m_x_mode = true;
+  x_mode_ = true;
 }
 
 void MainWindow::DigitsNumbers() {
@@ -270,14 +270,14 @@ void MainWindow::OnPushButtonCbraceClicked() {
 
 void MainWindow::OnPushButtonEqClicked() {
   QString label = ui->res_out->text();
-  if (m_x_mode) {
-    if (x_str.isEmpty()) {
+  if (x_mode_) {
+    if (x_str_.isEmpty()) {
       if (ui->res_out->text().contains("x") &&
           !ui->res_out->text().contains("xx")) {
-        x_str = ui->res_out->text();
+        x_str_ = ui->res_out->text();
         ui->res_out->setText("x=");
       } else {
-        m_x_mode = false;
+        x_mode_ = false;
       }
     } else {
       if (label.contains("x=")) {
@@ -285,19 +285,19 @@ void MainWindow::OnPushButtonEqClicked() {
       }
       if (!label.isEmpty()) {
         double x = label.toDouble();
-        x_str.replace("x", QString::number(x));
+        x_str_.replace("x", QString::number(x));
       }
-      label = x_str;
-      m_x_mode = false;
-      x_str.clear();
+      label = x_str_;
+      x_mode_ = false;
+      x_str_.clear();
     }
   }
-  if (!m_x_mode) {
+  if (!x_mode_) {
     if (label.length() > kMaxInputSize) {
       QMessageBox::warning(this, "Warning", "Превышено количество символов");
     } else {
       try {
-        double ans = m_ctrl->CalculateExpression(label.toStdString());
+        double ans = controller_->CalculateExpression(label.toStdString());
         ui->res_out->setText(QString::number(ans));
       } catch (std::exception &exc) {
         QMessageBox::critical(this, "Error", exc.what());
@@ -356,8 +356,8 @@ void MainWindow::OnPushButtonCreditClicked() {
     QMessageBox::warning(this, "Warning", "Выбирите тип ежемесячных платежей");
   } else {
     CreditConditions conds = {sum, int_rate, period, is_year, is_annuit};
-    const CreditData &data = m_ctrl->CalculateCredit(conds);
-    sec_win->show();
+    const CreditData &data = controller_->CalculateCredit(conds);
+    sec_win_->show();
     emit SignalCredit(data);
   }
 }
@@ -373,15 +373,15 @@ void MainWindow::OnPushButtonDepositClicked() {
         "Превышено максимальное значение срока размещения вклада");
   } else {
     std::vector<UserTransaction> fund, wth;
-    ParseUserTransactions(ui->gridLayout_rep, m_click_counter_rep, fund);
-    ParseUserTransactions(ui->gridLayout_wth, m_click_counter_wth, wth);
+    ParseUserTransactions(ui->gridLayout_rep, click_count_rep_, fund);
+    ParseUserTransactions(ui->gridLayout_wth, click_count_wth_, wth);
     DepositConditions conds = {ui->capitalization->isChecked(), term_type, term,
                                ui->rate_pay->currentIndex(), ui->label_tax->text().toDouble(),
                                ui->label_key_rate->text().toDouble(), ui->sum->text().toDouble(),
                                ui->int_rate_dep->text().toDouble(), ui->wth_rem_2->text().toDouble(),
                                ui->dep_date->date(), std::move(fund), std::move(wth)};
-    const DepositData &data = m_ctrl->CalculateDeposit(conds);
-    sec_win->show();
+    const DepositData &data = controller_->CalculateDeposit(conds);
+    sec_win_->show();
     emit SignalDeposit(data);
   }
 }
@@ -414,8 +414,8 @@ void MainWindow::OnPushButtonPlotClicked() {
       GraphConditions conds = {ui->res_out->text().toStdString(), ui->doubleSpinBoXa->value(),
                                ui->doubleSpinBoXi->value(), ui->doubleSpinBoYa->value(),
                                ui->doubleSpinBoYi->value(), ui->autoscale->isChecked()};
-      const GraphData &data = m_ctrl->CalculateGraph(conds);
-      sec_win->show();
+      const GraphData &data = controller_->CalculateGraph(conds);
+      sec_win_->show();
       emit SignalPlot(data);
     } catch (std::exception &exc) {
       QMessageBox::critical(this, "Error", exc.what());
@@ -428,12 +428,12 @@ void MainWindow::OnPushButtonSpaceClicked() {
 }
 
 void MainWindow::OnPushButtonRepClicked() {
-  AddNewLine(ui->gridLayout_rep, m_click_counter_rep);
+  AddNewLine(ui->gridLayout_rep, click_count_rep_);
 }
 
 void MainWindow::OnPushButtonWthClicked() {
-  AddNewLine(ui->gridLayout_wth, m_click_counter_wth);
-  if (m_click_counter_wth == 0) {
+  AddNewLine(ui->gridLayout_wth, click_count_wth_);
+  if (click_count_wth_ == 0) {
     ui->wth_rem->show();
     ui->wth_rem_2->show();
     ui->wth_r_sign->show();
@@ -441,12 +441,12 @@ void MainWindow::OnPushButtonWthClicked() {
 }
 
 void MainWindow::OnPushButtonDelRepClicked() {
-  DeleteLine(ui->gridLayout_rep, m_click_counter_rep);
+  DeleteLine(ui->gridLayout_rep, click_count_rep_);
 }
 
 void MainWindow::OnPushButtonDelWthClicked() {
-  DeleteLine(ui->gridLayout_wth, m_click_counter_wth);
-  if (m_click_counter_wth == -1) {
+  DeleteLine(ui->gridLayout_wth, click_count_wth_);
+  if (click_count_wth_ == -1) {
     ui->wth_rem->hide();
     ui->wth_rem_2->hide();
     ui->wth_r_sign->hide();

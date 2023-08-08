@@ -20,7 +20,7 @@ class Credit : protected CreditConditions {
   void CalcCredit();
 
  private:
-  CreditData m_data{};
+  CreditData data_{};
 };
 
 class Deposit : protected DepositConditions {
@@ -41,7 +41,7 @@ class Deposit : protected DepositConditions {
   void AddReplenishment(const QDate& start, const QDate& finish,
                         const UserTransaction& u_transaction);
   void MakeDeposit();
-  DepositData m_data{};
+  DepositData data_{};
 };
 
 inline Credit::Credit(const CreditConditions& conds)
@@ -58,7 +58,7 @@ inline void Credit::SetConditions(CreditConditions&& conds) noexcept {
   *this = std::move(conds);
 }
 
-inline CreditData& Credit::GetData() noexcept { return m_data; }
+inline CreditData& Credit::GetData() noexcept { return data_; }
 
 inline Deposit::Deposit(const DepositConditions& conds)
     : DepositConditions(conds) {}
@@ -74,7 +74,7 @@ inline void Deposit::SetConditions(DepositConditions&& conds) noexcept {
   *this = std::move(conds);
 }
 
-inline DepositData& Deposit::GetData() noexcept { return m_data; }
+inline DepositData& Deposit::GetData() noexcept { return data_; }
 
 }  // namespace s21
 

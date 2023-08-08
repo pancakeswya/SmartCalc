@@ -7,40 +7,40 @@
 class Model {
  public:
   void CalcCredit(CreditConditions& conds) {
-    m_cred.SetConditions(std::move(conds));
-    m_cred.CalcCredit();
+    cred_.SetConditions(std::move(conds));
+    cred_.CalcCredit();
   }
 
   void CalcDeposit(DepositConditions& conds) {
-    m_dep.SetConditions(std::move(conds));
-    m_dep.CalcDeposit();
+    dep_.SetConditions(std::move(conds));
+    dep_.CalcDeposit();
   }
 
   void CalcGraph(GraphConditions& conds) {
-    m_graph = s21::BasicCalc::CalcGraph(conds);
+    graph_ = s21::BasicCalc::CalcGraph(conds);
   }
 
   void CalcExpression(const std::string& expr) {
-    m_ans = s21::BasicCalc::CalcMathExpr(expr);
+    ans_ = s21::BasicCalc::CalcMathExpr(expr);
   }
 
   void CalcEquation(std::string expr, double x) {
-    m_ans = s21::BasicCalc::CalcEquation(expr, x);
+    ans_ = s21::BasicCalc::CalcEquation(expr, x);
   }
 
-  double& GetExpressionAns() noexcept { return m_ans; }
+  double& GetExpressionAns() noexcept { return ans_; }
 
-  const GraphData& GetGraphData() noexcept { return m_graph; }
+  const GraphData& GetGraphData() noexcept { return graph_; }
 
-  const DepositData& GetDepositData() noexcept { return m_dep.GetData(); }
+  const DepositData& GetDepositData() noexcept { return dep_.GetData(); }
 
-  const CreditData& GetCreditData() noexcept { return m_cred.GetData(); }
+  const CreditData& GetCreditData() noexcept { return cred_.GetData(); }
 
  private:
-  s21::Deposit m_dep{};
-  GraphData m_graph{};
-  s21::Credit m_cred{};
-  double m_ans{};
+  s21::Deposit dep_{};
+  GraphData graph_{};
+  s21::Credit cred_{};
+  double ans_{};
 };
 
 #endif  // MODEL_H_
