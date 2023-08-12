@@ -1,7 +1,6 @@
-include Makefile.mk
+OS           := $(shell uname -s)
 
 NAME         := SmartCalc_v2.0
-APP          := $(if $(filter Linux,$(OS)),$(NAME),$(NAME).app)
 
 SRC_DIR      := src
 BUILD_DIR    := build
@@ -10,19 +9,29 @@ DVI_DIR      := manual
 DVI_FILE     := manual.texi
 
 ifeq ($(OS), Linux)
-RUN          := ./$(BUILD_DIR)/$(APP)
+RUN          := ./$(BUILD_DIR)/$(NAME)
 else
-RUN          := open $(BUILD_DIR)/$(APP)
+RUN          := open $(BUILD_DIR)/$(NAME).app
 endif
 
 MAKEDVI      := makeinfo --html
-BUILDER      := qmake
+BUILDER      := cmake
+
+LINT         := clang-format
+LINT_CONF    := .clang-format
+LINT_DIR     := materials/linters
+
+CP           := cp -rf
+TAR          := tar cvzf
+RM           := rm -rf
+
+MAKEFLAGS    += --no-print-directory
 
 all: install run
 
 install:
-	mkdir $(BUILD_DIR) && cd $(BUILD_DIR)
-	$(BUILDER) .. && $(MAKE)
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && $(BUILDER) .. && $(MAKE)
 
 uninstall:
 	$(RM) $(BUILD_DIR)
@@ -44,18 +53,12 @@ dist:
 check-style:
 	find $(SRC_DIR) -name '*.cc' -o -name '*.h' | xargs clang-format -style=google -n
 
-test:
-	mkdir $(LIB_DIR)/$(BUILD_DIR) && cd $(LIB_DIR)/$(BUILD_DIR)
-	$(BUILDER) .. && $(MAKE)
-
-gcov_report:
-	mkdir $(LIB_DIR)/$(BUILD_DIR) && cd $(LIB_DIR)/$(BUILD_DIR)
-	$(BUILDER) .. && $(MAKE) $@
+test gcov_report check-valgrind:
+	mkdir -p $(LIB_DIR)/$(BUILD_DIR)
+	cd $(LIB_DIR)/$(BUILD_DIR) && $(BUILDER) .. && $(MAKE) $@
+.PHONY : test gcov_report check-valgrind
 
 clean: uninstall
 	$(RM) $(NAME)
 	$(RM) $(LIB_DIR)/$(BUILD_DIR)
 
-fclean: clean
-
-	$(MAKE) -C $(LIB_DIR) -f Makefile $@

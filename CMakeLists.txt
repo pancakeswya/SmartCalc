@@ -15,7 +15,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
 
-set (QRC_FILES Resources/resources.qrc)
+set(QRC_FILES Resources/resources.qrc)
 
 set(PROJECT_SOURCES
         src/main.cc
@@ -37,20 +37,20 @@ set(PROJECT_SOURCES
         )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(SmartCalc_v2.0
+    qt_add_executable(${PROJECT_NAME}
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES} ${QRC_FILES}
             )
 else()
-    add_executable(SmartCalc_v2.0
+    add_executable(${PROJECT_NAME}
             ${PROJECT_SOURCES} ${QRC_FILES})
 endif()
 
-target_link_libraries(SmartCalc_v2.0 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)
 
-target_compile_options(SmartCalc_v2.0 PRIVATE -Wall -Werror -Wextra -O1)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra -O1)
 
-set_target_properties(SmartCalc_v2.0 PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
         MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -59,5 +59,5 @@ set_target_properties(SmartCalc_v2.0 PROPERTIES
         )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(SmartCalc_v2.0)
+    qt_finalize_executable(${PROJECT_NAME})
 endif()

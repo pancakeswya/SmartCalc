@@ -13,7 +13,13 @@ class MathOperation {
  public:
   enum class Type : bool { kUnary = false, kBinary = true };
 
-  enum class Priority : short int { kBrace, kSimple, kComplex, kFunction, kSign };
+  enum class Priority : short int {
+    kBrace,
+    kSimple,
+    kComplex,
+    kFunction,
+    kSign
+  };
 
   MathOperation() = default;
   ~MathOperation() = default;
@@ -73,7 +79,7 @@ const std::unordered_map<std::string, MathOperation> op_map = {
     {"log", MathOperation(MathOperation::Type::kUnary,
                           MathOperation::Priority::kFunction, std::log10)},
     {"^", MathOperation(MathOperation::Type::kBinary,
-                          MathOperation::Priority::kFunction, std::pow)},
+                        MathOperation::Priority::kFunction, std::pow)},
     {"*", MathOperation(
               MathOperation::Type::kBinary, MathOperation::Priority::kComplex,
               [](double num1, double num2) -> double { return num1 * num2; })},

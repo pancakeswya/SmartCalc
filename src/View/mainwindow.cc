@@ -119,7 +119,7 @@ void MainWindow::SetWidgets() {
   QLocale::setDefault(doub_lo);
   ui->Srok_cr->setValidator(new QIntValidator(0, 100, this));
   ui->SummaCr->setValidator(new QDoubleValidator(this));
-  QDoubleValidator *dbl_val = new QDoubleValidator(0, 100, 1000, this);
+  QDoubleValidator* dbl_val = new QDoubleValidator(0, 100, 1000, this);
   dbl_val->setNotation(QDoubleValidator::StandardNotation);
   ui->int_rate->setValidator(dbl_val);
   ui->srok_dep->setValidator(new QIntValidator(0, 10000, this));
@@ -150,9 +150,9 @@ void MainWindow::SetWidgets() {
 }
 
 void MainWindow::AddNewLine(QGridLayout* layout, short int& click) {
-  QLineEdit *field = new QLineEdit(this);
-  QDateEdit *date = new QDateEdit(this);
-  QComboBox *box = new QComboBox(this);
+  QLineEdit* field = new QLineEdit(this);
+  QDateEdit* date = new QDateEdit(this);
+  QComboBox* box = new QComboBox(this);
   field->setValidator(new QDoubleValidator(this));
   date->setDate(QDate::currentDate().addDays(1));
   box->addItem("Разовое", 0);
@@ -183,8 +183,8 @@ void MainWindow::DeleteLine(QGridLayout* layout, short int& click) {
   }
 }
 
-void MainWindow::ParseUserTransactions(QGridLayout *layout, short int click,
-                                       std::vector<UserTransaction> &opt) {
+void MainWindow::ParseUserTransactions(QGridLayout* layout, short int click,
+                                       std::vector<UserTransaction>& opt) {
   for (int i = click; i >= 0; i--) {
     QDateEdit* date =
         qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget());
@@ -299,7 +299,7 @@ void MainWindow::OnPushButtonEqClicked() {
       try {
         double ans = controller_->CalculateExpression(label.toStdString());
         ui->res_out->setText(QString::number(ans));
-      } catch (std::exception &exc) {
+      } catch (std::exception& exc) {
         QMessageBox::critical(this, "Error", exc.what());
         ui->res_out->setText("0");
       }
@@ -320,13 +320,13 @@ void MainWindow::OnPushButtonBinClicked() {
       }
     }
   }
-   if (i == -1 || tmp[i] == '(') {
-     tmp.insert(++i, '-');
-   } else if (tmp[i] == '-') {
-     tmp.replace(i, 1, "+");
-   } else if (tmp[i] == '+') {
-     tmp.replace(i, 1, "-");
-   }
+  if (i == -1 || tmp[i] == '(') {
+    tmp.insert(++i, '-');
+  } else if (tmp[i] == '-') {
+    tmp.replace(i, 1, "+");
+  } else if (tmp[i] == '+') {
+    tmp.replace(i, 1, "-");
+  }
   ui->res_out->setText(tmp);
 }
 
@@ -356,7 +356,7 @@ void MainWindow::OnPushButtonCreditClicked() {
     QMessageBox::warning(this, "Warning", "Выбирите тип ежемесячных платежей");
   } else {
     CreditConditions conds = {sum, int_rate, period, is_year, is_annuit};
-    const CreditData &data = controller_->CalculateCredit(conds);
+    const CreditData& data = controller_->CalculateCredit(conds);
     sec_win_->show();
     emit SignalCredit(data);
   }
@@ -375,12 +375,19 @@ void MainWindow::OnPushButtonDepositClicked() {
     std::vector<UserTransaction> fund, wth;
     ParseUserTransactions(ui->gridLayout_rep, click_count_rep_, fund);
     ParseUserTransactions(ui->gridLayout_wth, click_count_wth_, wth);
-    DepositConditions conds = {ui->capitalization->isChecked(), term_type, term,
-                               ui->rate_pay->currentIndex(), ui->label_tax->text().toDouble(),
-                               ui->label_key_rate->text().toDouble(), ui->sum->text().toDouble(),
-                               ui->int_rate_dep->text().toDouble(), ui->wth_rem_2->text().toDouble(),
-                               ui->dep_date->date(), std::move(fund), std::move(wth)};
-    const DepositData &data = controller_->CalculateDeposit(conds);
+    DepositConditions conds = {ui->capitalization->isChecked(),
+                               term_type,
+                               term,
+                               ui->rate_pay->currentIndex(),
+                               ui->label_tax->text().toDouble(),
+                               ui->label_key_rate->text().toDouble(),
+                               ui->sum->text().toDouble(),
+                               ui->int_rate_dep->text().toDouble(),
+                               ui->wth_rem_2->text().toDouble(),
+                               ui->dep_date->date(),
+                               std::move(fund),
+                               std::move(wth)};
+    const DepositData& data = controller_->CalculateDeposit(conds);
     sec_win_->show();
     emit SignalDeposit(data);
   }
@@ -411,13 +418,14 @@ void MainWindow::OnPushButtonPlotClicked() {
         "Область значений или область определения функции не определена");
   } else {
     try {
-      GraphConditions conds = {ui->res_out->text().toStdString(), ui->doubleSpinBoXa->value(),
-                               ui->doubleSpinBoXi->value(), ui->doubleSpinBoYa->value(),
-                               ui->doubleSpinBoYi->value(), ui->autoscale->isChecked()};
-      const GraphData &data = controller_->CalculateGraph(conds);
+      GraphConditions conds = {
+          ui->res_out->text().toStdString(), ui->doubleSpinBoXa->value(),
+          ui->doubleSpinBoXi->value(),       ui->doubleSpinBoYa->value(),
+          ui->doubleSpinBoYi->value(),       ui->autoscale->isChecked()};
+      const GraphData& data = controller_->CalculateGraph(conds);
       sec_win_->show();
       emit SignalPlot(data);
-    } catch (std::exception &exc) {
+    } catch (std::exception& exc) {
       QMessageBox::critical(this, "Error", exc.what());
     }
   }

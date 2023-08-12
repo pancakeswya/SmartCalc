@@ -81,7 +81,7 @@ void Deposit::MakeDeposit() {
       }
       ++i;
     }
-    for (;rep_it != data_.replen.end() && date == rep_it->first; rep_it++) {
+    for (; rep_it != data_.replen.end() && date == rep_it->first; rep_it++) {
       if (sum + add_sum + cap_sum + rep_it->second >= non_taking_rem) {
         add_sum += rep_it->second;
       }
@@ -138,8 +138,8 @@ void Deposit::CalcDeposit() {
     AddReplenishment(start_date, data_.finish_date, single_wth);
   }
   std::sort(data_.replen.begin(), data_.replen.end(),
-            [](const std::pair<QDate, double> &rhs,
-               const std::pair<QDate, double> &lhs) -> bool {
+            [](const std::pair<QDate, double>& rhs,
+               const std::pair<QDate, double>& lhs) -> bool {
               return rhs.first < lhs.first;
             });
   MakeDeposit();

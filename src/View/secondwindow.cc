@@ -30,7 +30,8 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   QDate date = data.start_date;
   int tax_year = date.year();
   auto repay = data.replen;
-  auto table_model = new QStandardItemModel(data.payment.size() + repay.size(), 2, this);
+  auto table_model =
+      new QStandardItemModel(data.payment.size() + repay.size(), 2, this);
   setWindowIcon(QIcon(":/resources/img/money-logo.png"));
   ui->tableView_2->hide();
   ui->tableView->horizontalScrollBar()->setDisabled(true);
@@ -131,11 +132,14 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
       for (int j = 0; j < table_model_tax->columnCount(); j++) {
         index_tax = table_model_tax->index(i, j);
         if (j == 0) {
-          table_model_tax->setData(index_tax, Qt::AlignCenter, Qt::TextAlignmentRole);
+          table_model_tax->setData(index_tax, Qt::AlignCenter,
+                                   Qt::TextAlignmentRole);
           table_model_tax->setData(index_tax, QString::number(tax_year));
         } else {
-          table_model_tax->setData(index_tax, Qt::AlignCenter, Qt::TextAlignmentRole);
-          table_model_tax->setData(index_tax, QString::number(data.tax[i], 'f', 2));
+          table_model_tax->setData(index_tax, Qt::AlignCenter,
+                                   Qt::TextAlignmentRole);
+          table_model_tax->setData(index_tax,
+                                   QString::number(data.tax[i], 'f', 2));
           tax_year++;
         }
       }
@@ -195,7 +199,7 @@ void SecondWindow::SlotCredit(const CreditData& data) {
       if (col == 0) {
         table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
         table_model->setData(index, months[cur_date.month() - 1] + " " +
-                                  cur_date.toString("yyyy"));
+                                        cur_date.toString("yyyy"));
         cur_date = cur_date.addMonths(1);
       } else {
         table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
