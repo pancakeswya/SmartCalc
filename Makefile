@@ -12,7 +12,7 @@ DVI_FILE     := manual.texi
 ifeq ($(OS), Linux)
 RUN          := ./$(BUILD_DIR)/$(APP)
 else
-RUN          := $(OPEN) $(BUILD_DIR)/$(APP)
+RUN          := open $(BUILD_DIR)/$(APP)
 endif
 
 MAKEDVI      := makeinfo --html
@@ -21,8 +21,8 @@ BUILDER      := qmake
 all: install run
 
 install:
-	mkdir $(BUILD_DIR)
-	cd $(BUILD_DIR) && $(BUILDER) .. && $(MAKE)
+	mkdir $(BUILD_DIR) && cd $(BUILD_DIR)
+	$(BUILDER) .. && $(MAKE)
 
 uninstall:
 	$(RM) $(BUILD_DIR)
@@ -44,14 +44,18 @@ dist:
 check-style:
 	find $(SRC_DIR) -name '*.cc' -o -name '*.h' | xargs clang-format -style=google -n
 
-.PHONY: test gcov_report check-valgrind
+test:
+	mkdir $(LIB_DIR)/$(BUILD_DIR) && cd $(LIB_DIR)/$(BUILD_DIR)
+	$(BUILDER) .. && $(MAKE)
 
-test gcov_report check-valgrind:
-	$(MAKE) -C $(LIB_DIR) -f Makefile $@
+gcov_report:
+	mkdir $(LIB_DIR)/$(BUILD_DIR) && cd $(LIB_DIR)/$(BUILD_DIR)
+	$(BUILDER) .. && $(MAKE) $@
 
 clean: uninstall
-	$(MAKE) -C $(LIB_DIR) -f Makefile $@
+	$(RM) $(NAME)
+	$(RM) $(LIB_DIR)/$(BUILD_DIR)
 
 fclean: clean
-	$(RM) $(NAME)
+
 	$(MAKE) -C $(LIB_DIR) -f Makefile $@
