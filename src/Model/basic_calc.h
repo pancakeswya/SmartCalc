@@ -1,9 +1,9 @@
 #ifndef SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
 #define SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
 
-#include <string>
-
 #include "../Controller/data_types.h"
+
+#include <string>
 
 namespace s21::BasicCalc {
 

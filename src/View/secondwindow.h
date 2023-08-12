@@ -1,10 +1,10 @@
 #ifndef SMARTCALC_V2_SRC_VIEW_SECONDWINDOW_H
 #define SMARTCALC_V2_SRC_VIEW_SECONDWINDOW_H
 
+#include "../Controller/data_types.h"
+
 #include <QApplication>
 #include <QDialog>
-
-#include "../Controller/data_types.h"
 
 namespace s21 {
 
@@ -16,11 +16,11 @@ class SecondWindow : public QDialog {
   Q_OBJECT
 
  public:
-  explicit SecondWindow(QWidget *parent = nullptr);
+  explicit SecondWindow(QWidget* parent = nullptr);
   ~SecondWindow();
 
  private:
-  Ui::SecondWindow *ui;
+  Ui::SecondWindow *ui_;
 
  public slots:
   void SlotDeposit(const DepositData&);

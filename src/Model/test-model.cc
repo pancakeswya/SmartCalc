@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include "model.h"
+
+#include <gtest/gtest.h>
 
 TEST(SmartCalculator, TestOperation) {
   Model m;

@@ -1,11 +1,11 @@
 #ifndef SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H
 #define SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H
 
-#include <QGridLayout>
-#include <QMainWindow>
-
 #include "../Controller/controller.h"
 #include "secondwindow.h"
+
+#include <QGridLayout>
+#include <QMainWindow>
 
 namespace s21 {
 
@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow {
 
  private:
   Controller *controller_{};
-  Ui::MainWindow *ui;
+  Ui::MainWindow *ui_;
   SecondWindow *sec_win_;
   QString x_str_;
   bool x_mode_;

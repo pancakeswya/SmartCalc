@@ -1,8 +1,7 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include <QMessageBox>
-
-#include "ui_mainwindow.h"
 
 namespace s21 {
 
@@ -12,12 +11,12 @@ MainWindow::MainWindow(Controller* ctrl) : MainWindow() { controller_ = ctrl; }
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
-      ui(new Ui::MainWindow),
+      ui_(new Ui::MainWindow),
       sec_win_(new SecondWindow(this)),
       x_mode_(),
       click_count_rep_(-1),
       click_count_wth_(-1) {
-  ui->setupUi(this);
+  ui_->setupUi(this);
   SetSignals();
   SetWidgets();
   setWindowTitle("SmartCalc_v2.0");
@@ -29,89 +28,89 @@ MainWindow::MainWindow(QWidget* parent)
   setFixedSize(WindowSizes::kWidth, WindowSizes::kHeight);
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() { delete ui_; }
 
 void MainWindow::SetSignals() {
   connect(this, &MainWindow::SignalDeposit, sec_win_,
           &SecondWindow::SlotDeposit);
   connect(this, &MainWindow::SignalCredit, sec_win_, &SecondWindow::SlotCredit);
   connect(this, &MainWindow::SignalPlot, sec_win_, &SecondWindow::SlotPlot);
-  connect(ui->pushButton_dot, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_dot, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDotClicked()));
-  connect(ui->pushButton_AC, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_AC, SIGNAL(clicked()), this,
           SLOT(OnPushButtonAcClicked()));
-  connect(ui->pushButton_Obrace, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_Obrace, SIGNAL(clicked()), this,
           SLOT(OnPushButtonObraceClicked()));
-  connect(ui->pushButton_Cbrace, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_Cbrace, SIGNAL(clicked()), this,
           SLOT(OnPushButtonCbraceClicked()));
-  connect(ui->pushButton_eq, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_eq, SIGNAL(clicked()), this,
           SLOT(OnPushButtonEqClicked()));
-  connect(ui->backspace, SIGNAL(clicked()), this, SLOT(OnBackspaceClicked()));
-  connect(ui->pushButton_bin, SIGNAL(clicked()), this,
+  connect(ui_->backspace, SIGNAL(clicked()), this, SLOT(OnBackspaceClicked()));
+  connect(ui_->pushButton_bin, SIGNAL(clicked()), this,
           SLOT(OnPushButtonBinClicked()));
-  connect(ui->pushButton_credit, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_credit, SIGNAL(clicked()), this,
           SLOT(OnPushButtonCreditClicked()));
-  connect(ui->pushButton_deposit, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_deposit, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDepositClicked()));
-  connect(ui->pushButton_graph, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_graph, SIGNAL(clicked()), this,
           SLOT(OnPushButtonGraphClicked()));
-  connect(ui->tabWidget, SIGNAL(currentChanged(int)), this,
+  connect(ui_->tabWidget, SIGNAL(currentChanged(int)), this,
           SLOT(OnTabWidgetCurrentChanged(int)));
-  connect(ui->pushButton_plot, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_plot, SIGNAL(clicked()), this,
           SLOT(OnPushButtonPlotClicked()));
-  connect(ui->pushButton_space, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_space, SIGNAL(clicked()), this,
           SLOT(OnPushButtonSpaceClicked()));
-  connect(ui->pushButton_rep, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_rep, SIGNAL(clicked()), this,
           SLOT(OnPushButtonRepClicked()));
-  connect(ui->pushButton_wth, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_wth, SIGNAL(clicked()), this,
           SLOT(OnPushButtonWthClicked()));
-  connect(ui->pushButton_del_rep, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_del_rep, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDelRepClicked()));
-  connect(ui->pushButton_del_wth, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_del_wth, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDelWthClicked()));
-  connect(ui->autoscale, SIGNAL(clicked(bool)), this,
+  connect(ui_->autoscale, SIGNAL(clicked(bool)), this,
           SLOT(OnAutoscaleStateChanged()));
-  connect(ui->pushButton_x, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_x, SIGNAL(clicked()), this,
           SLOT(OnPushButtonXclicked()));
-  connect(ui->pushButton_0, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_1, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_2, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_3, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_4, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_5, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_6, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_7, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_8, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_9, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
-  connect(ui->pushButton_plus, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_0, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_1, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_2, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_3, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_4, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_5, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_6, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_7, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_8, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_9, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
+  connect(ui_->pushButton_plus, SIGNAL(clicked()), this,
           SLOT(SimpleOperations()));
-  connect(ui->pushButton_min, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_min, SIGNAL(clicked()), this,
           SLOT(SimpleOperations()));
-  connect(ui->pushButton_div, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_div, SIGNAL(clicked()), this,
           SLOT(SimpleOperations()));
-  connect(ui->pushButton_mul, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_mul, SIGNAL(clicked()), this,
           SLOT(SimpleOperations()));
-  connect(ui->pushButton_pow, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_pow, SIGNAL(clicked()), this,
           SLOT(SimpleOperations()));
-  connect(ui->pushButton_mod, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_mod, SIGNAL(clicked()), this,
           SLOT(SimpleOperations()));
-  connect(ui->pushButton_sqrt, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_sqrt, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_asin, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_asin, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_sin, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_sin, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_acos, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_acos, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_cos, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_cos, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_atan, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_atan, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_tan, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_tan, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_ln, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_ln, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
-  connect(ui->pushButton_log, SIGNAL(clicked()), this,
+  connect(ui_->pushButton_log, SIGNAL(clicked()), this,
           SLOT(ComplexOperations()));
 }
 
@@ -119,36 +118,36 @@ void MainWindow::SetWidgets() {
   QLocale doub_lo(QLocale::C);
   doub_lo.setNumberOptions(QLocale::RejectGroupSeparator);
   QLocale::setDefault(doub_lo);
-  ui->Srok_cr->setValidator(new QIntValidator(0, 100, this));
-  ui->SummaCr->setValidator(new QDoubleValidator(this));
+  ui_->Srok_cr->setValidator(new QIntValidator(0, 100, this));
+  ui_->SummaCr->setValidator(new QDoubleValidator(this));
   QDoubleValidator* dbl_val = new QDoubleValidator(0, 100, 1000, this);
   dbl_val->setNotation(QDoubleValidator::StandardNotation);
-  ui->int_rate->setValidator(dbl_val);
-  ui->srok_dep->setValidator(new QIntValidator(0, 10000, this));
-  ui->sum->setValidator(new QDoubleValidator(this));
-  ui->wth_rem_2->setValidator(new QDoubleValidator(this));
-  ui->int_rate_dep->setValidator(dbl_val);
-  ui->label_tax->setValidator(dbl_val);
-  ui->label_key_rate->setValidator(dbl_val);
-  ui->doubleSpinBoXa->setRange(-std::numeric_limits<double>::max(),
+  ui_->int_rate->setValidator(dbl_val);
+  ui_->srok_dep->setValidator(new QIntValidator(0, 10000, this));
+  ui_->sum->setValidator(new QDoubleValidator(this));
+  ui_->wth_rem_2->setValidator(new QDoubleValidator(this));
+  ui_->int_rate_dep->setValidator(dbl_val);
+  ui_->label_tax->setValidator(dbl_val);
+  ui_->label_key_rate->setValidator(dbl_val);
+  ui_->doubleSpinBoXa->setRange(-std::numeric_limits<double>::max(),
                                std::numeric_limits<double>::max());
-  ui->doubleSpinBoXi->setRange(-std::numeric_limits<double>::max(),
+  ui_->doubleSpinBoXi->setRange(-std::numeric_limits<double>::max(),
                                std::numeric_limits<double>::max());
-  ui->doubleSpinBoYa->setRange(-std::numeric_limits<double>::max(),
+  ui_->doubleSpinBoYa->setRange(-std::numeric_limits<double>::max(),
                                std::numeric_limits<double>::max());
-  ui->doubleSpinBoYi->setRange(-std::numeric_limits<double>::max(),
+  ui_->doubleSpinBoYi->setRange(-std::numeric_limits<double>::max(),
                                std::numeric_limits<double>::max());
-  ui->label_tax->setText("13");
-  ui->label_key_rate->setText("8.5");
-  ui->wth_rem->hide();
-  ui->wth_rem_2->hide();
-  ui->wth_r_sign->hide();
-  ui->doubleSpinBoYa->setDisabled(true);
-  ui->doubleSpinBoYi->setDisabled(true);
-  ui->autoscale->setCheckState(Qt::Checked);
-  ui->dep_date->setDate(QDate::currentDate());
-  ui->res_out->setAlignment(Qt::AlignRight);
-  ui->wth_rem_2->setText("0");
+  ui_->label_tax->setText("13");
+  ui_->label_key_rate->setText("8.5");
+  ui_->wth_rem->hide();
+  ui_->wth_rem_2->hide();
+  ui_->wth_r_sign->hide();
+  ui_->doubleSpinBoYa->setDisabled(true);
+  ui_->doubleSpinBoYi->setDisabled(true);
+  ui_->autoscale->setCheckState(Qt::Checked);
+  ui_->dep_date->setDate(QDate::currentDate());
+  ui_->res_out->setAlignment(Qt::AlignRight);
+  ui_->wth_rem_2->setText("0");
 }
 
 void MainWindow::AddNewLine(QGridLayout* layout, short int& click) {
@@ -200,13 +199,13 @@ void MainWindow::ParseUserTransactions(QGridLayout* layout, short int click,
 }
 
 void MainWindow::StartPointClear() {
-  if (ui->res_out->text() == "0") {
-    ui->res_out->clear();
+  if (ui_->res_out->text() == "0") {
+    ui_->res_out->clear();
   }
 }
 
 void MainWindow::OnPushButtonDotClicked() {
-  QString tmp = ui->res_out->text();
+  QString tmp = ui_->res_out->text();
   for (auto it = tmp.rbegin(); it != tmp.rend(); it++) {
     if (*it == '.') {
       return;
@@ -215,31 +214,31 @@ void MainWindow::OnPushButtonDotClicked() {
     }
   }
   if (!tmp.isEmpty() && tmp.back().isDigit()) {
-    ui->res_out->setText(ui->res_out->text() + ".");
+    ui_->res_out->setText(ui_->res_out->text() + ".");
   }
 }
 
 void MainWindow::OnPushButtonXclicked() {
   StartPointClear();
-  ui->res_out->setText(ui->res_out->text() + "x");
+  ui_->res_out->setText(ui_->res_out->text() + "x");
   x_mode_ = true;
 }
 
 void MainWindow::DigitsNumbers() {
   QPushButton* button_num = static_cast<QPushButton*>(sender());
   StartPointClear();
-  ui->res_out->setText(ui->res_out->text() + button_num->text());
+  ui_->res_out->setText(ui_->res_out->text() + button_num->text());
 }
 
 void MainWindow::SimpleOperations() {
   QPushButton* button_op = static_cast<QPushButton*>(sender());
-  if (!ui->res_out->text().isEmpty()) {
-    QChar ch = ui->res_out->text().back();
+  if (!ui_->res_out->text().isEmpty()) {
+    QChar ch = ui_->res_out->text().back();
     if (ch != '+' && ch != '-' && ch != '*' && ch != '/' && ch != '^') {
       if (button_op->text() == "÷") {
-        ui->res_out->setText(ui->res_out->text() + "/");
+        ui_->res_out->setText(ui_->res_out->text() + "/");
       } else {
-        ui->res_out->setText(ui->res_out->text() + button_op->text());
+        ui_->res_out->setText(ui_->res_out->text() + button_op->text());
       }
     }
   }
@@ -249,35 +248,35 @@ void MainWindow::ComplexOperations() {
   QPushButton* button_c_op = static_cast<QPushButton*>(sender());
   StartPointClear();
   if (button_c_op->text() == "√") {
-    ui->res_out->setText(ui->res_out->text() + "sqrt(");
+    ui_->res_out->setText(ui_->res_out->text() + "sqrt(");
   } else {
-    ui->res_out->setText(ui->res_out->text() + button_c_op->text() + "(");
+    ui_->res_out->setText(ui_->res_out->text() + button_c_op->text() + "(");
   }
 }
 
-void MainWindow::OnPushButtonAcClicked() { ui->res_out->setText("0"); }
+void MainWindow::OnPushButtonAcClicked() { ui_->res_out->setText("0"); }
 
 void MainWindow::OnPushButtonObraceClicked() {
   StartPointClear();
-  ui->res_out->setText(ui->res_out->text() + "(");
+  ui_->res_out->setText(ui_->res_out->text() + "(");
 }
 
 void MainWindow::OnPushButtonCbraceClicked() {
-  if (!ui->res_out->text().isEmpty() && ui->res_out->text() != "0" &&
-      ui->res_out->text().back() != '(') {
+  if (!ui_->res_out->text().isEmpty() && ui_->res_out->text() != "0" &&
+      ui_->res_out->text().back() != '(') {
     StartPointClear();
-    ui->res_out->setText(ui->res_out->text() + ")");
+    ui_->res_out->setText(ui_->res_out->text() + ")");
   }
 }
 
 void MainWindow::OnPushButtonEqClicked() {
-  QString label = ui->res_out->text();
+  QString label = ui_->res_out->text();
   if (x_mode_) {
     if (x_str_.isEmpty()) {
-      if (ui->res_out->text().contains("x") &&
-          !ui->res_out->text().contains("xx")) {
-        x_str_ = ui->res_out->text();
-        ui->res_out->setText("x=");
+      if (ui_->res_out->text().contains("x") &&
+          !ui_->res_out->text().contains("xx")) {
+        x_str_ = ui_->res_out->text();
+        ui_->res_out->setText("x=");
       } else {
         x_mode_ = false;
       }
@@ -300,17 +299,17 @@ void MainWindow::OnPushButtonEqClicked() {
     } else {
       try {
         double ans = controller_->CalculateExpression(label.toStdString());
-        ui->res_out->setText(QString::number(ans));
+        ui_->res_out->setText(QString::number(ans));
       } catch (std::exception& exc) {
         QMessageBox::critical(this, "Error", exc.what());
-        ui->res_out->setText("0");
+        ui_->res_out->setText("0");
       }
     }
   }
 }
 
 void MainWindow::OnPushButtonBinClicked() {
-  QString tmp = ui->res_out->text();
+  QString tmp = ui_->res_out->text();
   int i = tmp.length() - 1;
   for (; i >= 0; i--) {
     if (tmp[i] != '.') {
@@ -329,32 +328,32 @@ void MainWindow::OnPushButtonBinClicked() {
   } else if (tmp[i] == '+') {
     tmp.replace(i, 1, "-");
   }
-  ui->res_out->setText(tmp);
+  ui_->res_out->setText(tmp);
 }
 
 void MainWindow::OnBackspaceClicked() {
-  QString src_str = ui->res_out->text();
+  QString src_str = ui_->res_out->text();
   qsizetype index = src_str.length() - 1;
   if (!src_str.isEmpty() && src_str != "0") {
     src_str.remove(index, 1);
     if (src_str.isEmpty()) {
       src_str += '0';
     }
-    ui->res_out->setText(src_str);
+    ui_->res_out->setText(src_str);
   }
 }
 
 void MainWindow::OnPushButtonCreditClicked() {
-  double sum = ui->SummaCr->text().toDouble();
-  double int_rate = ui->int_rate->text().toDouble();
-  short period = ui->Srok_cr->text().toShort();
-  bool is_year = !(ui->type_sr_cr->currentIndex()),
-       is_annuit = ui->annuit->isChecked();
+  double sum = ui_->SummaCr->text().toDouble();
+  double int_rate = ui_->int_rate->text().toDouble();
+  short period = ui_->Srok_cr->text().toShort();
+  bool is_year = !(ui_->type_sr_cr->currentIndex()),
+       is_annuit = ui_->annuit->isChecked();
   if ((is_year && period > DateLimits::kYearMax) ||
       (!is_year && period > DateLimits::kMonthMax)) {
     QMessageBox::warning(this, "Warning",
                          "Превышено максимальное значение срока кредита");
-  } else if (!is_annuit && !ui->diff->isChecked()) {
+  } else if (!is_annuit && !ui_->diff->isChecked()) {
     QMessageBox::warning(this, "Warning", "Выбирите тип ежемесячных платежей");
   } else {
     CreditConditions conds = {sum, int_rate, period, is_year, is_annuit};
@@ -365,8 +364,8 @@ void MainWindow::OnPushButtonCreditClicked() {
 }
 
 void MainWindow::OnPushButtonDepositClicked() {
-  short int term = ui->srok_dep->text().toShort();
-  short int term_type = ui->srok_typed->currentIndex();
+  short int term = ui_->srok_dep->text().toShort();
+  short int term_type = ui_->srok_typed->currentIndex();
   if ((term > DateLimits::kYearMax && term_type == DateType::kTypeYear) ||
       (term > DateLimits::kMonthMax && term_type == DateType::kTypeMonth) ||
       (term > DateLimits::kDayMax && term_type == DateType::kTypeDay)) {
@@ -375,18 +374,18 @@ void MainWindow::OnPushButtonDepositClicked() {
         "Превышено максимальное значение срока размещения вклада");
   } else {
     std::vector<UserTransaction> fund, wth;
-    ParseUserTransactions(ui->gridLayout_rep, click_count_rep_, fund);
-    ParseUserTransactions(ui->gridLayout_wth, click_count_wth_, wth);
-    DepositConditions conds = {ui->capitalization->isChecked(),
+    ParseUserTransactions(ui_->gridLayout_rep, click_count_rep_, fund);
+    ParseUserTransactions(ui_->gridLayout_wth, click_count_wth_, wth);
+    DepositConditions conds = {ui_->capitalization->isChecked(),
                                term_type,
                                term,
-                               ui->rate_pay->currentIndex(),
-                               ui->label_tax->text().toDouble(),
-                               ui->label_key_rate->text().toDouble(),
-                               ui->sum->text().toDouble(),
-                               ui->int_rate_dep->text().toDouble(),
-                               ui->wth_rem_2->text().toDouble(),
-                               ui->dep_date->date(),
+                               ui_->rate_pay->currentIndex(),
+                               ui_->label_tax->text().toDouble(),
+                               ui_->label_key_rate->text().toDouble(),
+                               ui_->sum->text().toDouble(),
+                               ui_->int_rate_dep->text().toDouble(),
+                               ui_->wth_rem_2->text().toDouble(),
+                               ui_->dep_date->date(),
                                std::move(fund),
                                std::move(wth)};
     const DepositData& data = controller_->CalculateDeposit(conds);
@@ -412,18 +411,18 @@ void MainWindow::OnTabWidgetCurrentChanged(int index) {
 }
 
 void MainWindow::OnPushButtonPlotClicked() {
-  if (ui->doubleSpinBoXi->value() >= ui->doubleSpinBoXa->value() ||
-      (!ui->autoscale->isChecked() &&
-       ui->doubleSpinBoYi->value() >= ui->doubleSpinBoYa->value())) {
+  if (ui_->doubleSpinBoXi->value() >= ui_->doubleSpinBoXa->value() ||
+      (!ui_->autoscale->isChecked() &&
+       ui_->doubleSpinBoYi->value() >= ui_->doubleSpinBoYa->value())) {
     QMessageBox::critical(
         this, "Warning",
         "Область значений или область определения функции не определена");
   } else {
     try {
       GraphConditions conds = {
-          ui->res_out->text().toStdString(), ui->doubleSpinBoXa->value(),
-          ui->doubleSpinBoXi->value(),       ui->doubleSpinBoYa->value(),
-          ui->doubleSpinBoYi->value(),       ui->autoscale->isChecked()};
+          ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
+          ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
+          ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
       const GraphData& data = controller_->CalculateGraph(conds);
       sec_win_->show();
       emit SignalPlot(data);
@@ -434,38 +433,38 @@ void MainWindow::OnPushButtonPlotClicked() {
 }
 
 void MainWindow::OnPushButtonSpaceClicked() {
-  ui->res_out->setText(ui->res_out->text() + " ");
+  ui_->res_out->setText(ui_->res_out->text() + " ");
 }
 
 void MainWindow::OnPushButtonRepClicked() {
-  AddNewLine(ui->gridLayout_rep, click_count_rep_);
+  AddNewLine(ui_->gridLayout_rep, click_count_rep_);
 }
 
 void MainWindow::OnPushButtonWthClicked() {
-  AddNewLine(ui->gridLayout_wth, click_count_wth_);
+  AddNewLine(ui_->gridLayout_wth, click_count_wth_);
   if (click_count_wth_ == 0) {
-    ui->wth_rem->show();
-    ui->wth_rem_2->show();
-    ui->wth_r_sign->show();
+    ui_->wth_rem->show();
+    ui_->wth_rem_2->show();
+    ui_->wth_r_sign->show();
   }
 }
 
 void MainWindow::OnPushButtonDelRepClicked() {
-  DeleteLine(ui->gridLayout_rep, click_count_rep_);
+  DeleteLine(ui_->gridLayout_rep, click_count_rep_);
 }
 
 void MainWindow::OnPushButtonDelWthClicked() {
-  DeleteLine(ui->gridLayout_wth, click_count_wth_);
+  DeleteLine(ui_->gridLayout_wth, click_count_wth_);
   if (click_count_wth_ == -1) {
-    ui->wth_rem->hide();
-    ui->wth_rem_2->hide();
-    ui->wth_r_sign->hide();
+    ui_->wth_rem->hide();
+    ui_->wth_rem_2->hide();
+    ui_->wth_r_sign->hide();
   }
 }
 
 void MainWindow::OnAutoscaleStateChanged() {
-  ui->doubleSpinBoYa->setDisabled(ui->autoscale->isChecked());
-  ui->doubleSpinBoYi->setDisabled(ui->autoscale->isChecked());
+  ui_->doubleSpinBoYa->setDisabled(ui_->autoscale->isChecked());
+  ui_->doubleSpinBoYi->setDisabled(ui_->autoscale->isChecked());
 }
 
 }  // namespace s21
