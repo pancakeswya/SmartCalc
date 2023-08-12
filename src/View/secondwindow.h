@@ -23,9 +23,9 @@ class SecondWindow : public QDialog {
   Ui::SecondWindow *ui;
 
  public slots:
-  void SlotDeposit(const DepositData &);
-  void SlotCredit(const CreditData &);
-  void SlotPlot(const GraphData &);
+  void SlotDeposit(const DepositData&);
+  void SlotCredit(const CreditData&);
+  void SlotPlot(const GraphData&);
 };
 
 }  // namespace s21

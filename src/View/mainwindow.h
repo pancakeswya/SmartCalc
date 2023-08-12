@@ -30,10 +30,10 @@ class MainWindow : public QMainWindow {
   short int click_count_rep_;
   short int click_count_wth_;
   static constexpr int kMaxInputSize = 255;
-  void AddNewLine(QGridLayout *, short int &);
-  static void DeleteLine(QGridLayout *, short int &);
-  static void ParseUserTransactions(QGridLayout *, short int,
-                                    std::vector<UserTransaction> &);
+  void AddNewLine(QGridLayout*, short int&);
+  static void DeleteLine(QGridLayout*, short int&);
+  static void ParseUserTransactions(QGridLayout*, short int,
+                                    std::vector<UserTransaction>&);
   void SetSignals();
   void SetWidgets();
   void StartPointClear();

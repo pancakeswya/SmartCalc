@@ -27,7 +27,7 @@ SecondWindow::SecondWindow(QWidget *parent)
 
 SecondWindow::~SecondWindow() { delete ui; }
 
-void SecondWindow::SlotDeposit(const DepositData &data) {
+void SecondWindow::SlotDeposit(const DepositData& data) {
   QModelIndex index;
   QDate date = data.start_date;
   int tax_year = date.year();
@@ -158,7 +158,7 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   }
 }
 
-void SecondWindow::SlotCredit(const CreditData &data) {
+void SecondWindow::SlotCredit(const CreditData& data) {
   if (ui->widget->isVisible()) {
     this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui->widget->setVisible(false);
@@ -219,7 +219,7 @@ void SecondWindow::SlotCredit(const CreditData &data) {
                                 ui->tableView->frameWidth() * 2);
 }
 
-void SecondWindow::SlotPlot(const GraphData &data) {
+void SecondWindow::SlotPlot(const GraphData& data) {
   if (!ui->widget->isVisible()) {
     this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
   }
