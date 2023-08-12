@@ -5,6 +5,8 @@ project(model_test LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(PROJECT_COMPILE_OPTIONS -Wall -Werror -Wextra -O1)
+
 find_package(GTest REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
@@ -47,4 +49,4 @@ else()
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets GTest::GTest GTest::Main)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra -O1)
+target_compile_options(${PROJECT_NAME} PRIVATE ${PROJECT_COMPILE_OPTIONS})
