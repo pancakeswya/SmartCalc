@@ -33,6 +33,6 @@ class Controller {
   Model *model_;
 };
 
-} // namespace s21
+}  // namespace s21
 
 #endif  // CONTROLLER_H_

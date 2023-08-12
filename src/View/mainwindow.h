@@ -37,9 +37,8 @@ class MainWindow : public QMainWindow {
   void SetSignals();
   void SetWidgets();
   void StartPointClear();
- private
-  slots:
-      void DigitsNumbers();
+ private slots:
+  void DigitsNumbers();
   void SimpleOperations();
   void ComplexOperations();
   void OnPushButtonDotClicked();
@@ -61,13 +60,12 @@ class MainWindow : public QMainWindow {
   void OnPushButtonDelWthClicked();
   void OnAutoscaleStateChanged();
   void OnPushButtonXclicked();
-  signals:
-      void SignalDeposit(
-  const DepositData&);
+ signals:
+  void SignalDeposit(const DepositData &);
   void SignalCredit(const CreditData &);
   void SignalPlot(const GraphData &);
 };
 
-} // namespace s21
+}  // namespace s21
 
 #endif  // MAINWINDOW_H

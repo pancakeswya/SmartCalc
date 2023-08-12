@@ -81,13 +81,13 @@ struct GraphConditions {
 };
 
 struct GraphData {
-  std::vector<std::pair<QVector < double>, QVector<double>>> xy;
+  std::vector<std::pair<QVector<double>, QVector<double>>> xy;
   double x_min;
   double x_max;
   double y_min;
   double y_max;
 };
 
-} // namespace s21
+}  // namespace s21
 
 #endif  // DATA_TYPES_H_

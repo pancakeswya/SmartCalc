@@ -49,21 +49,21 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   ui->out_dep_num->setText(QString::number(data.perc_sum, 'f', 2) + "\n");
   ui->out_dep->setText(ui->out_dep->text() + "Налог\n");
   ui->out_dep_num->setText(ui->out_dep_num->text() +
-      QString::number(data.tax_sum, 'f', 2) + "\n");
+                           QString::number(data.tax_sum, 'f', 2) + "\n");
   if (data.tax_sum > 0.0) {
     ui->out_dep->setText(ui->out_dep->text() + "Доход за вычетом налогов\n");
     ui->out_dep_num->setText(
         ui->out_dep_num->text() +
-            QString::number(data.perc_sum - data.tax_sum, 'f', 2) + "\n");
+        QString::number(data.perc_sum - data.tax_sum, 'f', 2) + "\n");
   }
   if (data.eff_rate > 0.0) {
     ui->out_dep->setText(ui->out_dep->text() + "Эффективная ставка\n");
     ui->out_dep_num->setText(ui->out_dep_num->text() +
-        QString::number(data.eff_rate, 'f', 2) + "\n");
+                             QString::number(data.eff_rate, 'f', 2) + "\n");
   }
   ui->out_dep->setText(ui->out_dep->text() + "Сумма на вкладе к концу срока");
   ui->out_dep_num->setText(ui->out_dep_num->text() +
-      QString::number(data.total, 'f', 2));
+                           QString::number(data.total, 'f', 2));
   auto it_rep = repay.begin();
   auto it_dep = data.payment.begin();
   for (int row = 0, dep_line = 0, i = 0;
@@ -108,12 +108,12 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
   table_model->setHeaderData(1, Qt::Horizontal, "Вклад\nпополнен");
   ui->tableView->setModel(table_model);
   ui->tableView->setFixedWidth(ui->tableView->verticalHeader()->width() +
-      ui->tableView->horizontalHeader()->length() +
-      +ui->tableView->frameWidth() * 2);
+                               ui->tableView->horizontalHeader()->length() +
+                               +ui->tableView->frameWidth() * 2);
   if (table_model->rowCount() < SecondWinSizes::kTableRowMax) {
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
-        ui->tableView->verticalHeader()->length() +
-        ui->tableView->frameWidth() * 2);
+                                  ui->tableView->verticalHeader()->length() +
+                                  ui->tableView->frameWidth() * 2);
   } else {
     ui->tableView->setFixedHeight(SecondWinSizes::kMaxTableSize);
     ui->tableView->verticalScrollBar()->setDisabled(false);
@@ -149,12 +149,12 @@ void SecondWindow::SlotDeposit(const DepositData &data) {
     ui->tableView_2->setModel(table_model_tax);
     ui->tableView_2->setFixedWidth(
         ui->tableView_2->verticalHeader()->width() +
-            ui->tableView_2->horizontalHeader()->length() +
-            +ui->tableView_2->frameWidth() * 2);
+        ui->tableView_2->horizontalHeader()->length() +
+        +ui->tableView_2->frameWidth() * 2);
     ui->tableView_2->setFixedHeight(
         ui->tableView_2->horizontalHeader()->height() +
-            ui->tableView_2->verticalHeader()->length() +
-            ui->tableView_2->frameWidth() * 2);
+        ui->tableView_2->verticalHeader()->length() +
+        ui->tableView_2->frameWidth() * 2);
   }
 }
 
@@ -171,8 +171,8 @@ void SecondWindow::SlotCredit(const CreditData &data) {
   ui->tableView->verticalScrollBar()->setDisabled(true);
   ui->tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   ui->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  QStringList months = {"Январь", "Февраль", "Март", "Апрель",
-                        "Май", "Июнь", "Июль", "Август",
+  QStringList months = {"Январь",   "Февраль", "Март",   "Апрель",
+                        "Май",      "Июнь",    "Июль",   "Август",
                         "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
   QDate cur_date = cur_date.currentDate();
   auto table_model = new QStandardItemModel(data.payment.size(), 2, this);
@@ -191,17 +191,17 @@ void SecondWindow::SlotCredit(const CreditData &data) {
   }
   ui->out_dep->setText("Начисленные проценты\n");
   ui->out_dep_num->setText(ui->out_dep_num->text() +
-      QString::number(data.overpay, 'f', 2) + "\n");
+                           QString::number(data.overpay, 'f', 2) + "\n");
   ui->out_dep->setText(ui->out_dep->text() + "Долг + проценты");
   ui->out_dep_num->setText(ui->out_dep_num->text() +
-      QString::number(data.total, 'f', 2));
+                           QString::number(data.total, 'f', 2));
   for (int row = 0; row < table_model->rowCount(); row++) {
     for (int col = 0; col < table_model->columnCount(); col++) {
       index = table_model->index(row, col);
       if (col == 0) {
         table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
         table_model->setData(index, months[cur_date.month() - 1] + " " +
-            cur_date.toString("yyyy"));
+                                        cur_date.toString("yyyy"));
         cur_date = cur_date.addMonths(1);
       } else {
         table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
@@ -212,11 +212,11 @@ void SecondWindow::SlotCredit(const CreditData &data) {
   table_model->setHeaderData(0, Qt::Horizontal, "Дата");
   table_model->setHeaderData(1, Qt::Horizontal, "Платеж");
   ui->tableView->setFixedWidth(ui->tableView->verticalHeader()->width() +
-      ui->tableView->horizontalHeader()->length() +
-      +ui->tableView->frameWidth() * 2);
+                               ui->tableView->horizontalHeader()->length() +
+                               +ui->tableView->frameWidth() * 2);
   ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
-      ui->tableView->verticalHeader()->length() +
-      ui->tableView->frameWidth() * 2);
+                                ui->tableView->verticalHeader()->length() +
+                                ui->tableView->frameWidth() * 2);
 }
 
 void SecondWindow::SlotPlot(const GraphData &data) {
@@ -242,4 +242,4 @@ void SecondWindow::SlotPlot(const GraphData &data) {
   ui->widget->setVisible(true);
 }
 
-} // namespace s21
+}  // namespace s21

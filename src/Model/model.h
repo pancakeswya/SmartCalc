@@ -30,17 +30,13 @@ class Model {
     ans_ = s21::BasicCalc::CalcEquation(expr, x);
   }
 
-  double &GetExpressionAns()
-  noexcept { return ans_; }
+  double &GetExpressionAns() noexcept { return ans_; }
 
-  const GraphData &GetGraphData()
-  noexcept { return graph_; }
+  const GraphData &GetGraphData() noexcept { return graph_; }
 
-  const DepositData &GetDepositData()
-  noexcept { return dep_.GetData(); }
+  const DepositData &GetDepositData() noexcept { return dep_.GetData(); }
 
-  const CreditData &GetCreditData()
-  noexcept { return cred_.GetData(); }
+  const CreditData &GetCreditData() noexcept { return cred_.GetData(); }
 
  private:
   s21::Deposit dep_{};
@@ -49,6 +45,6 @@ class Model {
   double ans_{};
 };
 
-} // namespace s21
+}  // namespace s21
 
 #endif  // MODEL_H_

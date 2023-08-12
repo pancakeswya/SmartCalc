@@ -468,4 +468,4 @@ void MainWindow::OnAutoscaleStateChanged() {
   ui->doubleSpinBoYi->setDisabled(ui->autoscale->isChecked());
 }
 
-} // namespace s21
+}  // namespace s21
