@@ -4,23 +4,25 @@
 #include "bank_calc.h"
 #include "basic_calc.h"
 
+namespace s21 {
+
 class Model {
  public:
-  void CalcCredit(CreditConditions& conds) {
+  void CalcCredit(CreditConditions &conds) {
     cred_.SetConditions(std::move(conds));
     cred_.CalcCredit();
   }
 
-  void CalcDeposit(DepositConditions& conds) {
+  void CalcDeposit(DepositConditions &conds) {
     dep_.SetConditions(std::move(conds));
     dep_.CalcDeposit();
   }
 
-  void CalcGraph(GraphConditions& conds) {
+  void CalcGraph(GraphConditions &conds) {
     graph_ = s21::BasicCalc::CalcGraph(conds);
   }
 
-  void CalcExpression(const std::string& expr) {
+  void CalcExpression(const std::string &expr) {
     ans_ = s21::BasicCalc::CalcMathExpr(expr);
   }
 
@@ -28,13 +30,17 @@ class Model {
     ans_ = s21::BasicCalc::CalcEquation(expr, x);
   }
 
-  double& GetExpressionAns() noexcept { return ans_; }
+  double &GetExpressionAns()
+  noexcept { return ans_; }
 
-  const GraphData& GetGraphData() noexcept { return graph_; }
+  const GraphData &GetGraphData()
+  noexcept { return graph_; }
 
-  const DepositData& GetDepositData() noexcept { return dep_.GetData(); }
+  const DepositData &GetDepositData()
+  noexcept { return dep_.GetData(); }
 
-  const CreditData& GetCreditData() noexcept { return cred_.GetData(); }
+  const CreditData &GetCreditData()
+  noexcept { return cred_.GetData(); }
 
  private:
   s21::Deposit dep_{};
@@ -42,5 +48,7 @@ class Model {
   s21::Credit cred_{};
   double ans_{};
 };
+
+} // namespace s21
 
 #endif  // MODEL_H_

@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+namespace s21 {
+
 enum DateType { kTypeDay, kTypeMonth, kTypeYear };
 
 enum DateLimits { kYearMax = 50, kMonthMax = 600, kDayMax = 18250 };
@@ -79,11 +81,13 @@ struct GraphConditions {
 };
 
 struct GraphData {
-  std::vector<std::pair<QVector<double>, QVector<double>>> xy;
+  std::vector<std::pair<QVector < double>, QVector<double>>> xy;
   double x_min;
   double x_max;
   double y_min;
   double y_max;
 };
+
+} // namespace s21
 
 #endif  // DATA_TYPES_H_

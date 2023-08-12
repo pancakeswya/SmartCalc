@@ -4,6 +4,8 @@
 
 #include "ui_mainwindow.h"
 
+namespace s21 {
+
 enum WindowSizes { kWidth = 359, kHeight = 453, kHeightGraph = 619 };
 
 MainWindow::MainWindow(Controller* ctrl) : MainWindow() { controller_ = ctrl; }
@@ -465,3 +467,5 @@ void MainWindow::OnAutoscaleStateChanged() {
   ui->doubleSpinBoYa->setDisabled(ui->autoscale->isChecked());
   ui->doubleSpinBoYi->setDisabled(ui->autoscale->isChecked());
 }
+
+} // namespace s21

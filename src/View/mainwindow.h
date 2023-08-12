@@ -7,6 +7,8 @@
 #include "../Controller/controller.h"
 #include "secondwindow.h"
 
+namespace s21 {
+
 namespace Ui {
 class MainWindow;
 }
@@ -15,28 +17,29 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(Controller* ctrl);
-  explicit MainWindow(QWidget* parent = nullptr);
+  explicit MainWindow(Controller *ctrl);
+  explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
 
  private:
-  Controller* controller_{};
-  Ui::MainWindow* ui;
-  SecondWindow* sec_win_;
+  Controller *controller_{};
+  Ui::MainWindow *ui;
+  SecondWindow *sec_win_;
   QString x_str_;
   bool x_mode_;
   short int click_count_rep_;
   short int click_count_wth_;
   static constexpr int kMaxInputSize = 255;
-  void AddNewLine(QGridLayout*, short int&);
-  static void DeleteLine(QGridLayout*, short int&);
-  static void ParseUserTransactions(QGridLayout*, short int,
-                                    std::vector<UserTransaction>&);
+  void AddNewLine(QGridLayout *, short int &);
+  static void DeleteLine(QGridLayout *, short int &);
+  static void ParseUserTransactions(QGridLayout *, short int,
+                                    std::vector<UserTransaction> &);
   void SetSignals();
   void SetWidgets();
   void StartPointClear();
- private slots:
-  void DigitsNumbers();
+ private
+  slots:
+      void DigitsNumbers();
   void SimpleOperations();
   void ComplexOperations();
   void OnPushButtonDotClicked();
@@ -58,10 +61,13 @@ class MainWindow : public QMainWindow {
   void OnPushButtonDelWthClicked();
   void OnAutoscaleStateChanged();
   void OnPushButtonXclicked();
- signals:
-  void SignalDeposit(const DepositData&);
-  void SignalCredit(const CreditData&);
-  void SignalPlot(const GraphData&);
+  signals:
+      void SignalDeposit(
+  const DepositData&);
+  void SignalCredit(const CreditData &);
+  void SignalPlot(const GraphData &);
 };
+
+} // namespace s21
 
 #endif  // MAINWINDOW_H
