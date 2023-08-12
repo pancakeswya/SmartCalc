@@ -1,5 +1,5 @@
-#ifndef MODEL_H_
-#define MODEL_H_
+#ifndef SMARTCALC_V2_SRC_MODEL_MODEL_H_
+#define SMARTCALC_V2_SRC_MODEL_MODEL_H_
 
 #include "bank_calc.h"
 #include "basic_calc.h"
@@ -47,4 +47,4 @@ class Model {
 
 }  // namespace s21
 
-#endif  // MODEL_H_
+#endif  // SMARTCALC_V2_SRC_MODEL_MODEL_H_

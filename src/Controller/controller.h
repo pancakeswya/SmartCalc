@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_H_
-#define CONTROLLER_H_
+#ifndef SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
+#define SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
 
 #include "../Model/model.h"
 
@@ -35,4 +35,4 @@ class Controller {
 
 }  // namespace s21
 
-#endif  // CONTROLLER_H_
+#endif  // SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_

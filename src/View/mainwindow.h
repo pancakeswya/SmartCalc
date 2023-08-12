@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H
+#define SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H
 
 #include <QGridLayout>
 #include <QMainWindow>
@@ -68,4 +68,4 @@ class MainWindow : public QMainWindow {
 
 }  // namespace s21
 
-#endif  // MAINWINDOW_H
+#endif  // SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H

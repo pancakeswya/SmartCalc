@@ -1,5 +1,5 @@
-#ifndef SECONDWINDOW_H
-#define SECONDWINDOW_H
+#ifndef SMARTCALC_V2_SRC_VIEW_SECONDWINDOW_H
+#define SMARTCALC_V2_SRC_VIEW_SECONDWINDOW_H
 
 #include <QApplication>
 #include <QDialog>
@@ -30,4 +30,4 @@ class SecondWindow : public QDialog {
 
 }  // namespace s21
 
-#endif  // SECONDWINDOW_H
+#endif  // SMARTCALC_V2_SRC_VIEW_SECONDWINDOW_H

@@ -1,5 +1,5 @@
-#ifndef BASIC_CALC_H_
-#define BASIC_CALC_H_
+#ifndef SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
+#define SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
 
 #include <string>
 
@@ -13,4 +13,4 @@ GraphData CalcGraph(const GraphConditions& conds);
 
 }  // namespace s21::BasicCalc
 
-#endif  // BASIC_CALC_H_
+#endif  // SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_

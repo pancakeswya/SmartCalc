@@ -1,5 +1,5 @@
-#ifndef DATA_TYPES_H_
-#define DATA_TYPES_H_
+#ifndef SMARTCALC_V2_SRC_CONTROLLER_DATA_TYPES_H_
+#define SMARTCALC_V2_SRC_CONTROLLER_DATA_TYPES_H_
 
 #include <QDate>
 #include <QVector>
@@ -90,4 +90,4 @@ struct GraphData {
 
 }  // namespace s21
 
-#endif  // DATA_TYPES_H_
+#endif  // SMARTCALC_V2_SRC_CONTROLLER_DATA_TYPES_H_

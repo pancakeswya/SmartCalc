@@ -1,5 +1,5 @@
-#ifndef BANK_CALC_H_
-#define BANK_CALC_H_
+#ifndef SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
+#define SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
 
 #include "../Controller/data_types.h"
 
@@ -78,4 +78,4 @@ inline DepositData& Deposit::GetData() noexcept { return data_; }
 
 }  // namespace s21
 
-#endif  // BANK_CALC_H_
+#endif  // SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
