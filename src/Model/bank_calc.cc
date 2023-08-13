@@ -56,7 +56,7 @@ inline int GetRealPayFreqRep(int pay_freq) noexcept {
   return pay_freq;
 }
 
-inline int GetRealPayFreq(int pay_freq) noexcept {
+int GetRealPayFreq(int pay_freq) noexcept {
   static int real_freq[] = {1, 7, 1, 3, 6, 12};
   return real_freq[pay_freq];
 }
