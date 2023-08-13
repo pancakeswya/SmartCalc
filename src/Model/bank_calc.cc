@@ -6,7 +6,7 @@
 namespace s21 {
 
 void Credit::CalcCredit() {
-  short int mp_cnt = (date_is_year) ? period * DatesNum::kMonthInYear : period;
+  int mp_cnt = (date_is_year) ? period * DatesNum::kMonthInYear : period;
   if (type) {
     double r = int_rate / (DatesNum::kMonthInYear * 100);
     double ann_k =
@@ -35,7 +35,7 @@ inline void SetValidPayDate(QDate& date, int day) noexcept {
   }
 }
 
-inline QDate NextPayDate(const QDate& cur_date, short int freq, int payday,
+inline QDate NextPayDate(const QDate& cur_date, int freq, int payday,
                          int incr) noexcept {
   if (freq < CondPayFreq::kEvMon) {
     return cur_date.addDays(incr);
@@ -47,15 +47,18 @@ inline QDate NextPayDate(const QDate& cur_date, short int freq, int payday,
   }
 }
 
-inline int GetRealPayFreq(int pay_freq) noexcept {
-  if (pay_freq == CondPayFreq::kEvDay) {
-    return 1;
-  } else if (pay_freq >= CondPayFreq::kEvHalfYear) {
-    return pay_freq + 2;
+inline int GetRealPayFreqRep(int pay_freq) noexcept {
+  if (pay_freq == CondPayFreq::kEvHalfYear) {
+    return 6;
   } else if (pay_freq == CondPayFreq::kEvYear) {
     return 12;
   }
   return pay_freq;
+}
+
+inline int GetRealPayFreq(int pay_freq) noexcept {
+  static int real_freq[] = {1, 7, 1, 3, 6, 12};
+  return real_freq[pay_freq];
 }
 
 }  // namespace
@@ -111,12 +114,12 @@ void Deposit::AddReplenishment(const QDate& start_date,
   QDate transact_date = u_transaction.date;
   while (transact_date <= finish_date) {
     if (transact_date > start_date) {
-      data_.replen.push_back({transact_date, u_transaction.sum});
+      data_.replen.emplace_back(transact_date, u_transaction.sum);
       if (!u_transaction.freq) {
         break;
       }
     }
-    transact_date = transact_date.addMonths(GetRealPayFreq(u_transaction.freq));
+    transact_date = transact_date.addMonths(GetRealPayFreqRep(u_transaction.freq));
     SetValidPayDate(transact_date, transact_date.day());
   }
 }

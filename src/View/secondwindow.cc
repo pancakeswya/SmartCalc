@@ -6,6 +6,8 @@
 #include "../ExtLibs/qcustomplot.h"
 #include "ui_secondwindow.h"
 
+#include <QDebug>
+
 namespace s21 {
 
 enum SecondWinSizes {
@@ -120,9 +122,9 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
     ui_->tableView->verticalScrollBar()->setDisabled(false);
     ui_->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
   }
-  if (data.tax.size()) {
+  if (!data.tax.empty()) {
     QModelIndex index_tax;
-    QStandardItemModel* table_model_tax =
+    auto table_model_tax =
         new QStandardItemModel(data.tax.size(), 2, this);
     ui_->tableView_2->show();
     ui_->tableView_2->horizontalScrollBar()->setDisabled(true);
@@ -182,7 +184,7 @@ void SecondWindow::SlotCredit(const CreditData& data) {
   setWindowTitle("Расчет кредита");
   ui_->out_dep->setText("Ежемесячный платеж\n");
   {
-    double last_payment = (!data.payment.size()) ? 0 : data.payment.back();
+    double last_payment = (data.payment.empty()) ? 0 : data.payment.back();
     QString dep_out = QString::number(data.payment.front(), 'f', 2);
     if (data.payment.front() != last_payment) {
       dep_out += "  ....   " + QString::number(last_payment, 'f', 2);
@@ -235,7 +237,6 @@ void SecondWindow::SlotPlot(const GraphData& data) {
     ui_->widget->addGraph();
     ui_->widget->graph(graph_i++)->setData(xy.first, xy.second);
   }
-
   ui_->widget->yAxis->setRange(data.y_min, data.y_max);
   ui_->widget->replot();
   ui_->widget->setInteraction(QCP::iRangeZoom, true);

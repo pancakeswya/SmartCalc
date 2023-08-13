@@ -121,7 +121,7 @@ void MainWindow::SetWidgets() {
   QLocale::setDefault(doub_lo);
   ui_->Srok_cr->setValidator(new QIntValidator(0, 100, this));
   ui_->SummaCr->setValidator(new QDoubleValidator(this));
-  QDoubleValidator* dbl_val = new QDoubleValidator(0, 100, 1000, this);
+  auto dbl_val = new QDoubleValidator(0, 100, 1000, this);
   dbl_val->setNotation(QDoubleValidator::StandardNotation);
   ui_->int_rate->setValidator(dbl_val);
   ui_->srok_dep->setValidator(new QIntValidator(0, 10000, this));
@@ -152,9 +152,9 @@ void MainWindow::SetWidgets() {
 }
 
 void MainWindow::AddNewLine(QGridLayout* layout, short int& click) {
-  QLineEdit* field = new QLineEdit(this);
-  QDateEdit* date = new QDateEdit(this);
-  QComboBox* box = new QComboBox(this);
+  auto field = new QLineEdit(this);
+  auto date = new QDateEdit(this);
+  auto box = new QComboBox(this);
   field->setValidator(new QDoubleValidator(this));
   date->setDate(QDate::currentDate().addDays(1));
   box->addItem("Разовое", 0);
@@ -170,15 +170,15 @@ void MainWindow::AddNewLine(QGridLayout* layout, short int& click) {
 
 void MainWindow::DeleteLine(QGridLayout* layout, short int& click) {
   if (click >= 0) {
-    QDateEdit* date =
+    auto date =
         qobject_cast<QDateEdit*>(layout->itemAtPosition(click, 0)->widget());
     date->hide();
     delete date;
-    QLineEdit* field =
+    auto field =
         qobject_cast<QLineEdit*>(layout->itemAtPosition(click, 1)->widget());
     field->hide();
     delete field;
-    QComboBox* box =
+    auto box =
         qobject_cast<QComboBox*>(layout->itemAtPosition(click--, 2)->widget());
     box->hide();
     delete box;
@@ -188,11 +188,11 @@ void MainWindow::DeleteLine(QGridLayout* layout, short int& click) {
 void MainWindow::ParseUserTransactions(QGridLayout* layout, short int click,
                                        std::vector<UserTransaction>& opt) {
   for (int i = click; i >= 0; i--) {
-    QDateEdit* date =
+    auto date =
         qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget());
-    QLineEdit* field =
+    auto field =
         qobject_cast<QLineEdit*>(layout->itemAtPosition(i, 1)->widget());
-    QComboBox* box =
+    auto box =
         qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
     opt.push_back({date->date(), field->text().toDouble(),
                    static_cast<short int>(box->currentData().toInt())});
@@ -226,13 +226,13 @@ void MainWindow::OnPushButtonXclicked() {
 }
 
 void MainWindow::DigitsNumbers() {
-  QPushButton* button_num = static_cast<QPushButton*>(sender());
+  auto button_num = dynamic_cast<QPushButton*>(sender());
   StartPointClear();
   ui_->res_out->setText(ui_->res_out->text() + button_num->text());
 }
 
 void MainWindow::SimpleOperations() {
-  QPushButton* button_op = static_cast<QPushButton*>(sender());
+  auto button_op = dynamic_cast<QPushButton*>(sender());
   if (!ui_->res_out->text().isEmpty()) {
     QChar ch = ui_->res_out->text().back();
     if (ch != '+' && ch != '-' && ch != '*' && ch != '/' && ch != '^') {
@@ -246,7 +246,7 @@ void MainWindow::SimpleOperations() {
 }
 
 void MainWindow::ComplexOperations() {
-  QPushButton* button_c_op = static_cast<QPushButton*>(sender());
+  auto button_c_op = dynamic_cast<QPushButton*>(sender());
   StartPointClear();
   if (button_c_op->text() == "√") {
     ui_->res_out->setText(ui_->res_out->text() + "sqrt(");
@@ -334,7 +334,7 @@ void MainWindow::OnPushButtonBinClicked() {
 
 void MainWindow::OnBackspaceClicked() {
   QString src_str = ui_->res_out->text();
-  qsizetype index = src_str.length() - 1;
+  int index = src_str.length() - 1;
   if (!src_str.isEmpty() && src_str != "0") {
     src_str.remove(index, 1);
     if (src_str.isEmpty()) {

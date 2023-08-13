@@ -86,8 +86,8 @@ const std::unordered_map<std::string, MathOperation> op_map = {
     {"/", MathOperation(
               MathOperation::Type::kBinary, MathOperation::Priority::kComplex,
               [](double num1, double num2) -> double { return num1 / num2; })},
-    {"fmod", MathOperation(MathOperation::Type::kBinary,
-                           MathOperation::Priority::kComplex, std::fmod)},
+    {"d", MathOperation(MathOperation::Type::kBinary,
+                        MathOperation::Priority::kComplex, std::fmod)},
     {"+", MathOperation(
               MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
               [](double num1, double num2) -> double { return num1 + num2; })},
@@ -95,10 +95,7 @@ const std::unordered_map<std::string, MathOperation> op_map = {
               MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
               [](double num1, double num2) -> double { return num1 - num2; })},
     {"(", MathOperation(MathOperation::Type::kUnary,
-                        MathOperation::Priority::kBrace, [](double num) {
-                          static_cast<void>(num);
-                          return std::numeric_limits<double>::quiet_NaN();
-                        })}};
+                        MathOperation::Priority::kBrace, (double(*)(double)){})}};
 
 template <typename T>
 inline T& StackPull(std::stack<T>& stack) {
@@ -114,6 +111,9 @@ void CalcShuntYard(std::stack<MathOperation>& operations,
                    std::stack<double>& numbers) {
   double res;
   MathOperation& op = StackPull(operations);
+  if (op.GetPriority() == MathOperation::Priority::kBrace) {
+    throw std::invalid_argument("Matching brace exception");
+  }
   double& num1 = StackPull(numbers);
   if (op.GetType() == MathOperation::Type::kUnary) {
     res = op.PerformOperation(num1);
@@ -268,7 +268,7 @@ double CalcMathExpr(const std::string& str) {
     CalcShuntYard(operations, numbers);
   }
   if (numbers.size() != 1) {
-    throw std::out_of_range("Invalid syntax exception");
+    throw std::invalid_argument("Invalid syntax exception");
   }
   return numbers.top();
 }
@@ -300,7 +300,7 @@ GraphData CalcGraph(const GraphConditions& conds) {
       max_y = std::max(res, max_y);
       data.xy.back().first.push_back(i);
       data.xy.back().second.push_back(res);
-    } else {
+    } else if (data.xy.back() != std::pair<QVector<double>, QVector<double>>()) {
       data.xy.emplace_back();
     }
     i = (std::round(i * 1000.0) / 1000.0) + step;
