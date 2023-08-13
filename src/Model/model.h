@@ -19,15 +19,15 @@ class Model {
   }
 
   void CalcGraph(const GraphConditions& conds) {
-    graph_ = s21::BasicCalc::CalcGraph(conds);
+    graph_ = BasicCalc::CalcGraph(conds);
   }
 
   void CalcExpression(const std::string& expr) {
-    ans_ = s21::BasicCalc::CalcMathExpr(expr);
+    ans_ = BasicCalc::CalcMathExpr(expr);
   }
 
   void CalcEquation(const std::string& expr, double x) {
-    ans_ = s21::BasicCalc::CalcEquation(expr, x);
+    ans_ = BasicCalc::CalcEquation(expr, x);
   }
 
   double GetExpressionAns() noexcept { return ans_; }
@@ -39,9 +39,9 @@ class Model {
   const CreditData& GetCreditData() noexcept { return cred_.GetData(); }
 
  private:
-  s21::Deposit dep_{};
+  Deposit dep_{};
   GraphData graph_{};
-  s21::Credit cred_{};
+  Credit cred_{};
   double ans_{};
 };
 
