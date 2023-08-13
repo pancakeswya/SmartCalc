@@ -53,7 +53,7 @@ class MathOperation {
   Type type_{};
 };
 
-const std::unordered_map<std::string, MathOperation> op_map = {
+const std::unordered_map<std::string_view, MathOperation> op_map = {
     {"--",
      MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kSign,
                    [](double num) -> double { return -num; })},
@@ -164,7 +164,7 @@ void ProcessOperation(char op, bool prev_was_num,
   MakeShuntYardOp(map_it->second, operations, numbers);
 }
 
-size_t ProcessFunction(const std::string& expr,
+size_t ProcessFunction(const std::string_view& expr,
                        std::stack<MathOperation>& operations) {
   decltype(op_map.end()) map_it;
   size_t size = 0;
@@ -178,7 +178,7 @@ size_t ProcessFunction(const std::string& expr,
   return size - 1;
 }
 
-size_t ProcessNumber(const std::string& expr, bool prev_was_num,
+size_t ProcessNumber(const std::string_view& expr, bool prev_was_num,
                      std::stack<double>& numbers) {
   size_t n_size;
   double number = std::stod(&expr[0], &n_size);
