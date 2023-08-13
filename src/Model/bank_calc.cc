@@ -119,7 +119,8 @@ void Deposit::AddReplenishment(const QDate& start_date,
         break;
       }
     }
-    transact_date = transact_date.addMonths(GetRealPayFreqRep(u_transaction.freq));
+    transact_date =
+        transact_date.addMonths(GetRealPayFreqRep(u_transaction.freq));
     SetValidPayDate(transact_date, transact_date.day());
   }
 }

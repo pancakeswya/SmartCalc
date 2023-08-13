@@ -241,10 +241,19 @@ TEST(SmartCalculator, TestFunc29) {
 
 TEST(SmartCalculator, TestFunc30) {
   s21::Model m;
-  s21::DepositConditions dc = {true, 1, 120, 0, 13, 8.5, 1000000, 13.4, 0,
-                               {2023, 8, 13}, {{{2023, 8, 13}, 5000, 1},
-                                               {{2024, 4, 5}, 10000, 1}},
-                               {{{2023, 12, 12}, 4000, 0}}};
+  s21::DepositConditions dc = {
+      true,
+      1,
+      120,
+      0,
+      13,
+      8.5,
+      1000000,
+      13.4,
+      0,
+      {2023, 8, 13},
+      {{{2023, 8, 13}, 5000, 1}, {{2024, 4, 5}, 10000, 1}},
+      {{{2023, 12, 12}, 4000, 0}}};
   m.CalcDeposit(dc);
   auto& data = m.GetDepositData();
   EXPECT_EQ(data.replen[0].first, QDate(2023, 9, 13));
@@ -262,10 +271,19 @@ TEST(SmartCalculator, TestFunc30) {
 
 TEST(SmartCalculator, TestFunc31) {
   s21::Model m;
-  s21::DepositConditions dc = {false, 0, 120, 2, 13, 8.5, 1000000, 13.4, 0,
-                               {2023, 8, 13}, {{{2023, 8, 13}, 5000, 2},
-                                               {{2024, 4, 5}, 10000, 1}},
-                               {{{2023, 12, 12}, 4000, 0}}};
+  s21::DepositConditions dc = {
+      false,
+      0,
+      120,
+      2,
+      13,
+      8.5,
+      1000000,
+      13.4,
+      0,
+      {2023, 8, 13},
+      {{{2023, 8, 13}, 5000, 2}, {{2024, 4, 5}, 10000, 1}},
+      {{{2023, 12, 12}, 4000, 0}}};
   m.CalcDeposit(dc);
   auto& data = m.GetDepositData();
   EXPECT_EQ(data.replen[0].first, QDate(2023, 10, 13));
@@ -281,7 +299,7 @@ TEST(SmartCalculator, TestFunc31) {
   EXPECT_FLOAT_EQ(data.total, 1005000);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -192,8 +192,7 @@ void MainWindow::ParseUserTransactions(QGridLayout* layout, short int click,
         qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget());
     auto field =
         qobject_cast<QLineEdit*>(layout->itemAtPosition(i, 1)->widget());
-    auto box =
-        qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
+    auto box = qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
     opt.push_back({date->date(), field->text().toDouble(),
                    static_cast<short int>(box->currentData().toInt())});
   }

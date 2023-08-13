@@ -1,12 +1,11 @@
 #include "secondwindow.h"
 
+#include <QDebug>
 #include <QStandardItemModel>
 #include <cmath>
 
 #include "../ExtLibs/qcustomplot.h"
 #include "ui_secondwindow.h"
-
-#include <QDebug>
 
 namespace s21 {
 
@@ -124,8 +123,7 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   }
   if (!data.tax.empty()) {
     QModelIndex index_tax;
-    auto table_model_tax =
-        new QStandardItemModel(data.tax.size(), 2, this);
+    auto table_model_tax = new QStandardItemModel(data.tax.size(), 2, this);
     ui_->tableView_2->show();
     ui_->tableView_2->horizontalScrollBar()->setDisabled(true);
     ui_->tableView_2->verticalScrollBar()->setDisabled(true);

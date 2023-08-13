@@ -94,8 +94,9 @@ const std::unordered_map<std::string, MathOperation> op_map = {
     {"-", MathOperation(
               MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
               [](double num1, double num2) -> double { return num1 - num2; })},
-    {"(", MathOperation(MathOperation::Type::kUnary,
-                        MathOperation::Priority::kBrace, (double(*)(double)){})}};
+    {"(",
+     MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kBrace,
+                   (double (*)(double)){})}};
 
 template <typename T>
 inline T& StackPull(std::stack<T>& stack) {
@@ -300,7 +301,8 @@ GraphData CalcGraph(const GraphConditions& conds) {
       max_y = std::max(res, max_y);
       data.xy.back().first.push_back(i);
       data.xy.back().second.push_back(res);
-    } else if (data.xy.back() != std::pair<QVector<double>, QVector<double>>()) {
+    } else if (data.xy.back() !=
+               std::pair<QVector<double>, QVector<double>>()) {
       data.xy.emplace_back();
     }
     i = (std::round(i * 1000.0) / 1000.0) + step;
