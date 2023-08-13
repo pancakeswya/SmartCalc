@@ -8,35 +8,35 @@ namespace s21 {
 
 class Model {
  public:
-  void CalcCredit(CreditConditions &conds) {
-    cred_.SetConditions(std::move(conds));
+  void CalcCredit(const CreditConditions& conds) {
+    cred_.SetConditions(conds);
     cred_.CalcCredit();
   }
 
-  void CalcDeposit(DepositConditions &conds) {
-    dep_.SetConditions(std::move(conds));
+  void CalcDeposit(const DepositConditions& conds) {
+    dep_.SetConditions(conds);
     dep_.CalcDeposit();
   }
 
-  void CalcGraph(GraphConditions &conds) {
+  void CalcGraph(const GraphConditions& conds) {
     graph_ = s21::BasicCalc::CalcGraph(conds);
   }
 
-  void CalcExpression(const std::string &expr) {
+  void CalcExpression(const std::string& expr) {
     ans_ = s21::BasicCalc::CalcMathExpr(expr);
   }
 
-  void CalcEquation(std::string expr, double x) {
+  void CalcEquation(const std::string& expr, double x) {
     ans_ = s21::BasicCalc::CalcEquation(expr, x);
   }
 
-  double &GetExpressionAns() noexcept { return ans_; }
+  double GetExpressionAns() noexcept { return ans_; }
 
-  const GraphData &GetGraphData() noexcept { return graph_; }
+  const GraphData& GetGraphData() noexcept { return graph_; }
 
-  const DepositData &GetDepositData() noexcept { return dep_.GetData(); }
+  const DepositData& GetDepositData() noexcept { return dep_.GetData(); }
 
-  const CreditData &GetCreditData() noexcept { return cred_.GetData(); }
+  const CreditData& GetCreditData() noexcept { return cred_.GetData(); }
 
  private:
   s21::Deposit dep_{};

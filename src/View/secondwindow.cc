@@ -1,9 +1,10 @@
 #include "secondwindow.h"
-#include "ui_secondwindow.h"
-#include "../ExtLibs/qcustomplot.h"
 
 #include <QStandardItemModel>
 #include <cmath>
+
+#include "../ExtLibs/qcustomplot.h"
+#include "ui_secondwindow.h"
 
 namespace s21 {
 
@@ -48,7 +49,7 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   ui_->out_dep_num->setText(QString::number(data.perc_sum, 'f', 2) + "\n");
   ui_->out_dep->setText(ui_->out_dep->text() + "Налог\n");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
-                           QString::number(data.tax_sum, 'f', 2) + "\n");
+                            QString::number(data.tax_sum, 'f', 2) + "\n");
   if (data.tax_sum > 0.0) {
     ui_->out_dep->setText(ui_->out_dep->text() + "Доход за вычетом налогов\n");
     ui_->out_dep_num->setText(
@@ -58,11 +59,11 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   if (data.eff_rate > 0.0) {
     ui_->out_dep->setText(ui_->out_dep->text() + "Эффективная ставка\n");
     ui_->out_dep_num->setText(ui_->out_dep_num->text() +
-                             QString::number(data.eff_rate, 'f', 2) + "\n");
+                              QString::number(data.eff_rate, 'f', 2) + "\n");
   }
   ui_->out_dep->setText(ui_->out_dep->text() + "Сумма на вкладе к концу срока");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
-                           QString::number(data.total, 'f', 2));
+                            QString::number(data.total, 'f', 2));
   auto it_rep = repay.begin();
   auto it_dep = data.payment.begin();
   for (int row = 0, dep_line = 0, i = 0;
@@ -107,12 +108,13 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   table_model->setHeaderData(1, Qt::Horizontal, "Вклад\nпополнен");
   ui_->tableView->setModel(table_model);
   ui_->tableView->setFixedWidth(ui_->tableView->verticalHeader()->width() +
-                               ui_->tableView->horizontalHeader()->length() +
-                               +ui_->tableView->frameWidth() * 2);
+                                ui_->tableView->horizontalHeader()->length() +
+                                +ui_->tableView->frameWidth() * 2);
   if (table_model->rowCount() < SecondWinSizes::kTableRowMax) {
-    ui_->tableView->setFixedHeight(ui_->tableView->horizontalHeader()->height() +
-                                  ui_->tableView->verticalHeader()->length() +
-                                  ui_->tableView->frameWidth() * 2);
+    ui_->tableView->setFixedHeight(
+        ui_->tableView->horizontalHeader()->height() +
+        ui_->tableView->verticalHeader()->length() +
+        ui_->tableView->frameWidth() * 2);
   } else {
     ui_->tableView->setFixedHeight(SecondWinSizes::kMaxTableSize);
     ui_->tableView->verticalScrollBar()->setDisabled(false);
@@ -120,7 +122,7 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   }
   if (data.tax.size()) {
     QModelIndex index_tax;
-    QStandardItemModel *table_model_tax =
+    QStandardItemModel* table_model_tax =
         new QStandardItemModel(data.tax.size(), 2, this);
     ui_->tableView_2->show();
     ui_->tableView_2->horizontalScrollBar()->setDisabled(true);
@@ -190,10 +192,10 @@ void SecondWindow::SlotCredit(const CreditData& data) {
   }
   ui_->out_dep->setText("Начисленные проценты\n");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
-                           QString::number(data.overpay, 'f', 2) + "\n");
+                            QString::number(data.overpay, 'f', 2) + "\n");
   ui_->out_dep->setText(ui_->out_dep->text() + "Долг + проценты");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
-                           QString::number(data.total, 'f', 2));
+                            QString::number(data.total, 'f', 2));
   for (int row = 0; row < table_model->rowCount(); row++) {
     for (int col = 0; col < table_model->columnCount(); col++) {
       index = table_model->index(row, col);
@@ -211,11 +213,11 @@ void SecondWindow::SlotCredit(const CreditData& data) {
   table_model->setHeaderData(0, Qt::Horizontal, "Дата");
   table_model->setHeaderData(1, Qt::Horizontal, "Платеж");
   ui_->tableView->setFixedWidth(ui_->tableView->verticalHeader()->width() +
-                               ui_->tableView->horizontalHeader()->length() +
-                               +ui_->tableView->frameWidth() * 2);
+                                ui_->tableView->horizontalHeader()->length() +
+                                +ui_->tableView->frameWidth() * 2);
   ui_->tableView->setFixedHeight(ui_->tableView->horizontalHeader()->height() +
-                                ui_->tableView->verticalHeader()->length() +
-                                ui_->tableView->frameWidth() * 2);
+                                 ui_->tableView->verticalHeader()->length() +
+                                 ui_->tableView->frameWidth() * 2);
 }
 
 void SecondWindow::SlotPlot(const GraphData& data) {
@@ -229,7 +231,7 @@ void SecondWindow::SlotPlot(const GraphData& data) {
     ui_->widget->graph(i)->data()->clear();
   }
   int graph_i = 0;
-  for (auto &xy : data.xy) {
+  for (auto& xy : data.xy) {
     ui_->widget->addGraph();
     ui_->widget->graph(graph_i++)->setData(xy.first, xy.second);
   }

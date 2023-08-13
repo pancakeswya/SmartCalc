@@ -1,11 +1,11 @@
 #ifndef SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H
 #define SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H
 
-#include "../Controller/controller.h"
-#include "secondwindow.h"
-
 #include <QGridLayout>
 #include <QMainWindow>
+
+#include "../Controller/controller.h"
+#include "secondwindow.h"
 
 namespace s21 {
 
@@ -17,14 +17,14 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(Controller *ctrl);
-  explicit MainWindow(QWidget *parent = nullptr);
+  explicit MainWindow(Controller* ctrl);
+  explicit MainWindow(QWidget* parent = nullptr);
   ~MainWindow();
 
  private:
-  Controller *controller_{};
-  Ui::MainWindow *ui_;
-  SecondWindow *sec_win_;
+  Controller* controller_{};
+  Ui::MainWindow* ui_;
+  SecondWindow* sec_win_;
   QString x_str_;
   bool x_mode_;
   short int click_count_rep_;
@@ -61,9 +61,9 @@ class MainWindow : public QMainWindow {
   void OnAutoscaleStateChanged();
   void OnPushButtonXclicked();
  signals:
-  void SignalDeposit(const DepositData &);
-  void SignalCredit(const CreditData &);
-  void SignalPlot(const GraphData &);
+  void SignalDeposit(const DepositData&);
+  void SignalCredit(const CreditData&);
+  void SignalPlot(const GraphData&);
 };
 
 }  // namespace s21

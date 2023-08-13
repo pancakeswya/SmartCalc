@@ -1,7 +1,8 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QMessageBox>
+
+#include "ui_mainwindow.h"
 
 namespace s21 {
 
@@ -130,13 +131,13 @@ void MainWindow::SetWidgets() {
   ui_->label_tax->setValidator(dbl_val);
   ui_->label_key_rate->setValidator(dbl_val);
   ui_->doubleSpinBoXa->setRange(-std::numeric_limits<double>::max(),
-                               std::numeric_limits<double>::max());
+                                std::numeric_limits<double>::max());
   ui_->doubleSpinBoXi->setRange(-std::numeric_limits<double>::max(),
-                               std::numeric_limits<double>::max());
+                                std::numeric_limits<double>::max());
   ui_->doubleSpinBoYa->setRange(-std::numeric_limits<double>::max(),
-                               std::numeric_limits<double>::max());
+                                std::numeric_limits<double>::max());
   ui_->doubleSpinBoYi->setRange(-std::numeric_limits<double>::max(),
-                               std::numeric_limits<double>::max());
+                                std::numeric_limits<double>::max());
   ui_->label_tax->setText("13");
   ui_->label_key_rate->setText("8.5");
   ui_->wth_rem->hide();

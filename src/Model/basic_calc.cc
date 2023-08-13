@@ -188,9 +188,35 @@ size_t ProcessNumber(const std::string& expr, bool prev_was_num,
   return n_size - 1;
 }
 
+void FixPower(std::string& expr, size_t i) noexcept {
+  for (; std::isspace(expr[i]); ++i)
+    ;
+  size_t start = i;
+  bool has_pow = false;
+  while (std::isalnum(expr[i]) || std::isspace(expr[i]) || expr[i] == '^' ||
+         expr[i] == '(' || expr[i] == '.') {
+    if (expr[i] == '^') {
+      has_pow = true;
+    }
+    if (expr[i] == '(') {
+      for (; expr[i] != ')' && expr[i]; ++i)
+        ;
+      for (; expr[i] == ')'; ++i)
+        ;
+      continue;
+    }
+    ++i;
+  }
+  if (has_pow) {
+    expr.insert(start, "(");
+    expr.insert(i + 1, ")");
+  }
+}
+
 }  // namespace
 
-double CalcMathExpr(const std::string& expr) {
+double CalcMathExpr(const std::string& str) {
+  std::string expr = str;
   bool prev_was_num = false;
   std::stack<double> numbers;
   std::stack<MathOperation> operations;
@@ -206,11 +232,14 @@ double CalcMathExpr(const std::string& expr) {
         }
         i += 2;
         [[fallthrough]];
+      case '^':
       case '+':
       case '-':
       case '*':
       case '/':
-      case '^':
+        if (expr[i] == '^') {
+          FixPower(expr, i + 1);
+        }
         ProcessOperation(expr[i], prev_was_num, operations, numbers);
         prev_was_num = false;
         break;
