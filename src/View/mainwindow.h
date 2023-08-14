@@ -26,7 +26,6 @@ class MainWindow : public QMainWindow {
   Ui::MainWindow* ui_;
   SecondWindow* sec_win_;
   QString x_str_;
-  bool x_mode_;
   short int click_count_rep_;
   short int click_count_wth_;
   static constexpr int kMaxInputSize = 255;
@@ -59,7 +58,6 @@ class MainWindow : public QMainWindow {
   void OnPushButtonDelRepClicked();
   void OnPushButtonDelWthClicked();
   void OnAutoscaleStateChanged();
-  void OnPushButtonXclicked();
  signals:
   void SignalDeposit(const DepositData&);
   void SignalCredit(const CreditData&);

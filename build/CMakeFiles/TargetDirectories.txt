@@ -1,0 +1,4 @@
+/mnt/c/Users/niyaz/CLionProjects/SmartCalc/build/CMakeFiles/SmartCalc_v2.0.dir
+/mnt/c/Users/niyaz/CLionProjects/SmartCalc/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/niyaz/CLionProjects/SmartCalc/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/niyaz/CLionProjects/SmartCalc/build/CMakeFiles/SmartCalc_v2.0_autogen.dir

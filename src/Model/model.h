@@ -22,12 +22,12 @@ class Model {
     graph_ = BasicCalc::CalcGraph(conds);
   }
 
-  void CalcExpression(const std::string& expr) {
-    ans_ = BasicCalc::CalcMathExpr(expr);
+  void CalcExpression(const std::string_view& expr) {
+    ans_ = BasicCalc::CalcMathExpr(expr.data());
   }
 
-  void CalcEquation(const std::string& expr, double x) {
-    ans_ = BasicCalc::CalcEquation(expr, x);
+  void CalcEquation(const std::string_view& expr, double x) {
+    ans_ = BasicCalc::CalcEquation(expr.data(), x);
   }
 
   double GetExpressionAns() noexcept { return ans_; }

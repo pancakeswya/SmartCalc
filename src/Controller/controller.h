@@ -24,8 +24,13 @@ class Controller {
     return model_->GetGraphData();
   }
 
-  double CalculateExpression(const std::string& expr) {
+  double CalculateExpression(std::string_view expr) {
     model_->CalcExpression(expr);
+    return model_->GetExpressionAns();
+  }
+
+  double CalculateEquation(std::string_view expr, double x) {
+    model_->CalcEquation(expr, x);
     return model_->GetExpressionAns();
   }
 

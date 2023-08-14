@@ -101,7 +101,7 @@ const std::unordered_map<std::string_view, MathOperation> op_map = {
 template <typename T>
 inline T& StackPull(std::stack<T>& stack) {
   if (stack.empty()) {
-    throw std::out_of_range("Invalid syntax exception");
+    throw std::invalid_argument("Invalid syntax exception");
   }
   T& top_val = stack.top();
   stack.pop();
@@ -164,7 +164,7 @@ void ProcessOperation(char op, bool prev_was_num,
   MakeShuntYardOp(map_it->second, operations, numbers);
 }
 
-size_t ProcessFunction(const std::string_view& expr,
+size_t ProcessFunction(std::string_view expr,
                        std::stack<MathOperation>& operations) {
   decltype(op_map.end()) map_it;
   size_t size = 0;
@@ -178,7 +178,7 @@ size_t ProcessFunction(const std::string_view& expr,
   return size - 1;
 }
 
-size_t ProcessNumber(const std::string_view& expr, bool prev_was_num,
+size_t ProcessNumber(std::string_view expr, bool prev_was_num,
                      std::stack<double>& numbers) {
   size_t n_size;
   double number = std::stod(&expr[0], &n_size);
@@ -216,8 +216,7 @@ void FixPower(std::string& expr, size_t i) noexcept {
 
 }  // namespace
 
-double CalcMathExpr(const std::string& str) {
-  std::string expr = str;
+double CalcMathExpr(std::string expr) {
   bool prev_was_num = false;
   std::stack<double> numbers;
   std::stack<MathOperation> operations;
@@ -274,16 +273,15 @@ double CalcMathExpr(const std::string& str) {
   return numbers.top();
 }
 
-double CalcEquation(const std::string& expr, double x) {
-  std::string new_expr = expr;
+double CalcEquation(std::string expr, double x) {
   for (;;) {
-    std::size_t pos = new_expr.find('x');
+    std::size_t pos = expr.find('x');
     if (pos == std::string::npos) {
       break;
     }
-    new_expr.replace(pos, 1, std::to_string(x));
+    expr.replace(pos, 1, std::to_string(x));
   }
-  return CalcMathExpr(new_expr);
+  return CalcMathExpr(std::move(expr));
 }
 
 GraphData CalcGraph(const GraphConditions& conds) {
@@ -295,7 +293,7 @@ GraphData CalcGraph(const GraphConditions& conds) {
               max_y = -100000.0;
   double i = conds.x_min;
   while (i <= conds.x_max) {
-    res = CalcEquation(conds.expr, i);
+    res = CalcEquation(conds.expr.data(), i);
     if (!std::isnan(res) && !std::isinf(res)) {
       min_y = std::min(res, min_y);
       max_y = std::max(res, max_y);

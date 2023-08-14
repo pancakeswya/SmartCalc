@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       ui_(new Ui::MainWindow),
       sec_win_(new SecondWindow(this)),
-      x_mode_(),
       click_count_rep_(-1),
       click_count_wth_(-1) {
   ui_->setupUi(this);
@@ -71,8 +70,7 @@ void MainWindow::SetSignals() {
           SLOT(OnPushButtonDelWthClicked()));
   connect(ui_->autoscale, SIGNAL(clicked(bool)), this,
           SLOT(OnAutoscaleStateChanged()));
-  connect(ui_->pushButton_x, SIGNAL(clicked()), this,
-          SLOT(OnPushButtonXclicked()));
+  connect(ui_->pushButton_x, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
   connect(ui_->pushButton_0, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
   connect(ui_->pushButton_1, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
   connect(ui_->pushButton_2, SIGNAL(clicked()), this, SLOT(DigitsNumbers()));
@@ -218,12 +216,6 @@ void MainWindow::OnPushButtonDotClicked() {
   }
 }
 
-void MainWindow::OnPushButtonXclicked() {
-  StartPointClear();
-  ui_->res_out->setText(ui_->res_out->text() + "x");
-  x_mode_ = true;
-}
-
 void MainWindow::DigitsNumbers() {
   auto button_num = dynamic_cast<QPushButton*>(sender());
   StartPointClear();
@@ -270,63 +262,60 @@ void MainWindow::OnPushButtonCbraceClicked() {
 }
 
 void MainWindow::OnPushButtonEqClicked() {
+  bool x_mode = false;
   QString label = ui_->res_out->text();
-  if (x_mode_) {
+  if (label.length() > kMaxInputSize) {
+    QMessageBox::warning(this, "Warning", "Превышено количество символов");
+    return;
+  }
+  if (label.contains("x") && !label.contains("xx")) {
+    x_mode = true;
+  }
+  double ans = 0;
+  if (x_mode) {
     if (x_str_.isEmpty()) {
-      if (ui_->res_out->text().contains("x") &&
-          !ui_->res_out->text().contains("xx")) {
-        x_str_ = ui_->res_out->text();
-        ui_->res_out->setText("x=");
-      } else {
-        x_mode_ = false;
+      x_str_ = ui_->res_out->text();
+      ui_->res_out->setText("x=");
+      return;
+    }
+    if (label.contains("x=")) {
+      label.remove("x=");
+      try {
+        ans = controller_->CalculateEquation(x_str_.toStdString(),
+                                             label.toDouble());
+      } catch (std::invalid_argument& exc) {
+        QMessageBox::critical(this, "Error", exc.what());
       }
-    } else {
-      if (label.contains("x=")) {
-        label.remove("x=");
-      }
-      if (!label.isEmpty()) {
-        double x = label.toDouble();
-        x_str_.replace("x", QString::number(x));
-      }
-      label = x_str_;
-      x_mode_ = false;
       x_str_.clear();
     }
-  }
-  if (!x_mode_) {
-    if (label.length() > kMaxInputSize) {
-      QMessageBox::warning(this, "Warning", "Превышено количество символов");
-    } else {
-      try {
-        double ans = controller_->CalculateExpression(label.toStdString());
-        ui_->res_out->setText(QString::number(ans));
-      } catch (std::exception& exc) {
-        QMessageBox::critical(this, "Error", exc.what());
-        ui_->res_out->setText("0");
-      }
+  } else {
+    try {
+      ans = controller_->CalculateExpression(label.toStdString());
+    } catch (std::invalid_argument& exc) {
+      QMessageBox::critical(this, "Error", exc.what());
     }
   }
+  ui_->res_out->setText(QString::number(ans));
 }
 
 void MainWindow::OnPushButtonBinClicked() {
   QString tmp = ui_->res_out->text();
+  QChar prev = tmp.front();
   int i = tmp.length() - 1;
   for (; i >= 0; i--) {
-    if (tmp[i] != '.') {
-      if (tmp[i] == '(' || !tmp[i].isDigit()) {
-        break;
-      }
-      if (tmp[i] == '0') {
-        return;
-      }
+    if (prev.isDigit() && !tmp[i].isDigit()) {
+      break;
     }
+    prev = tmp[i];
   }
-  if (i == -1 || tmp[i] == '(') {
-    tmp.insert(++i, '-');
-  } else if (tmp[i] == '-') {
-    tmp.replace(i, 1, "+");
-  } else if (tmp[i] == '+') {
-    tmp.replace(i, 1, "-");
+  if (prev != '0') {
+    if (tmp[i] == '-') {
+      tmp.replace(i, 1, "+");
+    } else if (tmp[i] == '+') {
+      tmp.replace(i, 1, "-");
+    } else if (i == -1 || prev.isDigit()) {
+      tmp.insert(i + 1, '-');
+    }
   }
   ui_->res_out->setText(tmp);
 }
@@ -396,17 +385,17 @@ void MainWindow::OnPushButtonDepositClicked() {
 
 void MainWindow::OnPushButtonGraphClicked() {
   if (MainWindow::window()->geometry().height() == WindowSizes::kHeight) {
-    this->setFixedSize(WindowSizes::kWidth, WindowSizes::kHeightGraph);
+    setFixedSize(WindowSizes::kWidth, WindowSizes::kHeightGraph);
   } else {
-    this->setFixedSize(WindowSizes::kWidth, WindowSizes::kHeight);
+    setFixedSize(WindowSizes::kWidth, WindowSizes::kHeight);
   }
 }
 
 void MainWindow::OnTabWidgetCurrentChanged(int index) {
   if (index &&
       MainWindow::window()->geometry().height() == WindowSizes::kHeightGraph) {
-    this->setFixedSize(MainWindow::window()->geometry().width(),
-                       WindowSizes::kHeight);
+    setFixedSize(MainWindow::window()->geometry().width(),
+                 WindowSizes::kHeight);
   }
 }
 
@@ -418,15 +407,15 @@ void MainWindow::OnPushButtonPlotClicked() {
         this, "Warning",
         "Область значений или область определения функции не определена");
   } else {
+    GraphConditions conds = {
+        ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
+        ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
+        ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
     try {
-      GraphConditions conds = {
-          ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
-          ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
-          ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
       const GraphData& data = controller_->CalculateGraph(conds);
       sec_win_->show();
       emit SignalPlot(data);
-    } catch (std::exception& exc) {
+    } catch (std::invalid_argument& exc) {
       QMessageBox::critical(this, "Error", exc.what());
     }
   }

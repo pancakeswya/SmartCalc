@@ -7,8 +7,8 @@
 
 namespace s21::BasicCalc {
 
-double CalcMathExpr(const std::string& expr);
-double CalcEquation(const std::string& expr, double x);
+double CalcMathExpr(std::string expr);
+double CalcEquation(std::string expr, double x);
 GraphData CalcGraph(const GraphConditions& conds);
 
 }  // namespace s21::BasicCalc
