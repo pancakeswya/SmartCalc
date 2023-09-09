@@ -22,7 +22,7 @@ set(QRC_FILES Resources/resources.qrc)
 set(PROJECT_SOURCES
         src/main.cc
         src/Controller/controller.h
-        src/Controller/data_types.h
+        src/Types/data_types.h
         src/ExtLibs/qcustomplot.cc
         src/ExtLibs/qcustomplot.h
         src/Model/model.h
@@ -37,6 +37,9 @@ set(PROJECT_SOURCES
         src/View/secondwindow.h
         src/View/secondwindow.ui
         )
+
+        
+include_directories("src/")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}

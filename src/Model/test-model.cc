@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "Model.h"
+#include <stdexcept>
+
+#include "model.h"
 
 TEST(SmartCalculator, TestOperation) {
   s21::Model m;
@@ -212,7 +214,7 @@ TEST(SmartCalculator, TestFunc25) {
 TEST(SmartCalculator, TestFunc26) {
   s21::Model m;
   std::string_view str = "1 + 4 *";
-  EXPECT_THROW(m.CalcExpression(str), std::out_of_range);
+  EXPECT_THROW(m.CalcExpression(str), std::invalid_argument);
 }
 
 TEST(SmartCalculator, TestFunc27) {

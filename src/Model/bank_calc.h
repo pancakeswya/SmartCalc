@@ -1,39 +1,34 @@
 #ifndef SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
 #define SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
 
-#include "../Controller/data_types.h"
+#include "Types/data_types.h"
 
 namespace s21 {
 
-class Credit : protected CreditConditions {
+class Credit {
  public:
   Credit() = default;
+  Credit(CreditConditions conds);
+
   ~Credit() = default;
 
-  Credit(const CreditConditions& conds);
-  Credit(CreditConditions&& conds) noexcept;
-
-  void SetConditions(const CreditConditions& conds);
-  void SetConditions(CreditConditions&& conds) noexcept;
-
+  void SetConditions(CreditConditions conds);
   CreditData& GetData() noexcept;
   void CalcCredit();
 
  private:
   CreditData data_{};
+  CreditConditions conds_{};
 };
 
-class Deposit : protected DepositConditions {
+class Deposit {
  public:
   Deposit() = default;
+  Deposit(DepositConditions conds);
+
   ~Deposit() = default;
 
-  Deposit(const DepositConditions& conds);
-  Deposit(DepositConditions&& conds) noexcept;
-
-  void SetConditions(const DepositConditions& conds);
-  void SetConditions(DepositConditions&& conds) noexcept;
-
+  void SetConditions(DepositConditions conds);
   DepositData& GetData() noexcept;
   void CalcDeposit();
 
@@ -42,36 +37,21 @@ class Deposit : protected DepositConditions {
                         const UserTransaction& u_transaction);
   void MakeDeposit();
   DepositData data_{};
+  DepositConditions conds_{};
 };
 
-inline Credit::Credit(const CreditConditions& conds)
-    : CreditConditions(conds) {}
+inline Credit::Credit(CreditConditions conds) : conds_(std::move(conds)) {}
 
-inline Credit::Credit(CreditConditions&& conds) noexcept
-    : CreditConditions(conds) {}
-
-inline void Credit::SetConditions(const CreditConditions& conds) {
-  *this = conds;
-}
-
-inline void Credit::SetConditions(CreditConditions&& conds) noexcept {
-  *this = std::move(conds);
+inline void Credit::SetConditions(CreditConditions conds) {
+  conds_ = std::move(conds);
 }
 
 inline CreditData& Credit::GetData() noexcept { return data_; }
 
-inline Deposit::Deposit(const DepositConditions& conds)
-    : DepositConditions(conds) {}
+inline Deposit::Deposit(DepositConditions conds) : conds_(std::move(conds)) {}
 
-inline Deposit::Deposit(DepositConditions&& conds) noexcept
-    : DepositConditions(std::move(conds)) {}
-
-inline void Deposit::SetConditions(const DepositConditions& conds) {
-  *this = conds;
-}
-
-inline void Deposit::SetConditions(DepositConditions&& conds) noexcept {
-  *this = std::move(conds);
+inline void Deposit::SetConditions(DepositConditions conds) {
+  conds_ = std::move(conds);
 }
 
 inline DepositData& Deposit::GetData() noexcept { return data_; }

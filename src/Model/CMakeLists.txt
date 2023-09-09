@@ -22,6 +22,8 @@ set(TEST_SOURCES
         bank_calc.h
         model.h)
 
+include_directories("../")
+
 add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 
 add_custom_target(test
