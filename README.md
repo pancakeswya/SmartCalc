@@ -23,7 +23,9 @@ Output fields:
 - Accrued interest.
 - Debt + interest.
 - A table with payments and payment dates.
-![](misc/credit.gif)
+<p align="center">
+  <img src="misc/credit.gif" alt="drawing" width="200"/>
+</p>
 The calculator has a special mode of operation: Deposit Calculator. It is written following the example of a calculator on the calcus website. Calculates values with the same accuracy to a penny as on the calcus calculator.
 The deposit calculator window contains the following fields:
 - Deposit amount - the initial deposit amount. Specified as an integer or a floating-point number.
@@ -34,4 +36,6 @@ The deposit calculator window contains the following fields:
 - Capitalization of interest - activate the checkbox if interest is credited to the account.
 - Deposits - the frequency of replenishment of the account. Set as an integer. Click on '+' to add a popolenie, '-' to remove.
 - Write-offs - frequency of partial
-![](misc/deposit.gif)
+<p align="center">
+  <img src="misc/deposit.gif" alt="drawing" width="200"/>
+</p>
