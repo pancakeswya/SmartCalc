@@ -35,6 +35,7 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   auto repay = data.replen;
   auto table_model =
       new QStandardItemModel(data.payment.size() + repay.size(), 2, this);
+  qDebug() << data.payment.size();
   setWindowIcon(QIcon(":/resources/img/money-logo.png"));
   ui_->tableView_2->hide();
   ui_->tableView->horizontalScrollBar()->setDisabled(true);

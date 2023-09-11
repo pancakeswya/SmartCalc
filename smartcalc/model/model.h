@@ -9,11 +9,13 @@ namespace s21 {
 class Model {
  public:
   void CalcCredit(const CreditConditions& conds) {
+    cred_.Clear();
     cred_.SetConditions(conds);
     cred_.CalcCredit();
   }
 
   void CalcDeposit(const DepositConditions& conds) {
+    dep_.Clear();
     dep_.SetConditions(conds);
     dep_.CalcDeposit();
   }

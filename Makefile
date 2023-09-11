@@ -2,7 +2,7 @@ OS           := $(shell uname -s)
 
 NAME         := SmartCalc_v2.0
 
-SRC_DIR      := src
+SRC_DIR      := smartcalc
 BUILD_DIR    := build
 LIB_DIR      := smartcalc/model
 DVI_DIR      := manual
