@@ -1,7 +1,7 @@
 #ifndef SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
 #define SMARTCALC_V2_SRC_MODEL_BANK_CALC_H_
 
-#include "Types/data_types.h"
+#include "types/data_types.h"
 
 namespace s21 {
 

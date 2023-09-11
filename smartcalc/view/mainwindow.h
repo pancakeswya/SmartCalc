@@ -4,7 +4,7 @@
 #include <QGridLayout>
 #include <QMainWindow>
 
-#include "Controller/controller.h"
+#include "controller/controller.h"
 #include "secondwindow.h"
 
 namespace s21 {

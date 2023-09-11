@@ -99,11 +99,11 @@ const std::unordered_map<std::string_view, MathOperation> op_map = {
                    (double (*)(double)){})}};
 
 template <typename T>
-inline T& StackPull(std::stack<T>& stack) {
+inline T StackPull(std::stack<T>& stack) {
   if (stack.empty()) {
     throw std::invalid_argument("Invalid syntax exception");
   }
-  T& top_val = stack.top();
+  T top_val = stack.top();
   stack.pop();
   return top_val;
 }
@@ -111,15 +111,15 @@ inline T& StackPull(std::stack<T>& stack) {
 void CalcShuntYard(std::stack<MathOperation>& operations,
                    std::stack<double>& numbers) {
   double res;
-  MathOperation& op = StackPull(operations);
+  MathOperation op = StackPull(operations);
   if (op.GetPriority() == MathOperation::Priority::kBrace) {
     throw std::invalid_argument("Matching brace exception");
   }
-  double& num1 = StackPull(numbers);
+  double num1 = StackPull(numbers);
   if (op.GetType() == MathOperation::Type::kUnary) {
     res = op.PerformOperation(num1);
   } else {
-    double& num2 = StackPull(numbers);
+    double num2 = StackPull(numbers);
     res = op.PerformOperation(num2, num1);
   }
   numbers.push(res);

@@ -1,7 +1,7 @@
 #ifndef SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
 #define SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
 
-#include "Model/model.h"
+#include "model/model.h"
 
 namespace s21 {
 

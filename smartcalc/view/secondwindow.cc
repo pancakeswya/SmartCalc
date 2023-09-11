@@ -4,7 +4,7 @@
 #include <QStandardItemModel>
 #include <cmath>
 
-#include "../ExtLibs/qcustomplot.h"
+#include "external/qcustomplot.h"
 #include "ui_secondwindow.h"
 
 namespace s21 {

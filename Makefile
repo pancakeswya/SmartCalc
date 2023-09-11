@@ -4,9 +4,9 @@ NAME         := SmartCalc_v2.0
 
 SRC_DIR      := src
 BUILD_DIR    := build
-LIB_DIR      := src/Model
+LIB_DIR      := smartcalc/model
 DVI_DIR      := manual
-DVI_FILE     := manual.texi
+DVI_FILE     := docs/manual.texi
 
 ifeq ($(OS), Linux)
 RUN          := ./$(BUILD_DIR)/$(NAME)

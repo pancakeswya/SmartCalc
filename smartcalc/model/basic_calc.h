@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "Types/data_types.h"
+#include "types/data_types.h"
 
 namespace s21::BasicCalc {
 

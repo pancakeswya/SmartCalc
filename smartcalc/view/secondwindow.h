@@ -4,7 +4,7 @@
 #include <QApplication>
 #include <QDialog>
 
-#include "Types/data_types.h"
+#include "types/data_types.h"
 
 namespace s21 {
 
