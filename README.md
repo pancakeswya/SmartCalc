@@ -8,8 +8,10 @@ The basic principle of calculations is implemented on the basis of Dijkstra's al
   <img src="misc/basic_calc.gif" />
 </p>
 The calculator implements the possibility of plotting functions and equation mode(with x as variable).
-![](misc/graph.gif)
-![](misc/x_mode.gif)
+<p align="center">
+  <img src="misc/graph" />
+  <img src="misc/x_mode" />
+</p>
 The calculator has a special mode of operation: Credit Calculator.It is written following the example of a calculator on the calcus website. Calculates values with the same accuracy to a penny as on the calcus calculator.
 The loan calculator window contains the following fields:
 - Loan amount - the desired loan amount. Specified as an integer or a floating-point number.
