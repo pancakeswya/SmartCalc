@@ -9,8 +9,10 @@ DVI_DIR      := manual
 DVI_FILE     := docs/manual.texi
 
 ifeq ($(OS), Linux)
+OPEN         := xdg-open
 RUN          := ./$(BUILD_DIR)/$(NAME)
 else
+OPEN         := open
 RUN          := open $(BUILD_DIR)/$(NAME).app
 endif
 
@@ -59,6 +61,7 @@ test gcov_report check-valgrind:
 .PHONY : test gcov_report check-valgrind
 
 clean: uninstall
+	$(RM) $(DVI_DIR)
 	$(RM) $(NAME)
 	$(RM) $(LIB_DIR)/$(BUILD_DIR)
 

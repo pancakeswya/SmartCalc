@@ -1,6 +1,6 @@
 \input texinfo
 @setfilename manual
-@settitle SmartCalc_v1.0
+@settitle SmartCalc_v2.0
 @documentencoding UTF-8
 
 @copying
