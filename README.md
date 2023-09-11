@@ -5,12 +5,12 @@ Basic math, credit and deposit calculator implementation in app based on QT fram
 
 The basic principle of calculations is implemented on the basis of Dijkstra's algorithm, the essence of which is to convert mathematical expressions from infix notation to reverse Polish notation.
 <p align="center">
-  <img src="misc/basic_calc.gif" />
+  <img src="misc/basic_calc.gif" alt="drawing" width="200"/>
 </p>
 The calculator implements the possibility of plotting functions and equation mode(with x as variable).
 <p align="center">
-  <img src="misc/graph.gif" />
-  <img src="misc/x_mode.gif" />
+  <img src="misc/graph.gif" alt="drawing" width="200"/>
+  <img src="misc/x_mode.gif" alt="drawing" width="200"/>
 </p>
 The calculator has a special mode of operation: Credit Calculator.It is written following the example of a calculator on the calcus website. Calculates values with the same accuracy to a penny as on the calcus calculator.
 The loan calculator window contains the following fields:
