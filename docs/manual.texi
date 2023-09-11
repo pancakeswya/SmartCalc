@@ -8,10 +8,10 @@ Copyright © 2023 by winfordt
 @end copying
 
 @titlepage
-@title Небольшая инструкция по использованию калькулятора
+@title A little instruction on using the calculator
 @vskip
 @insertcopying
-@author Нияз Хазигалеев
+@author Niyaz Khazigaleev
 @end titlepage
 
 @ifnottex
@@ -21,116 +21,116 @@ Copyright © 2023 by winfordt
 @end ifnottex
 
 @menu
-* General information:: В этом разделе представлена общая информация о принципе работы калькулятора.
-* Arithmetic operations:: В этом разделе представлена информация о списке реализованных арифметических операций.
-* Math function:: В этом разделе представлена информация о списке реализованных математических функций.
-* Charts:: В этом разделе представлена информация о возможности построения графиков функций.
-* Credit calculator:: В этом разделе представлена информация о возможности использования кредитного калькулятора.
-* Deposit calculator:: В этом разделе представлена информация о возможности использования депозитного калькулятора.
+* General information:: This section provides general information about how the calculator works.
+* Arithmetic operations:: This section provides information about the list of implemented arithmetic operations.
+* Math function:: This section provides information about the list of implemented mathematical functions.
+* Charts:: This section provides information about the possibility of charting functions.
+* Credit calculator:: This section provides information about the possibility of using a credit calculator.
+* Deposit calculator:: This section provides information about the possibility of using a deposit calculator.
 @end menu
 
 @node General information
 @chapter General information
 
-Калькулятор разработан на языке программирования C/C++ с использованием QT Creator версии 5.12.@*
-Основной принцип вычислений реализован на основе алгоритма Дейкстры, суть которого заключается в преобразовании математических выражений из инфиксной нотации в обратную польскую нотацию.
+The calculator is developed in the C/C++ programming language using QT Creator version 5.12.@*
+The basic principle of calculations is implemented on the basis of Dijkstra's algorithm, the essence of which is to convert mathematical expressions from infix notation to reverse Polish notation.
 
 @node  Arithmetic operations
 @chapter  Arithmetic operations
 
-В калькуляторе реализованы следующие арифметические операции:
+The calculator implements the following arithmetic operations:
 @enumerate
 @item
-Сложение - a + b
+Addition - a + b
 @item
-Вычитание - a - b
+Subtraction - a - b
 @item
-Умножение - a * b
+Multiplication - a * b
 @item
-Деление - a / b
+Division - a / b
 @item
-Возведение в степень - a ^ b
+Exponentiation - a ^ b
 @item
-Остаток от деления - a mod b
+The remainder of the division is a mod b
 @item
-Унарный плюс - +a
+Unary plus - +a
 @item
-Унарный минус - -a
+Unary minus - -a
 @item
-Для ввода сложных выражений используйте левую и правую скобки - (a)
+To enter complex expressions, use the left and right brackets - (a)
 @end enumerate
-Вы можете задать сложное математическое выражение, используя константу X.
-Введите выражение, нажмите "=" и получите ответ.
+You can specify a complex mathematical expression using the constant X.
+Enter the expression, click "=" and get the answer.
 
 @node Math function
 @chapter Math function
 
-В калькуляторе реализованы следующие математические функции:
+The calculator implements the following mathematical functions:
 @enumerate
 @item
-Вычисляет косинус - cos(x)
+Calculates the cosine - cos(x)
 @item
-Вычисляет синус - sin(x)
+Calculates the sine - sin(x)
 @item
-Вычисляет тангенс - tan(x)
+Calculates the tangent - tan(x)
 @item
-Вычисляет арккосинус - acos(x)
+Calculates the arccosine - acos(x)
 @item
-Вычисляет арксинус - asin(x)
+Calculates the arcsin - asin(x)
 @item
-Вычисляет арктангенс - atan(x)
+Calculates the arctangent - atan(x)
 @item
-Считает квадратный корень - sqrt(x)
+Counts the square root - sqrt(x)
 @item
-Считает натуральный логарифм - ln(x)
+Considers the natural logarithm - ln(x)
 @item
-Считает обычный логарифм - log(x)
+Considers the usual logarithm - log(x)
 @end enumerate
-Введите выражение, нажмите "=" и получите ответ.
+Enter the expression, click "=" and get the answer.
 
 @node Charts
 @chapter Charts
 
-Калькулятор реализует возможность построения графиков функций.@*
-Для того чтобы построить график, необходимо, чтобы в выражении присутствовала константа "x".@*
-Введите выражение, нажмите кнопку "graph".@*
-Далее появится окно для ввода области определения, области значений.@*
-После ввода значений нажмите "Ок", и появится новое окно с графиком.@*
+The calculator implements the possibility of plotting functions.@*
+In order to build a graph, it is necessary that the constant "x" is present in the expression.@*
+Enter the expression, click the "graph" button.@*
+Next, a window will appear for entering the definition area, the value area.@*
+After entering the values, click OK, and a new window with a graph will appear.@*
 @*
-Область определения и область значений функций ограничены числами от -1000000 до 1000000.
+The definition area and the range of function values are limited to numbers from -1000000 to 1000000.
 
 @node Credit calculator
 @chapter Credit calculator
-Калькулятор имеет специальный режим работы: Кредитный калькулятор.Написан по примеру калькулятора на сайте calcus. Высчитаывает величины с той же точностью до копейки как и на калькуляторе calcus.@*
-Окно кредитного калькулятора содержит следующие поля:@*
-- Сумма кредита - желаемая сумма кредита. Задается как целое число или число с плавающей запятой.@*
-- Срок кредита - устанавливается в месяцах, поддерживает только целочисленные значения.@*
-- Процентная ставка - желаемая процентная ставка. Задается как целое число или число с плавающей запятой.@*
-- Тип ежемесячных платежей - тип расчета ежемесячных платежей.@*
-Выходные поля:@*
-- Ежемесячный платеж по кредиту.@*
-- Начисленные проценты.@*
-- Долг + проценты.@*
-- Таблица с платежами и датами платежа.@*
+The calculator has a special mode of operation: Credit Calculator.It is written following the example of a calculator on the calcus website. Calculates values with the same accuracy to a penny as on the calcus calculator.@*
+The loan calculator window contains the following fields:@*
+- Loan amount - the desired loan amount. Specified as an integer or a floating-point number.@*
+- Loan term - set in months, supports only integer values.@*
+- Interest rate - the desired interest rate. Specified as an integer or a floating-point number.@*
+- Type of monthly payments - type of calculation of monthly payments.@*
+Output fields:@*
+- Monthly loan payment.@*
+- Accrued interest.@*
+- Debt + interest.@*
+- A table with payments and payment dates.@*
 @node Deposit calculator
 @chapter Deposit calculator
-Калькулятор имеет специальный режим работы: Калькулятор депозита. Написан по примеру калькулятора на сайте calcus. Высчитаывает величины с той же точностью до копейки как и на калькуляторе calcus.@*
-Окно калькулятора депозита содержит следующие поля:@*
-- Сумма вклада - начальная сумма депозита. Задается как целое число или число с плавающей запятой.@*
-- Срок размещения - на какой срок вы планируете инвестировать деньги. Устанавливается в месяцах, годах или днях в зависимости от выбора из выпадающего списка.@*
-- Начало срока.@*
-- Процентная ставка - это процент, под который вы вкладываете деньги. Задается как целое число или число с плавающей запятой.@*
-- Периодичность выплат - частота начисления процентов (выбирается из выпадающего списка).@*
-- Капитализация процентов - активируйте флажок, если проценты зачисляются на счет.@*
-- Пополнения - частота пополнения счета. Задается как целое число. Нажмите на '+' чтобы добавить пополенение, '-' чтобы убрать.@*
-- Списания - частота частичного снятия средств со счета. Задается как целое число. Нажмите на '+' чтобы добавить снятие, '-' чтобы убрать.@*
-- Неснижаемый остаток - сумма при которой нужно приостонвить снятия со счета.@*
-Выходные поля:@*
-- Начисленные проценты@*
-- Налог.@*
-- Доход за вычетом налогов.@*
-- Эффективная ставка. В отличие от калькулятора calcus считает с учетом всех пополнений и списаний.@*
-- Сумма на вкладе к концу срока.@*
-- Таблица с датами выплат и суммой выплат.@*
-- Таблица с налогами по годам.
+The calculator has a special mode of operation: Deposit Calculator. It is written following the example of a calculator on the calcus website. Calculates values with the same accuracy to a penny as on the calcus calculator.@*
+The deposit calculator window contains the following fields:@*
+- Deposit amount - the initial deposit amount. Specified as an integer or a floating-point number.@*
+- Placement period - for how long you plan to invest money. It is set in months, years or days, depending on the selection from the drop-down list.@*
+- The beginning of the term.@*
+- The interest rate is the percentage at which you invest money. Specified as an integer or a floating-point number.@*
+- Frequency of payments - frequency of interest accrual (selected from the drop-down list).@*
+- Capitalization of interest - activate the checkbox if interest is credited to the account.@*
+- Deposits - the frequency of replenishment of the account. Set as an integer. Click on '+' to add a deposit, '-' to remove.@*
+- Debits - the frequency of partial withdrawals from the account. Set as an integer. Click on '+' to add withdrawal, '-' to remove.@*
+- Non-deductible balance - the amount at which it is necessary to suspend withdrawals from the account.@*
+Output fields:@*
+- Accrued interest@*
+- Tax.@*
+- Income after taxes.@*
+- Effective bid. Unlike the calculator, calcus counts taking into account all deposits and debits.@*
+- The amount on the deposit by the end of the term.@*
+- A table with the dates of payments and the amount of payments.@*
+- A table with taxes by year.
 @bye
