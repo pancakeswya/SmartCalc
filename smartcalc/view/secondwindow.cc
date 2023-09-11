@@ -42,28 +42,28 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   ui_->tableView->verticalScrollBar()->setDisabled(true);
   ui_->tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   ui_->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  setWindowTitle("Расчет вклада");
+  setWindowTitle("Calculation of the deposit");
   if (ui_->widget->isVisible()) {
     this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui_->widget->setVisible(false);
   }
-  ui_->out_dep->setText("Начисленные проценты\n");
+  ui_->out_dep->setText("Accrued interest\n");
   ui_->out_dep_num->setText(QString::number(data.perc_sum, 'f', 2) + "\n");
-  ui_->out_dep->setText(ui_->out_dep->text() + "Налог\n");
+  ui_->out_dep->setText(ui_->out_dep->text() + "Tax\n");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
                             QString::number(data.tax_sum, 'f', 2) + "\n");
   if (data.tax_sum > 0.0) {
-    ui_->out_dep->setText(ui_->out_dep->text() + "Доход за вычетом налогов\n");
+    ui_->out_dep->setText(ui_->out_dep->text() + "Income after taxes\n");
     ui_->out_dep_num->setText(
         ui_->out_dep_num->text() +
         QString::number(data.perc_sum - data.tax_sum, 'f', 2) + "\n");
   }
   if (data.eff_rate > 0.0) {
-    ui_->out_dep->setText(ui_->out_dep->text() + "Эффективная ставка\n");
+    ui_->out_dep->setText(ui_->out_dep->text() + "Effective bid\n");
     ui_->out_dep_num->setText(ui_->out_dep_num->text() +
                               QString::number(data.eff_rate, 'f', 2) + "\n");
   }
-  ui_->out_dep->setText(ui_->out_dep->text() + "Сумма на вкладе к концу срока");
+  ui_->out_dep->setText(ui_->out_dep->text() + "Amount on the deposit");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
                             QString::number(data.total, 'f', 2));
   auto it_rep = repay.begin();
@@ -106,8 +106,8 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
       }
     }
   }
-  table_model->setHeaderData(0, Qt::Horizontal, "Дата");
-  table_model->setHeaderData(1, Qt::Horizontal, "Вклад\nпополнен");
+  table_model->setHeaderData(0, Qt::Horizontal, "Date");
+  table_model->setHeaderData(1, Qt::Horizontal, "Deposit\nreplenished");
   ui_->tableView->setModel(table_model);
   ui_->tableView->setFixedWidth(ui_->tableView->verticalHeader()->width() +
                                 ui_->tableView->horizontalHeader()->length() +
@@ -130,8 +130,8 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
     ui_->tableView_2->verticalScrollBar()->setDisabled(true);
     ui_->tableView_2->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui_->tableView_2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    table_model_tax->setHeaderData(0, Qt::Horizontal, "Год");
-    table_model_tax->setHeaderData(1, Qt::Horizontal, "Налог");
+    table_model_tax->setHeaderData(0, Qt::Horizontal, "Year");
+    table_model_tax->setHeaderData(1, Qt::Horizontal, "Tax");
     for (unsigned int i = 0; i < data.tax.size(); i++) {
       for (int j = 0; j < table_model_tax->columnCount(); j++) {
         index_tax = table_model_tax->index(i, j);
@@ -173,15 +173,15 @@ void SecondWindow::SlotCredit(const CreditData& data) {
   ui_->tableView->verticalScrollBar()->setDisabled(true);
   ui_->tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   ui_->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  QStringList months = {"Январь",   "Февраль", "Март",   "Апрель",
-                        "Май",      "Июнь",    "Июль",   "Август",
-                        "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
+  QStringList months = {"January",   "February", "March",   "April",
+                        "May",      "June",    "July",   "August",
+                        "September", "October", "November", "December"};
   QDate cur_date = cur_date.currentDate();
   auto table_model = new QStandardItemModel(data.payment.size(), 2, this);
   QModelIndex index;
   ui_->tableView->setModel(table_model);
-  setWindowTitle("Расчет кредита");
-  ui_->out_dep->setText("Ежемесячный платеж\n");
+  setWindowTitle("Credit calculation");
+  ui_->out_dep->setText("Monthly payment\n");
   {
     double last_payment = (data.payment.empty()) ? 0 : data.payment.back();
     QString dep_out = QString::number(data.payment.front(), 'f', 2);
@@ -191,10 +191,10 @@ void SecondWindow::SlotCredit(const CreditData& data) {
     dep_out += "\n";
     ui_->out_dep_num->setText(dep_out);
   }
-  ui_->out_dep->setText("Начисленные проценты\n");
+  ui_->out_dep->setText("Accrued interest\n");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
                             QString::number(data.overpay, 'f', 2) + "\n");
-  ui_->out_dep->setText(ui_->out_dep->text() + "Долг + проценты");
+  ui_->out_dep->setText(ui_->out_dep->text() + "Debt + interest");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
                             QString::number(data.total, 'f', 2));
   for (int row = 0; row < table_model->rowCount(); row++) {
@@ -211,8 +211,8 @@ void SecondWindow::SlotCredit(const CreditData& data) {
       }
     }
   }
-  table_model->setHeaderData(0, Qt::Horizontal, "Дата");
-  table_model->setHeaderData(1, Qt::Horizontal, "Платеж");
+  table_model->setHeaderData(0, Qt::Horizontal, "Date");
+  table_model->setHeaderData(1, Qt::Horizontal, "Payment");
   ui_->tableView->setFixedWidth(ui_->tableView->verticalHeader()->width() +
                                 ui_->tableView->horizontalHeader()->length() +
                                 +ui_->tableView->frameWidth() * 2);
@@ -225,7 +225,7 @@ void SecondWindow::SlotPlot(const GraphData& data) {
   if (!ui_->widget->isVisible()) {
     this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
   }
-  setWindowTitle("График");
+  setWindowTitle("Graph");
   setWindowIcon(QIcon(":/resources/img/graph-logo.png"));
   ui_->widget->xAxis->setRange(data.x_min, data.x_max);
   for (int i = 0; i < ui_->widget->graphCount(); i++) {
