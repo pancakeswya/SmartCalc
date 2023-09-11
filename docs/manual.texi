@@ -4,14 +4,14 @@
 @documentencoding UTF-8
 
 @copying
-Copyright © 2023 by winfordt
+Copyright © 2023 by pancakeswya
 @end copying
 
 @titlepage
 @title A little instruction on using the calculator
 @vskip
 @insertcopying
-@author Niyaz Khazigaleev
+@author HNR
 @end titlepage
 
 @ifnottex
