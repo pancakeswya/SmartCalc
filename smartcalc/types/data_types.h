@@ -72,7 +72,7 @@ struct DepositConditions {
 };
 
 struct GraphConditions {
-  std::string_view expr;
+  std::string expr;
   double x_max;
   double x_min;
   double y_max;
