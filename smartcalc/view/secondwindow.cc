@@ -1,13 +1,15 @@
 #include "secondwindow.h"
 
-#include <QDebug>
+#include <QDate>
 #include <QStandardItemModel>
+#include <QScrollBar>
 #include <cmath>
 
-#include "external/qcustomplot.h"
 #include "ui_secondwindow.h"
 
-namespace s21 {
+namespace smcalc {
+
+namespace {
 
 enum SecondWinSizes {
   kWidth = 400,
@@ -15,6 +17,8 @@ enum SecondWinSizes {
   kTableRowMax = 14100,
   kMaxTableSize = 521732
 };
+
+} // namespace
 
 SecondWindow::SecondWindow(QWidget* parent)
     : QDialog(parent), ui_(new Ui::SecondWindow) {
@@ -28,14 +32,13 @@ SecondWindow::SecondWindow(QWidget* parent)
 
 SecondWindow::~SecondWindow() { delete ui_; }
 
-void SecondWindow::SlotDeposit(const DepositData& data) {
+void SecondWindow::SlotDeposit(const deposit::Data& data) {
   QModelIndex index;
-  QDate date = data.start_date;
-  int tax_year = date.year();
+  deposit::Date date = data.start_date;
+  int tax_year = date.get_year();
   auto repay = data.replen;
   auto table_model =
       new QStandardItemModel(data.payment.size() + repay.size(), 2, this);
-  qDebug() << data.payment.size();
   setWindowIcon(QIcon(":/resources/img/money-logo.png"));
   ui_->tableView_2->hide();
   ui_->tableView->horizontalScrollBar()->setDisabled(true);
@@ -69,19 +72,19 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   auto it_rep = repay.begin();
   auto it_dep = data.payment.begin();
   for (int row = 0, dep_line = 0, i = 0;
-       date != data.finish_date && row < table_model->rowCount(); row++) {
-    for (int col = 0; col < table_model->columnCount(); col++) {
+       date != data.finish_date && row < table_model->rowCount(); ++row) {
+    for (int col = 0; col < table_model->columnCount(); ++col) {
       index = table_model->index(row, col);
       if (col == 0) {
         date = data.pay_dates[i++];
-        if (it_rep != repay.end() && date >= it_rep->first) {
+        if (it_rep != repay.end() && date >= it_rep->date) {
           double replen = 0;
           table_model->setHeaderData(row, Qt::Vertical, "");
           table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-          table_model->setData(index, it_rep->first.toString("dd-MM-yyyy"));
-          for (int cnt = 0; it_rep != repay.end() && date >= it_rep->first;
-               cnt++, it_rep++) {
-            replen += it_rep->second;
+          table_model->setData(index, it_rep->date.to_string("dd-MM-yyyy").data());
+          for (int cnt = 0; it_rep != repay.end() && date >= it_rep->date;
+               ++cnt, ++it_rep) {
+            replen += it_rep->sum;
             if (cnt) {
               table_model->removeRow(table_model->rowCount() - 1);
             }
@@ -94,9 +97,9 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
         table_model->setHeaderData(row, Qt::Vertical, dep_line + 1);
         table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
         if (date < data.finish_date) {
-          table_model->setData(index, date.toString("dd-MM-yyyy"));
+          table_model->setData(index, date.to_string("dd-MM-yyyy").data());
         } else {
-          table_model->setData(index, data.finish_date.toString("dd-MM-yyyy"));
+          table_model->setData(index, data.finish_date.to_string("dd-MM-yyyy").data());
         }
 
       } else {
@@ -132,8 +135,8 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
     ui_->tableView_2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     table_model_tax->setHeaderData(0, Qt::Horizontal, "Year");
     table_model_tax->setHeaderData(1, Qt::Horizontal, "Tax");
-    for (unsigned int i = 0; i < data.tax.size(); i++) {
-      for (int j = 0; j < table_model_tax->columnCount(); j++) {
+    for (unsigned int i = 0; i < data.tax.size(); ++i) {
+      for (int j = 0; j < table_model_tax->columnCount(); ++j) {
         index_tax = table_model_tax->index(i, j);
         if (j == 0) {
           table_model_tax->setData(index_tax, Qt::AlignCenter,
@@ -160,7 +163,7 @@ void SecondWindow::SlotDeposit(const DepositData& data) {
   }
 }
 
-void SecondWindow::SlotCredit(const CreditData& data) {
+void SecondWindow::SlotCredit(const credit::Data& data) {
   if (ui_->widget->isVisible()) {
     this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui_->widget->setVisible(false);
@@ -176,7 +179,7 @@ void SecondWindow::SlotCredit(const CreditData& data) {
   QStringList months = {"January",   "February", "March",   "April",
                         "May",      "June",    "July",   "August",
                         "September", "October", "November", "December"};
-  QDate cur_date = cur_date.currentDate();
+  auto cur_date = QDate::currentDate();
   auto table_model = new QStandardItemModel(data.payment.size(), 2, this);
   QModelIndex index;
   ui_->tableView->setModel(table_model);
@@ -197,8 +200,8 @@ void SecondWindow::SlotCredit(const CreditData& data) {
   ui_->out_dep->setText(ui_->out_dep->text() + "Debt + interest");
   ui_->out_dep_num->setText(ui_->out_dep_num->text() +
                             QString::number(data.total, 'f', 2));
-  for (int row = 0; row < table_model->rowCount(); row++) {
-    for (int col = 0; col < table_model->columnCount(); col++) {
+  for (int row = 0; row < table_model->rowCount(); ++row) {
+    for (int col = 0; col < table_model->columnCount(); ++col) {
       index = table_model->index(row, col);
       if (col == 0) {
         table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
@@ -221,26 +224,12 @@ void SecondWindow::SlotCredit(const CreditData& data) {
                                  ui_->tableView->frameWidth() * 2);
 }
 
-void SecondWindow::SlotPlot(const GraphData& data) {
-  if (!ui_->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
-  }
-  setWindowTitle("Graph");
-  setWindowIcon(QIcon(":/resources/img/graph-logo.png"));
-  ui_->widget->xAxis->setRange(data.x_min, data.x_max);
-  for (int i = 0; i < ui_->widget->graphCount(); i++) {
-    ui_->widget->graph(i)->data()->clear();
-  }
-  int graph_i = 0;
-  for (auto& xy : data.xy) {
-    ui_->widget->addGraph();
-    ui_->widget->graph(graph_i++)->setData(xy.first, xy.second);
-  }
-  ui_->widget->yAxis->setRange(data.y_min, data.y_max);
-  ui_->widget->replot();
-  ui_->widget->setInteraction(QCP::iRangeZoom, true);
-  ui_->widget->setInteraction(QCP::iRangeDrag, true);
-  ui_->widget->setVisible(true);
-}
+//void SecondWindow::SlotPlot(const GraphData& data) {
+//  if (!ui_->widget->isVisible()) {
+//    this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
+//  }
+//  setWindowTitle("Graph");
+//  setWindowIcon(QIcon(":/resources/img/graph-logo.png"));
+//}
 
 }  // namespace s21

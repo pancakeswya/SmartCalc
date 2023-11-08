@@ -1,43 +1,27 @@
-#ifndef SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
-#define SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
+#ifndef SMARTCALC_CONTROLLER_CONTROLLER_H_
+#define SMARTCALC_CONTROLLER_CONTROLLER_H_
 
-#include "model/model.h"
+#include "types/data_types.h"
 
-namespace s21 {
+namespace smcalc {
+
+class Model;
 
 class Controller {
  public:
-  Controller(Model* model) : model_(model) {}
+  explicit Controller(Model* model) noexcept;
 
-  const DepositData& CalculateDeposit(const DepositConditions& conds) {
-    model_->CalcDeposit(conds);
-    return model_->GetDepositData();
-  }
+  double CalculateExpression(const std::string& expr);
+  double CalculateEquation(const std::string& expr, double x);
+  const credit::Data& CalculateCredit(const credit::Conditions& conds);
+  const deposit::Data& CalculateDeposit(const deposit::Conditions& conds);
 
-  const CreditData& CalculateCredit(const CreditConditions& conds) {
-    model_->CalcCredit(conds);
-    return model_->GetCreditData();
-  }
-
-  const GraphData& CalculateGraph(const GraphConditions& conds) {
-    model_->CalcGraph(conds);
-    return model_->GetGraphData();
-  }
-
-  double CalculateExpression(std::string_view expr) {
-    model_->CalcExpression(expr);
-    return model_->GetExpressionAns();
-  }
-
-  double CalculateEquation(std::string_view expr, double x) {
-    model_->CalcEquation(expr, x);
-    return model_->GetExpressionAns();
-  }
+  void Reset();
 
  private:
   Model* model_;
 };
 
-}  // namespace s21
+} // smcalc
 
-#endif  // SMARTCALC_V2_SRC_CONTROLLER_CONTROLLER_H_
+#endif // SMARTCALC_CONTROLLER_CONTROLLER_H_

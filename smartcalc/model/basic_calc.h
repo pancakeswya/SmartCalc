@@ -1,16 +1,13 @@
-#ifndef SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
-#define SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
+#ifndef SMARTCALC_MODEL_BASIC_CALC_H_
+#define SMARTCALC_MODEL_BASIC_CALC_H_
 
 #include <string>
 
-#include "types/data_types.h"
+namespace smcalc::basic {
 
-namespace s21::BasicCalc {
+extern double CalculateFromString(std::string expr);
+extern double CalculateFromStringEquation(std::string expr, double x);
 
-double CalcMathExpr(std::string expr);
-double CalcEquation(std::string expr, double x);
-GraphData CalcGraph(const GraphConditions& conds);
+} // smcalc::basic
 
-}  // namespace s21::BasicCalc
-
-#endif  // SMARTCALC_V2_SRC_MODEL_BASIC_CALC_H_
+#endif // SMARTCALC_MODEL_BASIC_CALC_H_

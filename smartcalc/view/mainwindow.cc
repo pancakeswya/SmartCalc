@@ -3,10 +3,15 @@
 #include <QMessageBox>
 
 #include "ui_mainwindow.h"
+#include "util/date_conv_util.h"
 
-namespace s21 {
+namespace smcalc {
+
+namespace {
 
 enum WindowSizes { kWidth = 359, kHeight = 453, kHeightGraph = 619 };
+
+} // namespace
 
 MainWindow::MainWindow(Controller* ctrl) : MainWindow() { controller_ = ctrl; }
 
@@ -19,7 +24,7 @@ MainWindow::MainWindow(QWidget* parent)
   ui_->setupUi(this);
   SetSignals();
   SetWidgets();
-  setWindowTitle("SmartCalc_v2.0");
+  setWindowTitle("SmartCalc");
   setWindowIcon(QIcon(":/resources/img/calc-logo.png"));
 #ifdef _WIN32
   setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
@@ -34,7 +39,7 @@ void MainWindow::SetSignals() {
   connect(this, &MainWindow::SignalDeposit, sec_win_,
           &SecondWindow::SlotDeposit);
   connect(this, &MainWindow::SignalCredit, sec_win_, &SecondWindow::SlotCredit);
-  connect(this, &MainWindow::SignalPlot, sec_win_, &SecondWindow::SlotPlot);
+//  connect(this, &MainWindow::SignalPlot, sec_win_, &SecondWindow::SlotPlot);
   connect(ui_->pushButton_dot, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDotClicked()));
   connect(ui_->pushButton_AC, SIGNAL(clicked()), this,
@@ -117,6 +122,7 @@ void MainWindow::SetWidgets() {
   QLocale doub_lo(QLocale::C);
   doub_lo.setNumberOptions(QLocale::RejectGroupSeparator);
   QLocale::setDefault(doub_lo);
+
   ui_->Srok_cr->setValidator(new QIntValidator(0, 100, this));
   ui_->SummaCr->setValidator(new QDoubleValidator(this));
   auto dbl_val = new QDoubleValidator(0, 100, 1000, this);
@@ -128,6 +134,7 @@ void MainWindow::SetWidgets() {
   ui_->int_rate_dep->setValidator(dbl_val);
   ui_->label_tax->setValidator(dbl_val);
   ui_->label_key_rate->setValidator(dbl_val);
+
   ui_->doubleSpinBoXa->setRange(-std::numeric_limits<double>::max(),
                                 std::numeric_limits<double>::max());
   ui_->doubleSpinBoXi->setRange(-std::numeric_limits<double>::max(),
@@ -136,129 +143,110 @@ void MainWindow::SetWidgets() {
                                 std::numeric_limits<double>::max());
   ui_->doubleSpinBoYi->setRange(-std::numeric_limits<double>::max(),
                                 std::numeric_limits<double>::max());
+
   ui_->label_tax->setText("13");
   ui_->label_key_rate->setText("8.5");
+
   ui_->wth_rem->hide();
   ui_->wth_rem_2->hide();
   ui_->wth_r_sign->hide();
+
   ui_->doubleSpinBoYa->setDisabled(true);
   ui_->doubleSpinBoYi->setDisabled(true);
+
   ui_->autoscale->setCheckState(Qt::Checked);
   ui_->dep_date->setDate(QDate::currentDate());
   ui_->res_out->setAlignment(Qt::AlignRight);
   ui_->wth_rem_2->setText("0");
 }
 
-void MainWindow::AddNewLine(QGridLayout* layout, short int& click) {
+void MainWindow::AddNewLine(QGridLayout* layout, int& click) {
   auto field = new QLineEdit(this);
   auto date = new QDateEdit(this);
   auto box = new QComboBox(this);
+
   field->setValidator(new QDoubleValidator(this));
   date->setDate(QDate::currentDate().addDays(1));
-  box->addItem("Разовое", 0);
-  box->addItem("Раз в месяц", 1);
-  box->addItem("Раз в 2 месяца", 2);
-  box->addItem("Раз в квартал", 3);
-  box->addItem("Раз в пол года", 4);
-  box->addItem("Раз в год", 5);
+
+  box->addItem("Once", 0);
+  box->addItem("Every month", 1);
+  box->addItem("Every 2 month", 2);
+  box->addItem("Every quart", 3);
+  box->addItem("Every half year", 4);
+  box->addItem("Every year", 5);
+
   layout->addWidget(date, ++click, 0);
   layout->addWidget(field, click, 1);
   layout->addWidget(box, click, 2);
 }
 
-void MainWindow::DeleteLine(QGridLayout* layout, short int& click) {
-  if (click >= 0) {
-    auto date =
-        qobject_cast<QDateEdit*>(layout->itemAtPosition(click, 0)->widget());
-    date->hide();
-    delete date;
-    auto field =
-        qobject_cast<QLineEdit*>(layout->itemAtPosition(click, 1)->widget());
-    field->hide();
-    delete field;
-    auto box =
-        qobject_cast<QComboBox*>(layout->itemAtPosition(click--, 2)->widget());
-    box->hide();
-    delete box;
+void MainWindow::DeleteLine(QGridLayout* layout, int& click) {
+  if (click < 0) {
+    return;
   }
+  auto date =
+      qobject_cast<QDateEdit *>(layout->itemAtPosition(click, 0)->widget());
+  auto field =
+      qobject_cast<QLineEdit *>(layout->itemAtPosition(click, 1)->widget());
+  auto box =
+      qobject_cast<QComboBox *>(layout->itemAtPosition(click--, 2)->widget());
+
+  date->hide();
+  field->hide();
+  box->hide();
+
+  delete date;
+  delete field;
+  delete box;
 }
 
-void MainWindow::ParseUserTransactions(QGridLayout* layout, short int click,
-                                       std::vector<UserTransaction>& opt) {
-  for (int i = click; i >= 0; i--) {
+void MainWindow::ParseUserTransactions(QGridLayout* layout, int click,
+                                       std::vector<deposit::Transaction>& opt) {
+  for (int i = click; i >= 0; --i) {
     auto date =
-        qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget());
+        qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget())->date();
     auto field =
         qobject_cast<QLineEdit*>(layout->itemAtPosition(i, 1)->widget());
     auto box = qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
-    opt.push_back({date->date(), field->text().toDouble(),
-                   static_cast<short int>(box->currentData().toInt())});
-  }
-}
 
-void MainWindow::StartPointClear() {
-  if (ui_->res_out->text() == "0") {
-    ui_->res_out->clear();
+    opt.push_back({{util::ToDepositDate(date), field->text().toDouble()},
+                                          box->currentData().toInt()});
   }
 }
 
 void MainWindow::OnPushButtonDotClicked() {
-  QString tmp = ui_->res_out->text();
-  for (auto it = tmp.rbegin(); it != tmp.rend(); it++) {
-    if (*it == '.') {
-      return;
-    } else if (!(*it).isDigit()) {
-      break;
-    }
-  }
-  if (!tmp.isEmpty() && tmp.back().isDigit()) {
-    ui_->res_out->setText(ui_->res_out->text() + ".");
-  }
+   QString output = input_handler_.HandleExprDot(ui_->res_out->text());
+   ui_->res_out->setText(output);
 }
 
 void MainWindow::DigitsNumbers() {
   auto button_num = dynamic_cast<QPushButton*>(sender());
-  StartPointClear();
-  ui_->res_out->setText(ui_->res_out->text() + button_num->text());
+  QString output = input_handler_.HandleExprNum(ui_->res_out->text(), button_num->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::SimpleOperations() {
   auto button_op = dynamic_cast<QPushButton*>(sender());
-  if (!ui_->res_out->text().isEmpty()) {
-    QChar ch = ui_->res_out->text().back();
-    if (ch != '+' && ch != '-' && ch != '*' && ch != '/' && ch != '^') {
-      if (button_op->text() == "÷") {
-        ui_->res_out->setText(ui_->res_out->text() + "/");
-      } else {
-        ui_->res_out->setText(ui_->res_out->text() + button_op->text());
-      }
-    }
-  }
+  QString output = input_handler_.HandleExprOp(ui_->res_out->text(), button_op->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::ComplexOperations() {
-  auto button_c_op = dynamic_cast<QPushButton*>(sender());
-  StartPointClear();
-  if (button_c_op->text() == "√") {
-    ui_->res_out->setText(ui_->res_out->text() + "sqrt(");
-  } else {
-    ui_->res_out->setText(ui_->res_out->text() + button_c_op->text() + "(");
-  }
+  auto button_func = dynamic_cast<QPushButton*>(sender());
+  QString output = input_handler_.HandleExprFunc(ui_->res_out->text(), button_func->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::OnPushButtonAcClicked() { ui_->res_out->setText("0"); }
 
 void MainWindow::OnPushButtonObraceClicked() {
-  StartPointClear();
-  ui_->res_out->setText(ui_->res_out->text() + "(");
+  QString output = input_handler_.HandleExprOpenBrace(ui_->res_out->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::OnPushButtonCbraceClicked() {
-  if (!ui_->res_out->text().isEmpty() && ui_->res_out->text() != "0" &&
-      ui_->res_out->text().back() != '(') {
-    StartPointClear();
-    ui_->res_out->setText(ui_->res_out->text() + ")");
-  }
+  QString output = input_handler_.HandleExprClosedBrace(ui_->res_out->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::OnPushButtonEqClicked() {
@@ -273,21 +261,18 @@ void MainWindow::OnPushButtonEqClicked() {
   }
   double ans = 0;
   if (x_mode) {
-    if (x_str_.isEmpty()) {
-      x_str_ = ui_->res_out->text();
-      ui_->res_out->setText("x=");
-      return;
+    bool ready_to_calc = input_handler_.HandleExprX(label, x_str_);
+    if (!ready_to_calc) {
+        ui_->res_out->setText(label);
+        return;
     }
-    if (label.contains("x=")) {
-      label.remove("x=");
-      try {
-        ans = controller_->CalculateEquation(x_str_.toStdString(),
-                                             label.toDouble());
-      } catch (std::invalid_argument& exc) {
-        QMessageBox::critical(this, "Error", exc.what());
-      }
-      x_str_.clear();
+    try {
+      ans = controller_->CalculateEquation(x_str_.toStdString(),
+                                           label.toDouble());
+    } catch (std::invalid_argument& exc) {
+      QMessageBox::critical(this, "Error", exc.what());
     }
+    x_str_.clear();
   } else {
     try {
       ans = controller_->CalculateExpression(label.toStdString());
@@ -299,37 +284,13 @@ void MainWindow::OnPushButtonEqClicked() {
 }
 
 void MainWindow::OnPushButtonBinClicked() {
-  QString tmp = ui_->res_out->text();
-  QChar prev = tmp.front();
-  int i = tmp.length() - 1;
-  for (; i >= 0; i--) {
-    if (prev.isDigit() && !tmp[i].isDigit()) {
-      break;
-    }
-    prev = tmp[i];
-  }
-  if (prev != '0') {
-    if (tmp[i] == '-') {
-      tmp.replace(i, 1, "+");
-    } else if (tmp[i] == '+') {
-      tmp.replace(i, 1, "-");
-    } else if (i == -1 || prev.isDigit()) {
-      tmp.insert(i + 1, '-');
-    }
-  }
-  ui_->res_out->setText(tmp);
+  QString output = input_handler_.HandleExprBin(ui_->res_out->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::OnBackspaceClicked() {
-  QString src_str = ui_->res_out->text();
-  int index = src_str.length() - 1;
-  if (!src_str.isEmpty() && src_str != "0") {
-    src_str.remove(index, 1);
-    if (src_str.isEmpty()) {
-      src_str += '0';
-    }
-    ui_->res_out->setText(src_str);
-  }
+  QString output = input_handler_.HandleExprBackspace(ui_->res_out->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::OnPushButtonCreditClicked() {
@@ -345,8 +306,8 @@ void MainWindow::OnPushButtonCreditClicked() {
   } else if (!is_annuit && !ui_->diff->isChecked()) {
     QMessageBox::warning(this, "Warning", "Выбирите тип ежемесячных платежей");
   } else {
-    CreditConditions conds = {sum, int_rate, period, is_year, is_annuit};
-    const CreditData& data = controller_->CalculateCredit(conds);
+    credit::Conditions conds = {sum, int_rate, period, is_year, is_annuit};
+    const credit::Data& data = controller_->CalculateCredit(conds);
     sec_win_->show();
     emit SignalCredit(data);
   }
@@ -362,10 +323,10 @@ void MainWindow::OnPushButtonDepositClicked() {
         this, "Warning",
         "Превышено максимальное значение срока размещения вклада");
   } else {
-    std::vector<UserTransaction> fund, wth;
+    std::vector<deposit::Transaction> fund, wth;
     ParseUserTransactions(ui_->gridLayout_rep, click_count_rep_, fund);
     ParseUserTransactions(ui_->gridLayout_wth, click_count_wth_, wth);
-    DepositConditions conds = {ui_->capitalization->isChecked(),
+    deposit::Conditions conds = {ui_->capitalization->isChecked(),
                                term_type,
                                term,
                                ui_->rate_pay->currentIndex(),
@@ -374,10 +335,10 @@ void MainWindow::OnPushButtonDepositClicked() {
                                ui_->sum->text().toDouble(),
                                ui_->int_rate_dep->text().toDouble(),
                                ui_->wth_rem_2->text().toDouble(),
-                               ui_->dep_date->date(),
+                               util::ToDepositDate(ui_->dep_date->date()),
                                std::move(fund),
                                std::move(wth)};
-    const DepositData& data = controller_->CalculateDeposit(conds);
+    const deposit::Data& data = controller_->CalculateDeposit(conds);
     sec_win_->show();
     emit SignalDeposit(data);
   }
@@ -407,17 +368,17 @@ void MainWindow::OnPushButtonPlotClicked() {
         this, "Warning",
         "Область значений или область определения функции не определена");
   } else {
-    GraphConditions conds = {
-        ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
-        ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
-        ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
-    try {
-      const GraphData& data = controller_->CalculateGraph(conds);
-      sec_win_->show();
-      emit SignalPlot(data);
-    } catch (std::invalid_argument& exc) {
-      QMessageBox::critical(this, "Error", exc.what());
-    }
+//    GraphConditions conds = {
+//        ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
+//        ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
+//        ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
+//    try {
+//      const GraphData& data = controller_->CalculateGraph(conds);
+//      sec_win_->show();
+//      emit SignalPlot(data);
+//    } catch (std::invalid_argument& exc) {
+//      QMessageBox::critical(this, "Error", exc.what());
+//    }
   }
 }
 

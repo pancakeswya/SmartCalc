@@ -6,7 +6,7 @@
 
 #include "types/data_types.h"
 
-namespace s21 {
+namespace smcalc {
 
 namespace Ui {
 class SecondWindow;
@@ -23,9 +23,9 @@ class SecondWindow : public QDialog {
   Ui::SecondWindow* ui_;
 
  public slots:
-  void SlotDeposit(const DepositData&);
-  void SlotCredit(const CreditData&);
-  void SlotPlot(const GraphData&);
+  void SlotDeposit(const deposit::Data&);
+  void SlotCredit(const credit::Data&);
+  //void SlotPlot(const GraphData&);
 };
 
 }  // namespace s21

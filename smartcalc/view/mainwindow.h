@@ -5,9 +5,10 @@
 #include <QMainWindow>
 
 #include "controller/controller.h"
+#include "controller/input_handler.h"
 #include "secondwindow.h"
 
-namespace s21 {
+namespace smcalc {
 
 namespace Ui {
 class MainWindow;
@@ -23,19 +24,19 @@ class MainWindow : public QMainWindow {
 
  private:
   Controller* controller_{};
+  InputHandler input_handler_;
   Ui::MainWindow* ui_;
   SecondWindow* sec_win_;
   QString x_str_;
-  short int click_count_rep_;
-  short int click_count_wth_;
+  int click_count_rep_;
+  int click_count_wth_;
   static constexpr int kMaxInputSize = 255;
-  void AddNewLine(QGridLayout*, short int&);
-  static void DeleteLine(QGridLayout*, short int&);
-  static void ParseUserTransactions(QGridLayout*, short int,
-                                    std::vector<UserTransaction>&);
+  void AddNewLine(QGridLayout*, int&);
+  static void DeleteLine(QGridLayout*, int&);
+  static void ParseUserTransactions(QGridLayout*, int,
+                                    std::vector<deposit::Transaction>&);
   void SetSignals();
   void SetWidgets();
-  void StartPointClear();
  private slots:
   void DigitsNumbers();
   void SimpleOperations();
@@ -59,9 +60,9 @@ class MainWindow : public QMainWindow {
   void OnPushButtonDelWthClicked();
   void OnAutoscaleStateChanged();
  signals:
-  void SignalDeposit(const DepositData&);
-  void SignalCredit(const CreditData&);
-  void SignalPlot(const GraphData&);
+  void SignalDeposit(const deposit::Data&);
+  void SignalCredit(const credit::Data&);
+//  void SignalPlot(const GraphData&);
 };
 
 }  // namespace s21

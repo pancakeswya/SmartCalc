@@ -1,52 +1,28 @@
-#ifndef SMARTCALC_V2_SRC_MODEL_MODEL_H_
-#define SMARTCALC_V2_SRC_MODEL_MODEL_H_
+#ifndef SMARTCALC_MODEL_MODEL_H_
+#define SMARTCALC_MODEL_MODEL_H_
 
-#include "bank_calc.h"
-#include "basic_calc.h"
+#include "types/data_types.h"
 
-namespace s21 {
+namespace smcalc {
 
 class Model {
  public:
-  void CalcCredit(const CreditConditions& conds) {
-    cred_.Clear();
-    cred_.SetConditions(conds);
-    cred_.CalcCredit();
-  }
+  void CalculateBasicExpr(const std::string& expr);
+  void CalculateBasicEquation(const std::string& expr, double x);
+  void CalculateCredit(const credit::Conditions& conds);
+  void CalculateDeposit(const deposit::Conditions& conds);
 
-  void CalcDeposit(const DepositConditions& conds) {
-    dep_.Clear();
-    dep_.SetConditions(conds);
-    dep_.CalcDeposit();
-  }
+  double GetBasicData();
+  const credit::Data& GetCreditData();
+  const deposit::Data& GetDepositData();
 
-  void CalcGraph(const GraphConditions& conds) {
-    graph_ = BasicCalc::CalcGraph(conds);
-  }
-
-  void CalcExpression(const std::string_view& expr) {
-    ans_ = BasicCalc::CalcMathExpr(expr.data());
-  }
-
-  void CalcEquation(const std::string_view& expr, double x) {
-    ans_ = BasicCalc::CalcEquation(expr.data(), x);
-  }
-
-  double GetExpressionAns() noexcept { return ans_; }
-
-  const GraphData& GetGraphData() noexcept { return graph_; }
-
-  const DepositData& GetDepositData() noexcept { return dep_.GetData(); }
-
-  const CreditData& GetCreditData() noexcept { return cred_.GetData(); }
-
+  void Reset();
  private:
-  Deposit dep_{};
-  GraphData graph_{};
-  Credit cred_{};
-  double ans_{};
+  double basic_data_;
+  credit::Data credit_data_;
+  deposit::Data deposit_data_;
 };
 
-}  // namespace s21
+} // namespace smcalc
 
-#endif  // SMARTCALC_V2_SRC_MODEL_MODEL_H_
+#endif // SMARTCALC_MODEL_MODEL_H_

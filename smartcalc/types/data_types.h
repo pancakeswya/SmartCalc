@@ -1,12 +1,12 @@
-#ifndef SMARTCALC_V2_SRC_CONTROLLER_DATA_TYPES_H_
-#define SMARTCALC_V2_SRC_CONTROLLER_DATA_TYPES_H_
+#ifndef SMARTCALC_TYPES_DATA_TYPES_H_
+#define SMARTCALC_TYPES_DATA_TYPES_H_
 
-#include <QDate>
-#include <QVector>
-#include <string>
 #include <vector>
+#include <utility>
 
-namespace s21 {
+#include "datetime.h"
+
+namespace smcalc {
 
 enum DateType { kTypeDay, kTypeMonth, kTypeYear };
 
@@ -23,7 +23,14 @@ enum CondPayFreq : short int {
   kEvYear
 };
 
-struct CreditConditions {
+namespace credit {
+
+enum Type : bool {
+  kAnnuit,
+  kDiff
+};
+
+struct Conditions {
   double sum;
   double int_rate;
   short int period;
@@ -31,32 +38,40 @@ struct CreditConditions {
   bool type;
 };
 
-struct CreditData {
+struct Data {
   double total;
   double overpay;
   std::vector<double> payment;
 };
 
-struct DepositData {
-  std::vector<std::pair<QDate, double>> replen;
-  std::vector<QDate> pay_dates;
+} // credit
+
+namespace deposit {
+
+using Date = jed_utils::datetime;
+
+struct Transaction {
+  struct Payout {
+    Date date;
+    double sum;
+  } payout;
+  int freq;
+};
+
+struct Data {
+  std::vector<Transaction::Payout> replen;
+  std::vector<Date> pay_dates;
   std::vector<double> payment;
   std::vector<double> tax;
-  QDate start_date;
-  QDate finish_date;
+  Date start_date;
+  Date finish_date;
   double eff_rate;
   double perc_sum;
   double tax_sum;
   double total;
 };
 
-struct UserTransaction {
-  QDate date;
-  double sum;
-  short int freq;
-};
-
-struct DepositConditions {
+struct Conditions {
   bool cap;
   short int term_type;
   short int term;
@@ -66,28 +81,14 @@ struct DepositConditions {
   double sum;
   double intr_rate;
   double non_taking_rem;
-  QDate start_date;
-  std::vector<UserTransaction> fund;
-  std::vector<UserTransaction> wth;
+  Date start_date;
+  std::vector<Transaction> fund;
+  std::vector<Transaction> wth;
 };
 
-struct GraphConditions {
-  std::string expr;
-  double x_max;
-  double x_min;
-  double y_max;
-  double y_min;
-  bool autoscale;
-};
+} // deposit
 
-struct GraphData {
-  std::vector<std::pair<QVector<double>, QVector<double>>> xy;
-  double x_min;
-  double x_max;
-  double y_min;
-  double y_max;
-};
 
-}  // namespace s21
+} // namespace smcalc
 
-#endif  // SMARTCALC_V2_SRC_CONTROLLER_DATA_TYPES_H_
+#endif // SMARTCALC_TYPES_DATA_TYPES_H_

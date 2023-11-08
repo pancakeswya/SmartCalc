@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>s21::MainWindow</class>
- <widget class="QMainWindow" name="s21::MainWindow">
+ <class>smcalc::MainWindow</class>
+ <widget class="QMainWindow" name="smcalc::MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -73,11 +73,15 @@ QTabWidget::pane {
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true">QPushButton {
   background-color: rgb(215, 215, 215);
   border: 1px solid gray;
-  font-size: 18px;
 }
 QPushButton:pressed {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
@@ -85,7 +89,7 @@ QPushButton:pressed {
 }</string>
       </property>
       <property name="text">
-       <string>√</string>
+       <string>sqrt</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_1">
@@ -724,6 +728,11 @@ QPushButton:pressed {
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>-1</pointsize>
+       </font>
+      </property>
       <property name="styleSheet">
        <string notr="true">QPushButton {
   background-color: rgb(255, 151, 57);
@@ -738,7 +747,7 @@ QPushButton:pressed {
 }</string>
       </property>
       <property name="text">
-       <string>÷</string>
+       <string>/</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_ln">

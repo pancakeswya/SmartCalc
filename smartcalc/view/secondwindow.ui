@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>s21::SecondWindow</class>
- <widget class="QDialog" name="s21::SecondWindow">
+ <class>smcalc::SecondWindow</class>
+ <widget class="QDialog" name="smcalc::SecondWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -111,7 +111,7 @@ qproperty-defaultAlignment: AlignHCenter;
     </layout>
    </widget>
   </widget>
-  <widget class="QCustomPlot" name="widget" native="true">
+  <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
      <x>-1</x>
@@ -122,14 +122,6 @@ qproperty-defaultAlignment: AlignHCenter;
    </property>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QCustomPlot</class>
-   <extends>QWidget</extends>
-   <header>external/qcustomplot.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

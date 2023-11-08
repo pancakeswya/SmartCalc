@@ -1,17 +1,22 @@
-#include "basic_calc.h"
+#include <iostream>
 
-#include <cmath>
-#include <stack>
-#include <stdexcept>
+#include <variant>
 #include <unordered_map>
+#include <cmath>
+#include <stdexcept>
 
-namespace s21::BasicCalc {
+#include "util/calc_util.h"
+
+namespace smcalc::basic {
 
 namespace {
 
-class MathOperation {
+class Operation final {
  public:
-  enum class Type : bool { kUnary = false, kBinary = true };
+  enum class Type : bool {
+    kUnary,
+    kBinary
+  };
 
   enum class Priority : short int {
     kBrace,
@@ -21,181 +26,173 @@ class MathOperation {
     kSign
   };
 
-  MathOperation() = default;
-  ~MathOperation() = default;
+  Operation() = delete;
+  ~Operation() = default;
 
-  explicit MathOperation(Type type, Priority priority,
-                         double (*operation)(double, double)) noexcept
-      : operation_{.binary = operation}, priority_(priority), type_(type) {}
+  explicit Operation(Type type, Priority priority,
+                     double (* operation)(double, double)) noexcept
+      : operation_(operation), priority_(priority), type_(type) {}
 
-  explicit MathOperation(Type type, Priority priority,
-                         double (*operation)(double)) noexcept
-      : operation_{.unary = operation}, priority_(priority), type_(type) {}
+  explicit Operation(Type type, Priority priority,
+                     double (* operation)(double)) noexcept
+      : operation_(operation), priority_(priority), type_(type) {}
 
-  [[nodiscard]] Priority GetPriority() const noexcept { return priority_; }
-  [[nodiscard]] Type GetType() const noexcept { return type_; }
+  [[nodiscard]] Priority get_priority() const noexcept { return priority_; }
+  [[nodiscard]] Type get_type() const noexcept { return type_; }
 
-  [[nodiscard]] double PerformOperation(double num) const noexcept {
-    return operation_.unary(num);
+  [[nodiscard]] double Perform(double num) const {
+    return std::get<double(*)(double)>(operation_)(num);
   }
 
-  [[nodiscard]] double PerformOperation(double num1,
-                                        double num2) const noexcept {
-    return operation_.binary(num1, num2);
+  [[nodiscard]] double Perform(double num1,
+                               double num2) const {
+    return std::get<double(*)(double, double)>(operation_)(num1, num2);
   }
 
  private:
-  union {
-    double (*binary)(double, double);
-    double (*unary)(double);
-  } operation_{};
-  Priority priority_{};
-  Type type_{};
+  std::variant<double(*)(double, double), double(*)(double)> operation_;
+  Priority priority_;
+  Type type_;
 };
 
-const std::unordered_map<std::string_view, MathOperation> op_map = {
+const std::unordered_map<std::string_view, Operation> operations_map = {
     {"--",
-     MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kSign,
+     Operation(Operation::Type::kUnary, Operation::Priority::kSign,
                    [](double num) -> double { return -num; })},
     {"++",
-     MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kSign,
+     Operation(Operation::Type::kUnary, Operation::Priority::kSign,
                    [](double num) -> double { return num; })},
-    {"sqrt", MathOperation(MathOperation::Type::kUnary,
-                           MathOperation::Priority::kFunction, std::sqrt)},
-    {"sin", MathOperation(MathOperation::Type::kUnary,
-                          MathOperation::Priority::kFunction, std::sin)},
-    {"cos", MathOperation(MathOperation::Type::kUnary,
-                          MathOperation::Priority::kFunction, std::cos)},
-    {"tan", MathOperation(MathOperation::Type::kUnary,
-                          MathOperation::Priority::kFunction, std::tan)},
-    {"asin", MathOperation(MathOperation::Type::kUnary,
-                           MathOperation::Priority::kFunction, std::asin)},
-    {"acos", MathOperation(MathOperation::Type::kUnary,
-                           MathOperation::Priority::kFunction, std::acos)},
-    {"atan", MathOperation(MathOperation::Type::kUnary,
-                           MathOperation::Priority::kFunction, std::atan)},
-    {"ln", MathOperation(MathOperation::Type::kUnary,
-                         MathOperation::Priority::kFunction, std::log)},
-    {"log", MathOperation(MathOperation::Type::kUnary,
-                          MathOperation::Priority::kFunction, std::log10)},
-    {"^", MathOperation(MathOperation::Type::kBinary,
-                        MathOperation::Priority::kFunction, std::pow)},
-    {"*", MathOperation(
-              MathOperation::Type::kBinary, MathOperation::Priority::kComplex,
-              [](double num1, double num2) -> double { return num1 * num2; })},
-    {"/", MathOperation(
-              MathOperation::Type::kBinary, MathOperation::Priority::kComplex,
-              [](double num1, double num2) -> double { return num1 / num2; })},
-    {"d", MathOperation(MathOperation::Type::kBinary,
-                        MathOperation::Priority::kComplex, std::fmod)},
-    {"+", MathOperation(
-              MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
-              [](double num1, double num2) -> double { return num1 + num2; })},
-    {"-", MathOperation(
-              MathOperation::Type::kBinary, MathOperation::Priority::kSimple,
-              [](double num1, double num2) -> double { return num1 - num2; })},
+    {"sqrt", Operation(Operation::Type::kUnary,
+                       Operation::Priority::kFunction, std::sqrt)},
+    {"sin", Operation(Operation::Type::kUnary,
+                      Operation::Priority::kFunction, std::sin)},
+    {"cos", Operation(Operation::Type::kUnary,
+                      Operation::Priority::kFunction, std::cos)},
+    {"tan", Operation(Operation::Type::kUnary,
+                      Operation::Priority::kFunction, std::tan)},
+    {"asin", Operation(Operation::Type::kUnary,
+                       Operation::Priority::kFunction, std::asin)},
+    {"acos", Operation(Operation::Type::kUnary,
+                       Operation::Priority::kFunction, std::acos)},
+    {"atan", Operation(Operation::Type::kUnary,
+                       Operation::Priority::kFunction, std::atan)},
+    {"ln", Operation(Operation::Type::kUnary,
+                     Operation::Priority::kFunction, std::log)},
+    {"log", Operation(Operation::Type::kUnary,
+                      Operation::Priority::kFunction, std::log10)},
+    {"^", Operation(Operation::Type::kBinary,
+                    Operation::Priority::kFunction, std::pow)},
+    {"*", Operation(
+        Operation::Type::kBinary, Operation::Priority::kComplex,
+        [](double num1, double num2) -> double { return num1 * num2; })},
+    {"/", Operation(
+        Operation::Type::kBinary, Operation::Priority::kComplex,
+        [](double num1, double num2) -> double { return num1 / num2; })},
+    {"d", Operation(Operation::Type::kBinary,
+                    Operation::Priority::kComplex, std::fmod)},
+    {"+", Operation(
+        Operation::Type::kBinary, Operation::Priority::kSimple,
+        [](double num1, double num2) -> double { return num1 + num2; })},
+    {"-", Operation(
+        Operation::Type::kBinary, Operation::Priority::kSimple,
+        [](double num1, double num2) -> double { return num1 - num2; })},
     {"(",
-     MathOperation(MathOperation::Type::kUnary, MathOperation::Priority::kBrace,
-                   (double (*)(double)){})}};
+        Operation(Operation::Type::kUnary, Operation::Priority::kBrace,
+                   (double (*)(double)){})}
+};
 
-template <typename T>
-inline T StackPull(std::stack<T>& stack) {
-  if (stack.empty()) {
-    throw std::invalid_argument("Invalid syntax exception");
-  }
-  T top_val = stack.top();
-  stack.pop();
-  return top_val;
-}
-
-void CalcShuntYard(std::stack<MathOperation>& operations,
+void ShuntYardAlgo(std::stack<Operation>& operations,
                    std::stack<double>& numbers) {
-  double res;
-  MathOperation op = StackPull(operations);
-  if (op.GetPriority() == MathOperation::Priority::kBrace) {
-    throw std::invalid_argument("Matching brace exception");
+  Operation operation = util::StackPop(operations);
+  double number1 = util::StackPop(numbers);
+  if (operation.get_priority() == Operation::Priority::kBrace) {
+    throw std::invalid_argument("Invalid syntax. Braces not matching");
   }
-  double num1 = StackPull(numbers);
-  if (op.GetType() == MathOperation::Type::kUnary) {
-    res = op.PerformOperation(num1);
+  double res_number;
+  if (operation.get_type() == Operation::Type::kUnary) {
+    res_number = operation.Perform(number1);
   } else {
-    double num2 = StackPull(numbers);
-    res = op.PerformOperation(num2, num1);
+    double number2 = util::StackPop(numbers);
+    res_number = operation.Perform(number2, number1);
   }
-  numbers.push(res);
+  numbers.push(res_number);
 }
 
-inline void MakeShuntYardBrace(std::stack<MathOperation>& operations,
-                               std::stack<double>& numbers) {
-  while (!operations.empty() &&
-         operations.top().GetPriority() != MathOperation::Priority::kBrace) {
-    CalcShuntYard(operations, numbers);
+inline void ShuntYardBrace(std::stack<Operation>& operations,
+                           std::stack<double>& numbers) {
+  while(!operations.empty() &&
+         operations.top().get_priority() != Operation::Priority::kBrace) {
+    ShuntYardAlgo(operations, numbers);
   }
   if (operations.empty()) {
-    throw std::invalid_argument("Matching brace exception");
+    throw std::invalid_argument("Invalid syntax. Braces not matching");
   }
   operations.pop();
 }
 
-inline void MakeShuntYardOp(const MathOperation& operation,
-                            std::stack<MathOperation>& operations,
-                            std::stack<double>& numbers) {
+inline void ShuntYardOperation(const Operation& operation,
+                               std::stack<Operation>& operations,
+                               std::stack<double>& numbers) {
   while (!operations.empty() &&
-         operation.GetPriority() <= operations.top().GetPriority()) {
-    CalcShuntYard(operations, numbers);
+         operation.get_priority() <= operations.top().get_priority()) {
+    ShuntYardAlgo(operations, numbers);
   }
   operations.push(operation);
 }
 
 void ProcessOperation(char op, bool prev_was_num,
-                      std::stack<MathOperation>& operations,
+                      std::stack<Operation>& operations,
                       std::stack<double>& numbers) {
-  auto map_it = op_map.end();
+  auto map_it = operations_map.end();
   if (prev_was_num) {
-    map_it = op_map.find(std::string(1, op));
+    map_it = operations_map.find(std::string(1, op));
   } else if (op == '-') {
-    map_it = op_map.find("--");
+    map_it = operations_map.find("--");
   } else if (op == '+') {
-    map_it = op_map.find("++");
+    map_it = operations_map.find("++");
   }
-  if (map_it == op_map.end()) {
-    throw std::invalid_argument("Invalid operator usage");
+  if (map_it == operations_map.end()) {
+    throw std::invalid_argument("Invalid syntax. Incorrect operation usage");
   }
-  MakeShuntYardOp(map_it->second, operations, numbers);
+  ShuntYardOperation(map_it->second, operations, numbers);
 }
 
-size_t ProcessFunction(std::string_view expr,
-                       std::stack<MathOperation>& operations) {
-  decltype(op_map.end()) map_it;
+size_t ProcessFunction(const std::string& expr,
+                       std::stack<Operation>& operations) {
+  std::unordered_map<std::string_view, Operation>::const_iterator map_it;
   size_t size = 0;
   for (; std::isalpha(expr[size]); size++)
     ;
-  map_it = op_map.find(expr.substr(0, size));
-  if (map_it == op_map.end()) {
-    throw std::invalid_argument("Invalid function naming");
+  map_it = operations_map.find(expr.substr(0, size));
+  if (map_it == operations_map.end()) {
+    throw std::invalid_argument("Invalid syntax. Incorrect function usage");
   }
   operations.push(map_it->second);
   return size - 1;
 }
 
-size_t ProcessNumber(std::string_view expr, bool prev_was_num,
+size_t ProcessNumber(const std::string& expr, bool prev_was_num,
                      std::stack<double>& numbers) {
   size_t n_size;
   double number = std::stod(&expr[0], &n_size);
   if (prev_was_num || n_size == 0) {
-    throw std::invalid_argument("Invalid syntax exception");
+    throw std::invalid_argument("Invalid syntax. Incorrect number usage");
   }
   numbers.push(number);
   return n_size - 1;
 }
 
-void FixPower(std::string& expr, size_t i) noexcept {
+void FixPower(std::string& expr, size_t i) {
   for (; std::isspace(expr[i]); ++i)
     ;
   size_t start = i;
   bool has_pow = false;
-  while (std::isalnum(expr[i]) || std::isspace(expr[i]) || expr[i] == '^' ||
-         expr[i] == '(' || expr[i] == '.') {
+  while (std::isalnum(expr[i]) ||
+         std::isspace(expr[i]) ||
+         expr[i] == '^' ||
+         expr[i] == '(' ||
+         expr[i] == '.')
+  {
     if (expr[i] == '^') {
       has_pow = true;
     }
@@ -214,13 +211,23 @@ void FixPower(std::string& expr, size_t i) noexcept {
   }
 }
 
-}  // namespace
+inline void ReplaceXInString(std::string& expr, std::string number) {
+  for (;;) {
+    std::size_t pos = expr.find('x');
+    if (pos == std::string::npos) {
+      break;
+    }
+    expr.replace(pos, 1, number);
+  }
+}
 
-double CalcMathExpr(std::string expr) {
+} // namespace
+
+double CalculateFromString(std::string expr) {
   bool prev_was_num = false;
   std::stack<double> numbers;
-  std::stack<MathOperation> operations;
-  for (size_t i = 0; i < expr.size(); i++) {
+  std::stack<Operation> operations;
+  for (size_t i = 0; i < expr.size(); ++i) {
     switch (expr[i]) {
       case ' ':
       case '\n':
@@ -228,7 +235,7 @@ double CalcMathExpr(std::string expr) {
         break;
       case 'm':
         if (!(expr[i + 1] == 'o' && expr[i + 2] == 'd')) {
-          throw std::invalid_argument("illegal function naming");
+          throw std::invalid_argument("Invalid syntax. Incorrect function usage");
         }
         i += 2;
         [[fallthrough]];
@@ -244,10 +251,10 @@ double CalcMathExpr(std::string expr) {
         prev_was_num = false;
         break;
       case '(':
-        operations.push(op_map.at("("));
+        operations.push(operations_map.at("("));
         break;
       case ')':
-        MakeShuntYardBrace(operations, numbers);
+        ShuntYardBrace(operations, numbers);
         break;
       case '0' ... '9':
         i += ProcessNumber(&expr[i], prev_was_num, numbers);
@@ -261,58 +268,21 @@ double CalcMathExpr(std::string expr) {
         i += ProcessFunction(&expr[i], operations);
         break;
       default:
-        throw std::invalid_argument("Invalid syntax exception");
+        throw std::invalid_argument("Invalid syntax. Incorrect expression");
     }
   }
   while (!operations.empty()) {
-    CalcShuntYard(operations, numbers);
+    ShuntYardAlgo(operations, numbers);
   }
   if (numbers.size() != 1) {
-    throw std::invalid_argument("Invalid syntax exception");
+    throw std::invalid_argument("Invalid syntax. Incorrect expression");
   }
   return numbers.top();
 }
 
-double CalcEquation(std::string expr, double x) {
-  for (;;) {
-    std::size_t pos = expr.find('x');
-    if (pos == std::string::npos) {
-      break;
-    }
-    expr.replace(pos, 1, std::to_string(x));
-  }
-  return CalcMathExpr(std::move(expr));
+double CalculateFromStringEquation(std::string expr, double x) {
+  ReplaceXInString(expr, std::to_string(x));
+  return CalculateFromString(std::move(expr));
 }
 
-GraphData CalcGraph(const GraphConditions& conds) {
-  GraphData data;
-  data.x_max = conds.x_max;
-  data.x_min = conds.x_min;
-  data.xy.emplace_back();
-  double res, step = (conds.x_max - conds.x_min) / 1000.0, min_y = 100000.0,
-              max_y = -100000.0;
-  double i = conds.x_min;
-  while (i <= conds.x_max) {
-    res = CalcEquation(conds.expr.data(), i);
-    if (!std::isnan(res) && !std::isinf(res)) {
-      min_y = std::min(res, min_y);
-      max_y = std::max(res, max_y);
-      data.xy.back().first.push_back(i);
-      data.xy.back().second.push_back(res);
-    } else if (data.xy.back() !=
-               std::pair<QVector<double>, QVector<double>>()) {
-      data.xy.emplace_back();
-    }
-    i = (std::round(i * 1000.0) / 1000.0) + step;
-  }
-  if (conds.autoscale) {
-    data.y_min = min_y;
-    data.y_max = max_y;
-  } else {
-    data.y_min = conds.y_min;
-    data.y_max = conds.y_max;
-  }
-  return data;
-}
-
-}  // namespace s21::BasicCalc
+} // namespace smcalc::basic
