@@ -257,7 +257,7 @@ void MainWindow::OnPushButtonCbraceClicked() {
 void MainWindow::OnPushButtonEqClicked() {
   QString label = ui_->res_out->text();
   if (label.length() > kMaxInputSize) {
-    QMessageBox::warning(this, "Warning", "Превышено количество символов");
+    QMessageBox::warning(this, "Warning", "Exceeded the number of characters");
     return;
   }
   double ans = 0;
@@ -303,9 +303,9 @@ void MainWindow::OnPushButtonCreditClicked() {
   if ((is_year && period > DateLimits::kYearMax) ||
       (!is_year && period > DateLimits::kMonthMax)) {
     QMessageBox::warning(this, "Warning",
-                         "Превышено максимальное значение срока кредита");
+                         "The maximum value of the loan term has been exceeded");
   } else if (!is_annuit && !ui_->diff->isChecked()) {
-    QMessageBox::warning(this, "Warning", "Выбирите тип ежемесячных платежей");
+    QMessageBox::warning(this, "Warning", "Choose the type of monthly payments");
   } else {
     credit::Conditions conds = {sum, int_rate, period, is_year, is_annuit};
     const credit::Data& data = controller_->CalculateCredit(conds);
@@ -322,7 +322,7 @@ void MainWindow::OnPushButtonDepositClicked() {
       (term > DateLimits::kDayMax && term_type == DateType::kTypeDay)) {
     QMessageBox::warning(
         this, "Warning",
-        "Превышено максимальное значение срока размещения вклада");
+        "The maximum value of the deposit placement period has been exceeded");
   } else {
     deposit::Conditions conds = {
         ui_->capitalization->isChecked(),
@@ -365,7 +365,7 @@ void MainWindow::OnPushButtonPlotClicked() {
        ui_->doubleSpinBoYi->value() >= ui_->doubleSpinBoYa->value())) {
     QMessageBox::critical(
         this, "Warning",
-        "Область значений или область определения функции не определена");
+        "The scope of values or the scope of the function definition is not defined");
   } else {
     graph::Conditions conds = {
         ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
