@@ -1,6 +1,6 @@
 OS           := $(shell uname -s)
 
-NAME         := SmartCalc_v2.0
+NAME         := SmartCalc
 
 SRC_DIR      := smartcalc
 BUILD_DIR    := build
