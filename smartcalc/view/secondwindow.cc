@@ -1,8 +1,9 @@
 #include "secondwindow.h"
 
 #include <QDate>
-#include <QStandardItemModel>
 #include <QScrollBar>
+#include <QStandardItemModel>
+#include <QtCharts/QtCharts>
 #include <cmath>
 
 #include "ui_secondwindow.h"
@@ -18,7 +19,7 @@ enum SecondWinSizes {
   kMaxTableSize = 521732
 };
 
-} // namespace
+}  // namespace
 
 SecondWindow::SecondWindow(QWidget* parent)
     : QDialog(parent), ui_(new Ui::SecondWindow) {
@@ -81,7 +82,8 @@ void SecondWindow::SlotDeposit(const deposit::Data& data) {
           double replen = 0;
           table_model->setHeaderData(row, Qt::Vertical, "");
           table_model->setData(index, Qt::AlignCenter, Qt::TextAlignmentRole);
-          table_model->setData(index, it_rep->date.to_string("dd-MM-yyyy").data());
+          table_model->setData(index,
+                               it_rep->date.to_string("dd-MM-yyyy").data());
           for (int cnt = 0; it_rep != repay.end() && date >= it_rep->date;
                ++cnt, ++it_rep) {
             replen += it_rep->sum;
@@ -99,7 +101,8 @@ void SecondWindow::SlotDeposit(const deposit::Data& data) {
         if (date < data.finish_date) {
           table_model->setData(index, date.to_string("dd-MM-yyyy").data());
         } else {
-          table_model->setData(index, data.finish_date.to_string("dd-MM-yyyy").data());
+          table_model->setData(index,
+                               data.finish_date.to_string("dd-MM-yyyy").data());
         }
 
       } else {
@@ -176,9 +179,9 @@ void SecondWindow::SlotCredit(const credit::Data& data) {
   ui_->tableView->verticalScrollBar()->setDisabled(true);
   ui_->tableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   ui_->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  QStringList months = {"January",   "February", "March",   "April",
-                        "May",      "June",    "July",   "August",
-                        "September", "October", "November", "December"};
+  QStringList months = {"January",   "February", "March",    "April",
+                        "May",       "June",     "July",     "August",
+                        "September", "October",  "November", "December"};
   auto cur_date = QDate::currentDate();
   auto table_model = new QStandardItemModel(data.payment.size(), 2, this);
   QModelIndex index;
@@ -224,12 +227,48 @@ void SecondWindow::SlotCredit(const credit::Data& data) {
                                  ui_->tableView->frameWidth() * 2);
 }
 
-//void SecondWindow::SlotPlot(const GraphData& data) {
-//  if (!ui_->widget->isVisible()) {
-//    this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
-//  }
-//  setWindowTitle("Graph");
-//  setWindowIcon(QIcon(":/resources/img/graph-logo.png"));
-//}
+void SecondWindow::SlotPlot(const graph::Data& data) {
+  if (!ui_->widget->isVisible()) {
+    this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
+  }
+  setWindowTitle("Graph");
+  setWindowIcon(QIcon(":/resources/img/graph-logo.png"));
 
-}  // namespace s21
+  auto chart = new QChart;
+  chart->setTitle("Graph");
+  chart->setTitleFont(QFont("Segoe UI"));
+  chart->legend()->hide();
+
+  auto axis_x = new QValueAxis;
+  axis_x->setRange(data.x_min, data.x_max);
+  axis_x->setTitleText("X");
+  axis_x->setTitleFont(QFont("Segoe UI"));
+  axis_x->setLabelFormat("%.1f");
+  axis_x->setTickCount(20);
+
+  auto axis_y = new QValueAxis;
+  axis_y->setRange(data.y_min, data.y_max);
+  axis_y->setTitleText("Y");
+  axis_y->setTitleFont(QFont("Segoe UI"));
+  axis_y->setLabelFormat("%.1f");
+  axis_y->setTickCount(20);
+
+  for (auto& graph : data.graphs) {
+    auto series = new QLineSeries;
+    series->setColor(Qt::red);
+    for (auto [x, y] : graph) {
+      series->append(x, y);
+    }
+    chart->addSeries(series);
+    chart->addAxis(axis_x, Qt::AlignBottom);
+    chart->addAxis(axis_y, Qt::AlignLeft);
+    series->attachAxis(axis_x);
+    series->attachAxis(axis_y);
+  }
+
+  ui_->widget->resize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
+  ui_->widget->setChart(chart);
+  ui_->widget->setVisible(true);
+}
+
+}  // namespace smcalc

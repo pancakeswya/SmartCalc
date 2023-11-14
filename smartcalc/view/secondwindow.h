@@ -25,9 +25,9 @@ class SecondWindow : public QDialog {
  public slots:
   void SlotDeposit(const deposit::Data&);
   void SlotCredit(const credit::Data&);
-  //void SlotPlot(const GraphData&);
+  void SlotPlot(const graph::Data&);
 };
 
-}  // namespace s21
+}  // namespace smcalc
 
 #endif  // SMARTCALC_V2_SRC_VIEW_SECONDWINDOW_H

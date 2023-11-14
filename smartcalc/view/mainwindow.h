@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private:
+  static constexpr int kMaxInputSize = 255;
   Controller* controller_{};
   InputHandler input_handler_;
   Ui::MainWindow* ui_;
@@ -30,11 +31,6 @@ class MainWindow : public QMainWindow {
   QString x_str_;
   int click_count_rep_;
   int click_count_wth_;
-  static constexpr int kMaxInputSize = 255;
-  void AddNewLine(QGridLayout*, int&);
-  static void DeleteLine(QGridLayout*, int&);
-  static void ParseUserTransactions(QGridLayout*, int,
-                                    std::vector<deposit::Transaction>&);
   void SetSignals();
   void SetWidgets();
  private slots:
@@ -62,9 +58,9 @@ class MainWindow : public QMainWindow {
  signals:
   void SignalDeposit(const deposit::Data&);
   void SignalCredit(const credit::Data&);
-//  void SignalPlot(const GraphData&);
+  void SignalPlot(const graph::Data&);
 };
 
-}  // namespace s21
+}  // namespace smcalc
 
 #endif  // SMARTCALC_V2_SRC_VIEW_MAINWINDOW_H

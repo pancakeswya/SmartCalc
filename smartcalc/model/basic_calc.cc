@@ -1,9 +1,8 @@
-#include <iostream>
-
-#include <variant>
-#include <unordered_map>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
+#include <unordered_map>
+#include <variant>
 
 #include "util/calc_util.h"
 
@@ -13,10 +12,7 @@ namespace {
 
 class Operation final {
  public:
-  enum class Type : bool {
-    kUnary,
-    kBinary
-  };
+  enum class Type : bool { kUnary, kBinary };
 
   enum class Priority : short int {
     kBrace,
@@ -30,76 +26,71 @@ class Operation final {
   ~Operation() = default;
 
   explicit Operation(Type type, Priority priority,
-                     double (* operation)(double, double)) noexcept
+                     double (*operation)(double, double)) noexcept
       : operation_(operation), priority_(priority), type_(type) {}
 
   explicit Operation(Type type, Priority priority,
-                     double (* operation)(double)) noexcept
+                     double (*operation)(double)) noexcept
       : operation_(operation), priority_(priority), type_(type) {}
 
   [[nodiscard]] Priority get_priority() const noexcept { return priority_; }
   [[nodiscard]] Type get_type() const noexcept { return type_; }
 
   [[nodiscard]] double Perform(double num) const {
-    return std::get<double(*)(double)>(operation_)(num);
+    return std::get<double (*)(double)>(operation_)(num);
   }
 
-  [[nodiscard]] double Perform(double num1,
-                               double num2) const {
-    return std::get<double(*)(double, double)>(operation_)(num1, num2);
+  [[nodiscard]] double Perform(double num1, double num2) const {
+    return std::get<double (*)(double, double)>(operation_)(num1, num2);
   }
 
  private:
-  std::variant<double(*)(double, double), double(*)(double)> operation_;
+  std::variant<double (*)(double, double), double (*)(double)> operation_;
   Priority priority_;
   Type type_;
 };
 
 const std::unordered_map<std::string_view, Operation> operations_map = {
-    {"--",
-     Operation(Operation::Type::kUnary, Operation::Priority::kSign,
-                   [](double num) -> double { return -num; })},
-    {"++",
-     Operation(Operation::Type::kUnary, Operation::Priority::kSign,
-                   [](double num) -> double { return num; })},
-    {"sqrt", Operation(Operation::Type::kUnary,
-                       Operation::Priority::kFunction, std::sqrt)},
-    {"sin", Operation(Operation::Type::kUnary,
-                      Operation::Priority::kFunction, std::sin)},
-    {"cos", Operation(Operation::Type::kUnary,
-                      Operation::Priority::kFunction, std::cos)},
-    {"tan", Operation(Operation::Type::kUnary,
-                      Operation::Priority::kFunction, std::tan)},
-    {"asin", Operation(Operation::Type::kUnary,
-                       Operation::Priority::kFunction, std::asin)},
-    {"acos", Operation(Operation::Type::kUnary,
-                       Operation::Priority::kFunction, std::acos)},
-    {"atan", Operation(Operation::Type::kUnary,
-                       Operation::Priority::kFunction, std::atan)},
-    {"ln", Operation(Operation::Type::kUnary,
-                     Operation::Priority::kFunction, std::log)},
-    {"log", Operation(Operation::Type::kUnary,
-                      Operation::Priority::kFunction, std::log10)},
-    {"^", Operation(Operation::Type::kBinary,
-                    Operation::Priority::kFunction, std::pow)},
-    {"*", Operation(
-        Operation::Type::kBinary, Operation::Priority::kComplex,
-        [](double num1, double num2) -> double { return num1 * num2; })},
-    {"/", Operation(
-        Operation::Type::kBinary, Operation::Priority::kComplex,
-        [](double num1, double num2) -> double { return num1 / num2; })},
-    {"d", Operation(Operation::Type::kBinary,
-                    Operation::Priority::kComplex, std::fmod)},
-    {"+", Operation(
-        Operation::Type::kBinary, Operation::Priority::kSimple,
-        [](double num1, double num2) -> double { return num1 + num2; })},
-    {"-", Operation(
-        Operation::Type::kBinary, Operation::Priority::kSimple,
-        [](double num1, double num2) -> double { return num1 - num2; })},
-    {"(",
-        Operation(Operation::Type::kUnary, Operation::Priority::kBrace,
-                   (double (*)(double)){})}
-};
+    {"--", Operation(Operation::Type::kUnary, Operation::Priority::kSign,
+                     [](double num) -> double { return -num; })},
+    {"++", Operation(Operation::Type::kUnary, Operation::Priority::kSign,
+                     [](double num) -> double { return num; })},
+    {"sqrt", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                       std::sqrt)},
+    {"sin", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                      std::sin)},
+    {"cos", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                      std::cos)},
+    {"tan", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                      std::tan)},
+    {"asin", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                       std::asin)},
+    {"acos", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                       std::acos)},
+    {"atan", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                       std::atan)},
+    {"ln", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                     std::log)},
+    {"log", Operation(Operation::Type::kUnary, Operation::Priority::kFunction,
+                      std::log10)},
+    {"^", Operation(Operation::Type::kBinary, Operation::Priority::kFunction,
+                    std::pow)},
+    {"*",
+     Operation(Operation::Type::kBinary, Operation::Priority::kComplex,
+               [](double num1, double num2) -> double { return num1 * num2; })},
+    {"/",
+     Operation(Operation::Type::kBinary, Operation::Priority::kComplex,
+               [](double num1, double num2) -> double { return num1 / num2; })},
+    {"d", Operation(Operation::Type::kBinary, Operation::Priority::kComplex,
+                    std::fmod)},
+    {"+",
+     Operation(Operation::Type::kBinary, Operation::Priority::kSimple,
+               [](double num1, double num2) -> double { return num1 + num2; })},
+    {"-",
+     Operation(Operation::Type::kBinary, Operation::Priority::kSimple,
+               [](double num1, double num2) -> double { return num1 - num2; })},
+    {"(", Operation(Operation::Type::kUnary, Operation::Priority::kBrace,
+                    (double (*)(double)){})}};
 
 void ShuntYardAlgo(std::stack<Operation>& operations,
                    std::stack<double>& numbers) {
@@ -120,7 +111,7 @@ void ShuntYardAlgo(std::stack<Operation>& operations,
 
 inline void ShuntYardBrace(std::stack<Operation>& operations,
                            std::stack<double>& numbers) {
-  while(!operations.empty() &&
+  while (!operations.empty() &&
          operations.top().get_priority() != Operation::Priority::kBrace) {
     ShuntYardAlgo(operations, numbers);
   }
@@ -187,12 +178,8 @@ void FixPower(std::string& expr, size_t i) {
     ;
   size_t start = i;
   bool has_pow = false;
-  while (std::isalnum(expr[i]) ||
-         std::isspace(expr[i]) ||
-         expr[i] == '^' ||
-         expr[i] == '(' ||
-         expr[i] == '.')
-  {
+  while (std::isalnum(expr[i]) || std::isspace(expr[i]) || expr[i] == '^' ||
+         expr[i] == '(' || expr[i] == '.') {
     if (expr[i] == '^') {
       has_pow = true;
     }
@@ -211,17 +198,25 @@ void FixPower(std::string& expr, size_t i) {
   }
 }
 
-inline void ReplaceXInString(std::string& expr, std::string number) {
-  for (;;) {
-    std::size_t pos = expr.find('x');
-    if (pos == std::string::npos) {
-      break;
+inline bool ReplaceXInString(std::string& expr, std::string number) {
+  char prev = '\0';
+  for (int i = 0; i < expr.size(); ++i) {
+    if (expr[i] == 'x') {
+      if (i > 0 && (std::isdigit(prev) || prev == 'x')) {
+        return false;
+      }
+      std::string tail = expr.substr(i + 1);
+      expr.replace(i, number.size(), number);
+      expr += tail;
     }
-    expr.replace(pos, 1, number);
+    if (!std::isspace(expr[i])) {
+      prev = expr[i];
+    }
   }
+  return true;
 }
 
-} // namespace
+}  // namespace
 
 double CalculateFromString(std::string expr) {
   bool prev_was_num = false;
@@ -235,7 +230,8 @@ double CalculateFromString(std::string expr) {
         break;
       case 'm':
         if (!(expr[i + 1] == 'o' && expr[i + 2] == 'd')) {
-          throw std::invalid_argument("Invalid syntax. Incorrect function usage");
+          throw std::invalid_argument(
+              "Invalid syntax. Incorrect function usage");
         }
         i += 2;
         [[fallthrough]];
@@ -281,8 +277,10 @@ double CalculateFromString(std::string expr) {
 }
 
 double CalculateFromStringEquation(std::string expr, double x) {
-  ReplaceXInString(expr, std::to_string(x));
+  if (!ReplaceXInString(expr, std::to_string(x))) {
+    throw std::invalid_argument("Invalid syntax. Invalid x placement");
+  }
   return CalculateFromString(std::move(expr));
 }
 
-} // namespace smcalc::basic
+}  // namespace smcalc::basic

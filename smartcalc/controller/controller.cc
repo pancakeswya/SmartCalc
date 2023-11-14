@@ -1,4 +1,5 @@
 #include "controller.h"
+
 #include "model/model.h"
 
 namespace smcalc {
@@ -15,18 +16,23 @@ double Controller::CalculateEquation(const std::string& expr, double x) {
   return model_->GetBasicData();
 }
 
-const credit::Data& Controller::CalculateCredit(const credit::Conditions& conds) {
+const credit::Data& Controller::CalculateCredit(
+    const credit::Conditions& conds) {
   model_->CalculateCredit(conds);
   return model_->GetCreditData();
 }
 
-const deposit::Data& Controller::CalculateDeposit(const deposit::Conditions& conds) {
+const deposit::Data& Controller::CalculateDeposit(
+    const deposit::Conditions& conds) {
   model_->CalculateDeposit(conds);
   return model_->GetDepositData();
 }
 
-void Controller::Reset() {
-  model_->Reset();
+const graph::Data& Controller::CalculateGraph(const graph::Conditions& conds) {
+  model_->CalculateGraph(conds);
+  return model_->GetGraphData();
 }
 
-} // namespace smcalc
+void Controller::Reset() { model_->Reset(); }
+
+}  // namespace smcalc

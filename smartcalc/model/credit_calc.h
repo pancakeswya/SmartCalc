@@ -7,6 +7,6 @@ namespace smcalc::credit {
 
 extern Data Calculate(Conditions conds);
 
-} // namespace smcalc::credit
+}  // namespace smcalc::credit
 
-#endif // SMARTCALC_MODEL_CREDIT_CALC_H_
+#endif  // SMARTCALC_MODEL_CREDIT_CALC_H_

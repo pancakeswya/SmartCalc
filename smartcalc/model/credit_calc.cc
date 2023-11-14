@@ -33,7 +33,7 @@ Data CalculateDiff(const Conditions& conds, int mp_cnt) {
   return data;
 }
 
-} // namespace
+}  // namespace
 
 Data Calculate(Conditions conds) {
   int mp_cnt = (conds.date_is_year) ? conds.period * DatesNum::kMonthInYear
@@ -44,4 +44,4 @@ Data Calculate(Conditions conds) {
   return CalculateDiff(conds, mp_cnt);
 }
 
-} // smcalc::credit
+}  // namespace smcalc::credit

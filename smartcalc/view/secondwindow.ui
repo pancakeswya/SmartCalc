@@ -111,7 +111,7 @@ qproperty-defaultAlignment: AlignHCenter;
     </layout>
    </widget>
   </widget>
-  <widget class="QWidget" name="widget" native="true">
+  <widget class="QChartView" name="widget" native="true">
    <property name="geometry">
     <rect>
      <x>-1</x>
@@ -122,6 +122,14 @@ qproperty-defaultAlignment: AlignHCenter;
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QWidget</extends>
+   <header>QtCharts/QtCharts</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

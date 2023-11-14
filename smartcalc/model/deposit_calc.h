@@ -7,6 +7,6 @@ namespace smcalc::deposit {
 
 extern Data Calculate(Conditions conds);
 
-} // smcalc::deposit
+}  // namespace smcalc::deposit
 
-#endif // SMARTCALC_MODEL_DEPOSIT_CALC_H_
+#endif  // SMARTCALC_MODEL_DEPOSIT_CALC_H_

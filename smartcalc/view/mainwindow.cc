@@ -11,7 +11,63 @@ namespace {
 
 enum WindowSizes { kWidth = 359, kHeight = 453, kHeightGraph = 619 };
 
-} // namespace
+void DeleteLine(QGridLayout* layout, int& click) {
+  if (click < 0) {
+    return;
+  }
+  auto date =
+      qobject_cast<QDateEdit*>(layout->itemAtPosition(click, 0)->widget());
+  auto field =
+      qobject_cast<QLineEdit*>(layout->itemAtPosition(click, 1)->widget());
+  auto box =
+      qobject_cast<QComboBox*>(layout->itemAtPosition(click--, 2)->widget());
+
+  date->hide();
+  field->hide();
+  box->hide();
+
+  delete date;
+  delete field;
+  delete box;
+}
+
+void AddNewLine(QWidget* parent, QGridLayout* layout, int& click) {
+  auto field = new QLineEdit(parent);
+  auto date = new QDateEdit(parent);
+  auto box = new QComboBox(parent);
+
+  field->setValidator(new QDoubleValidator(parent));
+  date->setDate(QDate::currentDate().addDays(1));
+
+  box->addItem("Once", 0);
+  box->addItem("Every month", 1);
+  box->addItem("Every 2 month", 2);
+  box->addItem("Every quart", 3);
+  box->addItem("Every half year", 4);
+  box->addItem("Every year", 5);
+
+  layout->addWidget(date, ++click, 0);
+  layout->addWidget(field, click, 1);
+  layout->addWidget(box, click, 2);
+}
+
+std::vector<deposit::Transaction> ParseUserTransactions(QGridLayout* layout,
+                                                        int click) {
+  std::vector<deposit::Transaction> opt;
+  for (int i = click; i >= 0; --i) {
+    auto date = qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget())
+                    ->date();
+    auto field =
+        qobject_cast<QLineEdit*>(layout->itemAtPosition(i, 1)->widget());
+    auto box = qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
+
+    opt.push_back({{util::ToDepositDate(date), field->text().toDouble()},
+                   box->currentData().toInt()});
+  }
+  return opt;
+}
+
+}  // namespace
 
 MainWindow::MainWindow(Controller* ctrl) : MainWindow() { controller_ = ctrl; }
 
@@ -39,7 +95,7 @@ void MainWindow::SetSignals() {
   connect(this, &MainWindow::SignalDeposit, sec_win_,
           &SecondWindow::SlotDeposit);
   connect(this, &MainWindow::SignalCredit, sec_win_, &SecondWindow::SlotCredit);
-//  connect(this, &MainWindow::SignalPlot, sec_win_, &SecondWindow::SlotPlot);
+  connect(this, &MainWindow::SignalPlot, sec_win_, &SecondWindow::SlotPlot);
   connect(ui_->pushButton_dot, SIGNAL(clicked()), this,
           SLOT(OnPushButtonDotClicked()));
   connect(ui_->pushButton_AC, SIGNAL(clicked()), this,
@@ -160,80 +216,29 @@ void MainWindow::SetWidgets() {
   ui_->wth_rem_2->setText("0");
 }
 
-void MainWindow::AddNewLine(QGridLayout* layout, int& click) {
-  auto field = new QLineEdit(this);
-  auto date = new QDateEdit(this);
-  auto box = new QComboBox(this);
-
-  field->setValidator(new QDoubleValidator(this));
-  date->setDate(QDate::currentDate().addDays(1));
-
-  box->addItem("Once", 0);
-  box->addItem("Every month", 1);
-  box->addItem("Every 2 month", 2);
-  box->addItem("Every quart", 3);
-  box->addItem("Every half year", 4);
-  box->addItem("Every year", 5);
-
-  layout->addWidget(date, ++click, 0);
-  layout->addWidget(field, click, 1);
-  layout->addWidget(box, click, 2);
-}
-
-void MainWindow::DeleteLine(QGridLayout* layout, int& click) {
-  if (click < 0) {
-    return;
-  }
-  auto date =
-      qobject_cast<QDateEdit *>(layout->itemAtPosition(click, 0)->widget());
-  auto field =
-      qobject_cast<QLineEdit *>(layout->itemAtPosition(click, 1)->widget());
-  auto box =
-      qobject_cast<QComboBox *>(layout->itemAtPosition(click--, 2)->widget());
-
-  date->hide();
-  field->hide();
-  box->hide();
-
-  delete date;
-  delete field;
-  delete box;
-}
-
-void MainWindow::ParseUserTransactions(QGridLayout* layout, int click,
-                                       std::vector<deposit::Transaction>& opt) {
-  for (int i = click; i >= 0; --i) {
-    auto date =
-        qobject_cast<QDateEdit*>(layout->itemAtPosition(i, 0)->widget())->date();
-    auto field =
-        qobject_cast<QLineEdit*>(layout->itemAtPosition(i, 1)->widget());
-    auto box = qobject_cast<QComboBox*>(layout->itemAtPosition(i, 2)->widget());
-
-    opt.push_back({{util::ToDepositDate(date), field->text().toDouble()},
-                                          box->currentData().toInt()});
-  }
-}
-
 void MainWindow::OnPushButtonDotClicked() {
-   QString output = input_handler_.HandleExprDot(ui_->res_out->text());
-   ui_->res_out->setText(output);
+  QString output = input_handler_.HandleExprDot(ui_->res_out->text());
+  ui_->res_out->setText(output);
 }
 
 void MainWindow::DigitsNumbers() {
   auto button_num = dynamic_cast<QPushButton*>(sender());
-  QString output = input_handler_.HandleExprNum(ui_->res_out->text(), button_num->text());
+  QString output =
+      input_handler_.HandleExprNum(ui_->res_out->text(), button_num->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::SimpleOperations() {
   auto button_op = dynamic_cast<QPushButton*>(sender());
-  QString output = input_handler_.HandleExprOp(ui_->res_out->text(), button_op->text());
+  QString output =
+      input_handler_.HandleExprOp(ui_->res_out->text(), button_op->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::ComplexOperations() {
   auto button_func = dynamic_cast<QPushButton*>(sender());
-  QString output = input_handler_.HandleExprFunc(ui_->res_out->text(), button_func->text());
+  QString output =
+      input_handler_.HandleExprFunc(ui_->res_out->text(), button_func->text());
   ui_->res_out->setText(output);
 }
 
@@ -250,21 +255,17 @@ void MainWindow::OnPushButtonCbraceClicked() {
 }
 
 void MainWindow::OnPushButtonEqClicked() {
-  bool x_mode = false;
   QString label = ui_->res_out->text();
   if (label.length() > kMaxInputSize) {
     QMessageBox::warning(this, "Warning", "Превышено количество символов");
     return;
   }
-  if (label.contains("x") && !label.contains("xx")) {
-    x_mode = true;
-  }
   double ans = 0;
-  if (x_mode) {
+  if (label.contains("x")) {
     bool ready_to_calc = input_handler_.HandleExprX(label, x_str_);
     if (!ready_to_calc) {
-        ui_->res_out->setText(label);
-        return;
+      ui_->res_out->setText(label);
+      return;
     }
     try {
       ans = controller_->CalculateEquation(x_str_.toStdString(),
@@ -323,21 +324,19 @@ void MainWindow::OnPushButtonDepositClicked() {
         this, "Warning",
         "Превышено максимальное значение срока размещения вклада");
   } else {
-    std::vector<deposit::Transaction> fund, wth;
-    ParseUserTransactions(ui_->gridLayout_rep, click_count_rep_, fund);
-    ParseUserTransactions(ui_->gridLayout_wth, click_count_wth_, wth);
-    deposit::Conditions conds = {ui_->capitalization->isChecked(),
-                               term_type,
-                               term,
-                               ui_->rate_pay->currentIndex(),
-                               ui_->label_tax->text().toDouble(),
-                               ui_->label_key_rate->text().toDouble(),
-                               ui_->sum->text().toDouble(),
-                               ui_->int_rate_dep->text().toDouble(),
-                               ui_->wth_rem_2->text().toDouble(),
-                               util::ToDepositDate(ui_->dep_date->date()),
-                               std::move(fund),
-                               std::move(wth)};
+    deposit::Conditions conds = {
+        ui_->capitalization->isChecked(),
+        term_type,
+        term,
+        ui_->rate_pay->currentIndex(),
+        ui_->label_tax->text().toDouble(),
+        ui_->label_key_rate->text().toDouble(),
+        ui_->sum->text().toDouble(),
+        ui_->int_rate_dep->text().toDouble(),
+        ui_->wth_rem_2->text().toDouble(),
+        util::ToDepositDate(ui_->dep_date->date()),
+        ParseUserTransactions(ui_->gridLayout_rep, click_count_rep_),
+        ParseUserTransactions(ui_->gridLayout_wth, click_count_wth_)};
     const deposit::Data& data = controller_->CalculateDeposit(conds);
     sec_win_->show();
     emit SignalDeposit(data);
@@ -368,17 +367,17 @@ void MainWindow::OnPushButtonPlotClicked() {
         this, "Warning",
         "Область значений или область определения функции не определена");
   } else {
-//    GraphConditions conds = {
-//        ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
-//        ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
-//        ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
-//    try {
-//      const GraphData& data = controller_->CalculateGraph(conds);
-//      sec_win_->show();
-//      emit SignalPlot(data);
-//    } catch (std::invalid_argument& exc) {
-//      QMessageBox::critical(this, "Error", exc.what());
-//    }
+    graph::Conditions conds = {
+        ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),
+        ui_->doubleSpinBoXi->value(),       ui_->doubleSpinBoYa->value(),
+        ui_->doubleSpinBoYi->value(),       ui_->autoscale->isChecked()};
+    try {
+      const graph::Data& data = controller_->CalculateGraph(conds);
+      sec_win_->show();
+      emit SignalPlot(data);
+    } catch (std::invalid_argument& exc) {
+      QMessageBox::critical(this, "Error", exc.what());
+    }
   }
 }
 
@@ -387,11 +386,11 @@ void MainWindow::OnPushButtonSpaceClicked() {
 }
 
 void MainWindow::OnPushButtonRepClicked() {
-  AddNewLine(ui_->gridLayout_rep, click_count_rep_);
+  AddNewLine(this, ui_->gridLayout_rep, click_count_rep_);
 }
 
 void MainWindow::OnPushButtonWthClicked() {
-  AddNewLine(ui_->gridLayout_wth, click_count_wth_);
+  AddNewLine(this, ui_->gridLayout_wth, click_count_wth_);
   if (click_count_wth_ == 0) {
     ui_->wth_rem->show();
     ui_->wth_rem_2->show();
@@ -417,4 +416,4 @@ void MainWindow::OnAutoscaleStateChanged() {
   ui_->doubleSpinBoYi->setDisabled(ui_->autoscale->isChecked());
 }
 
-}  // namespace s21
+}  // namespace smcalc

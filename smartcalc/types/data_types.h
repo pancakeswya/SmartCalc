@@ -1,8 +1,8 @@
 #ifndef SMARTCALC_TYPES_DATA_TYPES_H_
 #define SMARTCALC_TYPES_DATA_TYPES_H_
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include "datetime.h"
 
@@ -25,10 +25,7 @@ enum CondPayFreq : short int {
 
 namespace credit {
 
-enum Type : bool {
-  kAnnuit,
-  kDiff
-};
+enum Type : bool { kAnnuit, kDiff };
 
 struct Conditions {
   double sum;
@@ -44,7 +41,7 @@ struct Data {
   std::vector<double> payment;
 };
 
-} // credit
+}  // namespace credit
 
 namespace deposit {
 
@@ -86,9 +83,29 @@ struct Conditions {
   std::vector<Transaction> wth;
 };
 
-} // deposit
+}  // namespace deposit
 
+namespace graph {
 
-} // namespace smcalc
+struct Conditions {
+  std::string expr;
+  double x_max;
+  double x_min;
+  double y_max;
+  double y_min;
+  bool autoscale;
+};
 
-#endif // SMARTCALC_TYPES_DATA_TYPES_H_
+struct Data {
+  std::vector<std::vector<std::pair<double, double>>> graphs;
+  double x_min;
+  double x_max;
+  double y_min;
+  double y_max;
+};
+
+}  // namespace graph
+
+}  // namespace smcalc
+
+#endif  // SMARTCALC_TYPES_DATA_TYPES_H_

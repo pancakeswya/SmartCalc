@@ -38,10 +38,8 @@ int PayFreq(int pay_freq) noexcept {
   return real_freq[pay_freq];
 }
 
-void AddReplenishment(Data& data,
-                      const Date& start_date,
-                      const Date& finish_date,
-                      const Transaction& transaction) {
+void AddReplenishment(Data& data, const Date& start_date,
+                      const Date& finish_date, const Transaction& transaction) {
   Date transact_date = transaction.payout.date;
   while (transact_date <= finish_date) {
     if (transact_date > start_date) {
@@ -101,7 +99,7 @@ void CalculateDeposit(Data& data, const Conditions& conds) {
   }
   if (conds.cap) {
     data.eff_rate = (data.perc_sum * DatesNum::kAvgDaysInYear * 100.0) /
-        (conds.sum * am_days);
+                    (conds.sum * am_days);
     data.total += cap_sum;
   }
   data.total += conds.sum + add_sum;
@@ -128,13 +126,12 @@ void SetReplanishments(Data& data, Conditions& conds) {
     AddReplenishment(data, conds.start_date, data.finish_date, single_wth);
   }
   std::sort(data.replen.begin(), data.replen.end(),
-            [](const Transaction::Payout& rhs,
-               const Transaction::Payout& lhs) {
+            [](const Transaction::Payout& rhs, const Transaction::Payout& lhs) {
               return rhs.date < lhs.date;
             });
 }
 
-} // namespace
+}  // namespace
 
 Data Calculate(Conditions conds) {
   Data data{};
@@ -145,4 +142,4 @@ Data Calculate(Conditions conds) {
   return data;
 }
 
-} // smcalc::deposit
+}  // namespace smcalc::deposit
