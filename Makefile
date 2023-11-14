@@ -62,6 +62,4 @@ test gcov_report check-valgrind:
 
 clean: uninstall
 	$(RM) $(DVI_DIR)
-	$(RM) $(NAME)
-	$(RM) $(LIB_DIR)/$(BUILD_DIR)
 
