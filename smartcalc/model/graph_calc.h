@@ -5,7 +5,7 @@
 
 namespace smcalc::graph {
 
-extern Data Calculate(Conditions conds);
+extern Data Calculate(const Conditions& conds);
 
 }  // namespace smcalc::graph
 

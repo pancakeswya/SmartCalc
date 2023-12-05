@@ -17,7 +17,7 @@ inline T StackPop(std::stack<T> &stack) {
   return top_val;
 }
 
-inline bool IsOperator(char ch) {
+inline bool IsOperator(char ch) noexcept {
   return ch == '-' || ch == '+' || ch == '*' || ch == '/' || ch == '^';
 }
 

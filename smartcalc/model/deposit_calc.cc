@@ -118,7 +118,7 @@ Date FinishDate(const Conditions& conds) noexcept {
 }
 
 void SetReplanishments(Data& data, Conditions& conds) {
-  for (Transaction& single_fund : conds.fund) {
+  for (const Transaction& single_fund : conds.fund) {
     AddReplenishment(data, conds.start_date, data.finish_date, single_fund);
   }
   for (Transaction& single_wth : conds.wth) {

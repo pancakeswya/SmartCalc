@@ -4,7 +4,7 @@
 
 namespace smcalc::graph {
 
-Data Calculate(Conditions conds) {
+Data Calculate(const Conditions& conds) {
   Data data;
   data.x_max = conds.x_max;
   data.x_min = conds.x_min;
@@ -13,12 +13,12 @@ Data Calculate(Conditions conds) {
               max_y = -100000.0;
   double i = conds.x_min;
   while (i <= conds.x_max) {
-    res = basic::CalculateFromStringEquation(conds.expr.data(), i);
+    res = basic::CalculateFromStringEquation(conds.expr, i);
     if (!std::isnan(res) && !std::isinf(res)) {
       min_y = std::min(res, min_y);
       max_y = std::max(res, max_y);
-      data.graphs.back().push_back({i, res});
-    } else if (data.graphs.back() != std::vector<std::pair<double, double>>()) {
+      data.graphs.back().emplace_back(i, res);
+    } else if (!data.graphs.back().empty()) {
       data.graphs.emplace_back();
     }
     i = (std::round(i * 1000.0) / 1000.0) + step;

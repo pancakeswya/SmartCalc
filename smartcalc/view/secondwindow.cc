@@ -48,7 +48,7 @@ void SecondWindow::SlotDeposit(const deposit::Data& data) {
   ui_->tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setWindowTitle("Calculation of the deposit");
   if (ui_->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
+    setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui_->widget->setVisible(false);
   }
   ui_->out_dep->setText("Accrued interest\n");
@@ -168,7 +168,7 @@ void SecondWindow::SlotDeposit(const deposit::Data& data) {
 
 void SecondWindow::SlotCredit(const credit::Data& data) {
   if (ui_->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
+    setFixedSize(SecondWinSizes::kWidth, SecondWinSizes::kHeight);
     ui_->widget->setVisible(false);
   }
   if (ui_->tableView_2->isVisible()) {
@@ -229,7 +229,7 @@ void SecondWindow::SlotCredit(const credit::Data& data) {
 
 void SecondWindow::SlotPlot(const graph::Data& data) {
   if (!ui_->widget->isVisible()) {
-    this->setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
+    setFixedSize(SecondWinSizes::kWidth * 2, SecondWinSizes::kHeight);
   }
   setWindowTitle("Graph");
   setWindowIcon(QIcon(":/resources/img/graph-logo.png"));

@@ -302,10 +302,12 @@ void MainWindow::OnPushButtonCreditClicked() {
        is_annuit = ui_->annuit->isChecked();
   if ((is_year && period > DateLimits::kYearMax) ||
       (!is_year && period > DateLimits::kMonthMax)) {
-    QMessageBox::warning(this, "Warning",
-                         "The maximum value of the loan term has been exceeded");
+    QMessageBox::warning(
+        this, "Warning",
+        "The maximum value of the loan term has been exceeded");
   } else if (!is_annuit && !ui_->diff->isChecked()) {
-    QMessageBox::warning(this, "Warning", "Choose the type of monthly payments");
+    QMessageBox::warning(this, "Warning",
+                         "Choose the type of monthly payments");
   } else {
     credit::Conditions conds = {sum, int_rate, period, is_year, is_annuit};
     const credit::Data& data = controller_->CalculateCredit(conds);
@@ -363,9 +365,9 @@ void MainWindow::OnPushButtonPlotClicked() {
   if (ui_->doubleSpinBoXi->value() >= ui_->doubleSpinBoXa->value() ||
       (!ui_->autoscale->isChecked() &&
        ui_->doubleSpinBoYi->value() >= ui_->doubleSpinBoYa->value())) {
-    QMessageBox::critical(
-        this, "Warning",
-        "The scope of values or the scope of the function definition is not defined");
+    QMessageBox::critical(this, "Warning",
+                          "The scope of values or the scope of the function "
+                          "definition is not defined");
   } else {
     graph::Conditions conds = {
         ui_->res_out->text().toStdString(), ui_->doubleSpinBoXa->value(),

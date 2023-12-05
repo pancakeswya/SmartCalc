@@ -1,5 +1,4 @@
 #include <cmath>
-#include <iostream>
 #include <stdexcept>
 #include <unordered_map>
 #include <variant>
@@ -137,10 +136,8 @@ void ProcessOperation(char op, bool prev_was_num,
   auto map_it = operations_map.end();
   if (prev_was_num) {
     map_it = operations_map.find(std::string(1, op));
-  } else if (op == '-') {
-    map_it = operations_map.find("--");
-  } else if (op == '+') {
-    map_it = operations_map.find("++");
+  } else if (op == '-' || op == '+') {
+    map_it = operations_map.find(std::string(2, op));
   }
   if (map_it == operations_map.end()) {
     throw std::invalid_argument("Invalid syntax. Incorrect operation usage");
@@ -173,21 +170,36 @@ size_t ProcessNumber(const std::string& expr, bool prev_was_num,
   return n_size - 1;
 }
 
-void FixPower(std::string& expr, size_t i) {
+size_t SkipSpace(const std::string& expr) noexcept {
+  size_t i = 0;
   for (; std::isspace(expr[i]); ++i)
     ;
+  return i;
+}
+
+size_t ClosedBraceNext(const std::string& expr) noexcept {
+  size_t i = 0;
+  for (; expr[i] && expr[i] != ')'; ++i)
+    ;
+  for (; expr[i] == ')'; ++i)
+    ;
+  return i;
+}
+
+inline bool PowExprAcceptable(char ch) noexcept {
+  return std::isalnum(ch) || std::isspace(ch) || ch == '^' || ch == '(' ||
+         ch == '.';
+}
+
+void FixPower(std::string& expr, size_t i) {
+  i += SkipSpace(expr);
   size_t start = i;
   bool has_pow = false;
-  while (std::isalnum(expr[i]) || std::isspace(expr[i]) || expr[i] == '^' ||
-         expr[i] == '(' || expr[i] == '.') {
+  while (PowExprAcceptable(expr[i])) {
     if (expr[i] == '^') {
       has_pow = true;
-    }
-    if (expr[i] == '(') {
-      for (; expr[i] != ')' && expr[i]; ++i)
-        ;
-      for (; expr[i] == ')'; ++i)
-        ;
+    } else if (expr[i] == '(') {
+      i += ClosedBraceNext(&expr[i]);
       continue;
     }
     ++i;
@@ -198,7 +210,7 @@ void FixPower(std::string& expr, size_t i) {
   }
 }
 
-inline bool ReplaceXInString(std::string& expr, std::string number) {
+inline bool ReplaceXInString(std::string& expr, const std::string& number) {
   char prev = '\0';
   for (int i = 0; i < expr.size(); ++i) {
     if (expr[i] == 'x') {
