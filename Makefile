@@ -53,7 +53,7 @@ dist:
 	mv $(NAME).tgz $(HOME)/Desktop
 
 check-style:
-	find $(SRC_DIR) -name '*.cc' -o -name '*.h' | xargs clang-format -style=google -n
+	find $(SRC_DIR) -name '*.cc' -o -name '*.h' | xargs clang-format -style=google -i
 
 test gcov_report check-valgrind:
 	mkdir -p $(LIB_DIR)/$(BUILD_DIR)

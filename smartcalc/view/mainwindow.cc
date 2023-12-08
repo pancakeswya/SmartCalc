@@ -217,40 +217,40 @@ void MainWindow::SetWidgets() {
 }
 
 void MainWindow::OnPushButtonDotClicked() {
-  QString output = input_handler_.HandleExprDot(ui_->res_out->text());
+  QString output = InputHandler::HandleExprDot(ui_->res_out->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::DigitsNumbers() {
   auto button_num = dynamic_cast<QPushButton*>(sender());
   QString output =
-      input_handler_.HandleExprNum(ui_->res_out->text(), button_num->text());
+      InputHandler::HandleExprNum(ui_->res_out->text(), button_num->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::SimpleOperations() {
   auto button_op = dynamic_cast<QPushButton*>(sender());
   QString output =
-      input_handler_.HandleExprOp(ui_->res_out->text(), button_op->text());
+      InputHandler::HandleExprOp(ui_->res_out->text(), button_op->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::ComplexOperations() {
   auto button_func = dynamic_cast<QPushButton*>(sender());
   QString output =
-      input_handler_.HandleExprFunc(ui_->res_out->text(), button_func->text());
+      InputHandler::HandleExprFunc(ui_->res_out->text(), button_func->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::OnPushButtonAcClicked() { ui_->res_out->setText("0"); }
 
 void MainWindow::OnPushButtonObraceClicked() {
-  QString output = input_handler_.HandleExprOpenBrace(ui_->res_out->text());
+  QString output = InputHandler::HandleExprOpenBrace(ui_->res_out->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::OnPushButtonCbraceClicked() {
-  QString output = input_handler_.HandleExprClosedBrace(ui_->res_out->text());
+  QString output = InputHandler::HandleExprClosedBrace(ui_->res_out->text());
   ui_->res_out->setText(output);
 }
 
@@ -262,7 +262,7 @@ void MainWindow::OnPushButtonEqClicked() {
   }
   double ans = 0;
   if (label.contains("x")) {
-    bool ready_to_calc = input_handler_.HandleExprX(label, x_str_);
+    bool ready_to_calc = InputHandler::HandleExprX(label, x_str_);
     if (!ready_to_calc) {
       ui_->res_out->setText(label);
       return;
@@ -285,12 +285,12 @@ void MainWindow::OnPushButtonEqClicked() {
 }
 
 void MainWindow::OnPushButtonBinClicked() {
-  QString output = input_handler_.HandleExprBin(ui_->res_out->text());
+  QString output = InputHandler::HandleExprBin(ui_->res_out->text());
   ui_->res_out->setText(output);
 }
 
 void MainWindow::OnBackspaceClicked() {
-  QString output = input_handler_.HandleExprBackspace(ui_->res_out->text());
+  QString output = InputHandler::HandleExprBackspace(ui_->res_out->text());
   ui_->res_out->setText(output);
 }
 

@@ -25,7 +25,6 @@ class MainWindow : public QMainWindow {
  private:
   static constexpr int kMaxInputSize = 255;
   Controller* controller_{};
-  InputHandler input_handler_;
   Ui::MainWindow* ui_;
   SecondWindow* sec_win_;
   QString x_str_;

@@ -27,19 +27,19 @@ QString InputHandler::HandleExprDot(QString input) {
   return input + '.';
 }
 
-QString InputHandler::HandleExprNum(QString input, QString num) {
+QString InputHandler::HandleExprNum(QString input, const QString& num) {
   ClearOnZero(input);
   return input + num;
 }
 
-QString InputHandler::HandleExprOp(QString input, QString op) {
+QString InputHandler::HandleExprOp(QString input, const QString& op) {
   if (input.isEmpty() || util::IsOperator(input.back().toLatin1())) {
     return input;
   }
   return input + op;
 }
 
-QString InputHandler::HandleExprFunc(QString input, QString func) {
+QString InputHandler::HandleExprFunc(QString input, const QString& func) {
   ClearOnZero(input);
   return input + func + '(';
 }
