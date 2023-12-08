@@ -149,7 +149,7 @@ size_t ProcessFunction(const std::string& expr,
                        std::stack<Operation>& operations) {
   std::unordered_map<std::string_view, Operation>::const_iterator map_it;
   size_t size = 0;
-  for (; std::isalpha(expr[size]); size++)
+  for (; std::isalpha(expr[size]); ++size)
     ;
   map_it = operations_map.find(expr.substr(0, size));
   if (map_it == operations_map.end()) {
